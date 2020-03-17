@@ -11,8 +11,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar hidden={true}/>
-      <Text>Escrevi e saí correndo...</Text>
-      <TextInput style={{height: 40, backgroundColor: 'azure', fontSize: 20}} placeholder="complete"/>
+      
     </View>
   );
 }
