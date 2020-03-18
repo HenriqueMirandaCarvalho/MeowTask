@@ -7,24 +7,28 @@ import {
   StatusBar
 } from 'react-native';
 
-export default function App() {
+export default class App extends React.Component{
 
-  constructor(prop){
-    super(prop);
+  constructor(props){
+    super(props);
     this.state = {
       nome: "Miranda",
-      frase: "Quem espera alcança!",
-      alimento: "Abacaxi",
+      frase: "Quem espera sempre alcança!",
+      alimento: "alimento"
     }
   }
 
-  return (
-    <View style={styles.container}>
-      <StatusBar hidden={true}/>
-      <Text>Meow Task é o melhor!</Text>
-      <Text>this.state.nome</Text>
-    </View>
-  );
+  render(){
+    return (
+      <View style={styles.container}>
+        <StatusBar hidden={true}/>
+        <Text>Meow Task é o melhor!</Text>
+        <Text>Olá, {this.state.nome}</Text>
+        <Text>Lembre-se: {this.state.frase}</Text>
+        <Text>Coma muitos {this.state.alimento} para evitar o coronga</Text>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
