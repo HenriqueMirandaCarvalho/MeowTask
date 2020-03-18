@@ -25,7 +25,7 @@ export default class App extends React.Component{
         <Text>Meow Task é o melhor!</Text>
         <Text>Olá, {this.state.nome}</Text>
         <Text>Lembre-se: {this.state.frase}</Text>
-        <Text>Coma muitos {this.state.alimento} para evitar o coronga</Text>
+        <Text>Coma muitos {this.state.nome} para evitar o coronga</Text>
       </View>
     );
   }
