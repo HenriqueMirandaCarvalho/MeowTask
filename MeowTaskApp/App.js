@@ -8,9 +8,7 @@ const App = createStackNavigator({
   TelaInicio: {
     screen: TelaInicio,
     navigationOptions: {
-      title: 'Tela Inicio',
-      headerStyle: { backgroundColor: '#f05555' },
-      headerTintColor: '#ffffff'
+      header: null
     },
   },
 });
