@@ -1,6 +1,7 @@
 import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import { openDatabase } from 'react-native-sqlite-storage';
 
 import TelaInicio from './pages/TelaInicio';
 import TelaTeste from './pages/TelaTeste';
