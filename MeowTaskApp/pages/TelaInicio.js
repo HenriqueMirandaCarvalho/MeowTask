@@ -1,5 +1,6 @@
 import React from 'react';
 import { StatusBar, StyleSheet, View, ImageBackground, Button, Text } from 'react-native';
+import CustomButton from './components/CustomButton';
 
 export default class TelaInicio extends React.Component {
     componentDidMount() {
@@ -13,17 +14,24 @@ export default class TelaInicio extends React.Component {
             },
             image: {
               flex: 1,
+              backgroundColor: '#eae6da',
               resizeMode: "cover",
               alignItems: "center"
             },
-            buttonContainer: {
-                paddingVertical: 320
-            }
+            button: {
+                alignItems: 'center',
+                backgroundColor: '#3ba3c5',
+                color: '#ffffff',
+                padding: 10,
+                marginTop: 400,
+                marginLeft: 35,
+                marginRight: 35,
+            },
         });
         return (
             <View style={styles.container}>
                 <ImageBackground source={require('./img/icone.png')} style={styles.image}>
-                    <Button title="test" style={{ color: "#0f3341" }}/>
+                    <CustomButton title='Teste' style={styles.button}/>
                 </ImageBackground>
             </View>
         );
