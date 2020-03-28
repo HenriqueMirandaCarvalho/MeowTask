@@ -18,7 +18,11 @@ const styles = StyleSheet.create({
         marginRight: 35,
     },
     text: {
+        fontSize: 20,
+        fontWeight: 'bold',
         color: '#ffffff',
+        marginLeft: 20,
+        marginRight: 20,
     },
 });
 export default CustomButton;

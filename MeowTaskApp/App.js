@@ -19,7 +19,7 @@ const App = createStackNavigator({
     },
   }
 },{
-  initialRouteName: 'TelaTeste',
+  initialRouteName: 'TelaInicio',
 });
 
 export default createAppContainer(App);

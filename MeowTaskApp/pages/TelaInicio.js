@@ -23,7 +23,7 @@ export default class TelaInicio extends React.Component {
                 backgroundColor: '#3ba3c5',
                 color: '#ffffff',
                 padding: 10,
-                marginTop: 400,
+                marginTop: 450,
                 marginLeft: 35,
                 marginRight: 35,
             },
@@ -31,7 +31,7 @@ export default class TelaInicio extends React.Component {
         return (
             <View style={styles.container}>
                 <ImageBackground source={require('./img/icone.png')} style={styles.image}>
-                    <CustomButton title='Teste' style={styles.button}/>
+                    <CustomButton title='INICIAR' style={styles.button}/>
                 </ImageBackground>
             </View>
         );
