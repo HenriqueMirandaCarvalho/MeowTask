@@ -1,12 +1,11 @@
 import React from 'react';
-import { StatusBar, StyleSheet, View, ImageBackground, Text } from 'react-native';
+import { StatusBar, StyleSheet, View, ImageBackground, Button, Text } from 'react-native';
 
 export default class TelaInicio extends React.Component {
     componentDidMount() {
         StatusBar.setHidden(true);
     }
     render() {
-        const resizeMode = 'center';
         const styles = StyleSheet.create({
             container: {
               flex: 1,
@@ -15,18 +14,16 @@ export default class TelaInicio extends React.Component {
             image: {
               flex: 1,
               resizeMode: "cover",
-              justifyContent: "center"
+              alignItems: "center"
             },
-            text: {
-              color: "grey",
-              fontSize: 30,
-              fontWeight: "bold"
+            buttonContainer: {
+                paddingVertical: 320
             }
         });
         return (
             <View style={styles.container}>
                 <ImageBackground source={require('./img/icone.png')} style={styles.image}>
-                    <Text>TESTE</Text>
+                    <Button title="test" style={{ color: "#0f3341" }}/>
                 </ImageBackground>
             </View>
         );
