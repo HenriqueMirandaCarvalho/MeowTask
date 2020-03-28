@@ -21,6 +21,7 @@ export default class TelaInicio extends React.Component {
             button: {
                 alignItems: 'center',
                 backgroundColor: '#3ba3c5',
+                borderRadius: 5,
                 color: '#ffffff',
                 padding: 10,
                 marginTop: 450,
