@@ -1,28 +1,63 @@
 import React from 'react';
-import { createAppContainer } from 'react-navigation';
+import { NavigationContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'antares.db' });
+import * as SQLite from 'expo-sqlite';
 
 import TelaInicio from './pages/TelaInicio';
 import TelaTeste from './pages/TelaTeste';
-import { useScreens } from 'react-native-screens';
+import TelaHome from './pages/TelaHome';
 
-const App = createStackNavigator({
+const Stack = createStackNavigator({
   TelaInicio: {
     screen: TelaInicio,
     navigationOptions: {
-      header: null
+      headerShown: false
+    },
+  },
+  TelaHome: {
+    screen: TelaHome,
+    navigationOptions: {
+      headerShown: false
     },
   },
   TelaTeste: {
     screen: TelaTeste,
     navigationOptions: {
-      header: null
+      headerShown: false
     },
   }
 },{
   initialRouteName: 'TelaInicio',
 });
 
-export default createAppContainer(App);
+var db = SQLite.openDatabase({name: 'test.db', createFromLocation: 'pages/components/antares.db'});
+
+export default class App extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      firstaccess: 0,
+    };
+
+    db.transaction((tx) => {
+      tx.executeSql("SELECT * FROM system WHERE systemid=?",[1],(tx, results) => {
+        var row = results.rows.item(0);
+        this.setState({firstaccess: row.firstaccess});
+      });
+    });
+  }
+  render() {
+    if (this.state['firstaccess'] == 0)
+    {
+      return (
+        <TelaInicio/>
+      );
+    }
+    else {
+      return (
+        <TelaHome/>
+      );
+    }
+  }
+}

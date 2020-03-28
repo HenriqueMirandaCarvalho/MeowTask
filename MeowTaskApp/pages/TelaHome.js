@@ -1,26 +1,10 @@
 import React from 'react';
 import { StatusBar, StyleSheet, View, ImageBackground, Button, Text } from 'react-native';
 import CustomButton from './components/CustomButton';
-import * as SQLite from 'expo-sqlite';
 
-var db = SQLite.openDatabase({name: 'components/antares.db', createFromLocation: 'components/antares.db'});
-export default class TelaInicio extends React.Component {
+export default class TelaHome extends React.Component {
     componentDidMount() {
         StatusBar.setHidden(true);
-    }
-    constructor(props) {
-      super(props)
-  
-      this.state = {
-        firstaccess: 0,
-      };
-  
-      db.transaction((tx) => {
-        tx.executeSql("SELECT * FROM system WHERE systemid=?",[1],(tx, results) => {
-          var row = results.rows.item(0);
-          this.setState({firstaccess: row.firstaccess});
-        });
-      });
     }
     render() {
         const styles = StyleSheet.create({
@@ -48,7 +32,7 @@ export default class TelaInicio extends React.Component {
         return (
             <View style={styles.container}>
                 <ImageBackground source={require('./img/icone.png')} style={styles.image}>
-                    <CustomButton title='INICIAR' style={styles.button} customClick={() => console.log(this.state['firstaccess'])}/>
+                    <CustomButton title='JA TA' style={styles.button}/>
                 </ImageBackground>
             </View>
         );
