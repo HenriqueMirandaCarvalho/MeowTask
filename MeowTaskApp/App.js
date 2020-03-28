@@ -3,6 +3,7 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import TelaInicio from './pages/TelaInicio';
+import TelaTeste from './pages/TelaTeste';
 
 const App = createStackNavigator({
   TelaInicio: {
@@ -11,6 +12,14 @@ const App = createStackNavigator({
       header: null
     },
   },
+  TelaTeste: {
+    screen: TelaTeste,
+    navigationOptions: {
+      header: null
+    },
+  }
+},{
+  initialRouteName: 'TelaTeste',
 });
 
 export default createAppContainer(App);
