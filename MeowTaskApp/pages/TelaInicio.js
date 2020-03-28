@@ -25,7 +25,7 @@ export default class TelaInicio extends React.Component {
         });
         return (
             <View style={styles.container}>
-                <ImageBackground source={{ uri: "./img/icone.png" }} style={styles.image}>
+                <ImageBackground source={require('./img/icone.png')} style={styles.image}>
                     <Text>TESTE</Text>
                 </ImageBackground>
             </View>
