@@ -5,9 +5,9 @@ export default class TelaInicio extends React.Component {
     render() {
         return (
             <View style={styles}>
-                <View style={{width: 50, height: 50, backgroundColor: 'red'}}></View>
-                <View style={{width: 50, height: 50, backgroundColor: 'green'}}></View>
-                <View style={{width: 50, height: 50, backgroundColor: 'blue'}}></View>
+                <View style={{width: 50, height: 50, backgroundColor: 'red'}}><Text>R</Text></View>
+                <View style={{width: 50, height: 50, backgroundColor: 'green'}}><Text>G</Text></View>
+                <View style={{width: 50, height: 50, backgroundColor: 'blue'}}><Text>B</Text></View>
             </View>
         );
     }
