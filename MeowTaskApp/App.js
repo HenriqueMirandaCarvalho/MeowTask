@@ -6,9 +6,7 @@ import ApiKeys from './constants/ApiKeys';
 import * as firebase from 'firebase';
 
 import TelaInicio from './pages/TelaInicio';
-import TelaTeste from './pages/TelaTeste';
 import TelaHome from './pages/TelaHome';
-import { concat } from 'react-native-reanimated';
 
 const Stack = createStackNavigator({
   TelaInicio: {
