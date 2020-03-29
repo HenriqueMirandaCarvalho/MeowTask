@@ -12,7 +12,6 @@
     "@react-navigation/stack": "^5.2.8",
     "expo": "~36.0.0",
     "expo-contacts": "^8.0.0",
-    "expo-sqlite": "^8.1.0",
     "firebase": "^7.13.1",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
