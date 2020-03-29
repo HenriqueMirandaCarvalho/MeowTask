@@ -1,5 +1,6 @@
 import React from 'react';
-import { StatusBar, StyleSheet, View, ImageBackground, Button, Text } from 'react-native';
+import {AsyncStorage} from 'react-native';
+import { StatusBar, StyleSheet, View, ImageBackground } from 'react-native';
 import CustomButton from './components/CustomButton';
 
 export default class TelaInicio extends React.Component {
@@ -19,20 +20,15 @@ export default class TelaInicio extends React.Component {
               alignItems: "center"
             },
             button: {
-                alignItems: 'center',
                 backgroundColor: '#3ba3c5',
-                borderRadius: 5,
                 color: '#ffffff',
-                padding: 10,
                 marginTop: 450,
-                marginLeft: 35,
-                marginRight: 35,
             },
         });
         return (
             <View style={styles.container}>
                 <ImageBackground source={require('./img/icone.png')} style={styles.image}>
-                    <CustomButton title='INICIAR' style={styles.button}/>
+                    <CustomButton title='INICIAR' style={styles.button} textStyle={{marginLeft: 20, marginRight: 20,}} onPress={() => {AsyncStorage.setItem('firstAccess', 'true');}}/>
                 </ImageBackground>
             </View>
         );
