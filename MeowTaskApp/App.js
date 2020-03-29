@@ -1,17 +1,20 @@
 import React from 'react';
+import {AsyncStorage} from 'react-native';
 import { NavigationContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import * as SQLite from 'expo-sqlite';
+import ApiKeys from './constants/ApiKeys';
+import * as firebase from 'firebase';
 
 import TelaInicio from './pages/TelaInicio';
 import TelaTeste from './pages/TelaTeste';
 import TelaHome from './pages/TelaHome';
+import { concat } from 'react-native-reanimated';
 
 const Stack = createStackNavigator({
   TelaInicio: {
     screen: TelaInicio,
     navigationOptions: {
-      headerShown: false
+      headerShown: true
     },
   },
   TelaHome: {
@@ -30,35 +33,30 @@ const Stack = createStackNavigator({
   initialRouteName: 'TelaInicio',
 });
 
-var db = SQLite.openDatabase({name: 'antares.db', location: 'default'});
 
 export default class App extends React.Component {
   constructor(props) {
-    super(props)
-
+    super(props);
     this.state = {
-      firstaccess: 2,
-    };
-
-    db.transaction((tx) => {
-      tx.executeSql("CREATE TABLE IF NOT EXISTS system (systemid INTEGER PRIMARY KEY NOT NULL, firstaccess INTEGER");
-      tx.executeSql("INSERT INTO system VALUES (1,0)");
-      tx.executeSql("SELECT * FROM system",[],(tx, results) => {
-        var row = results.rows.item(0);
-        this.setState({firstaccess: row.firstaccess});
-      });
+      firstAccess: false,
+    }
+    AsyncStorage.getItem('firstAccess', (err, result) => {
+      if (result === null) {
+        AsyncStorage.setItem('firstAccess', 'false');
+      }
+      AsyncStorage.getItem('firstAccess', (err, result) => { this.setState({firstAccess: result}); console.log(result); });
     });
   }
   render() {
-    if (this.state['firstaccess'] == 0)
+    if (this.state.firstAccess == 'true')
     {
-      return (
-        <TelaInicio/>
+      return(
+        <TelaHome/>
       );
     }
     else {
       return (
-        <TelaHome/>
+        <TelaInicio/>
       );
     }
   }

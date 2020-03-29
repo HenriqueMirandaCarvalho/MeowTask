@@ -1,4 +1,5 @@
 import React from 'react';
+import {AsyncStorage} from 'react-native';
 import { StatusBar, StyleSheet, View, ImageBackground, Button, Text } from 'react-native';
 import CustomButton from './components/CustomButton';
 
