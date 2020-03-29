@@ -30,18 +30,20 @@ const Stack = createStackNavigator({
   initialRouteName: 'TelaInicio',
 });
 
-var db = SQLite.openDatabase({name: 'test.db', createFromLocation: 'pages/components/antares.db'});
+var db = SQLite.openDatabase({name: 'antares.db', location: 'default'});
 
 export default class App extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      firstaccess: 0,
+      firstaccess: 2,
     };
 
     db.transaction((tx) => {
-      tx.executeSql("SELECT * FROM system WHERE systemid=?",[1],(tx, results) => {
+      tx.executeSql("CREATE TABLE IF NOT EXISTS system (systemid INTEGER PRIMARY KEY NOT NULL, firstaccess INTEGER");
+      tx.executeSql("INSERT INTO system VALUES (1,0)");
+      tx.executeSql("SELECT * FROM system",[],(tx, results) => {
         var row = results.rows.item(0);
         this.setState({firstaccess: row.firstaccess});
       });
