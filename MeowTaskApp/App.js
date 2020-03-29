@@ -22,17 +22,8 @@ const Stack = createStackNavigator({
     navigationOptions: {
       headerShown: false
     },
-  },
-  TelaTeste: {
-    screen: TelaTeste,
-    navigationOptions: {
-      headerShown: false
-    },
   }
-},{
-  initialRouteName: 'TelaInicio',
 });
-
 
 export default class App extends React.Component {
   constructor(props) {
