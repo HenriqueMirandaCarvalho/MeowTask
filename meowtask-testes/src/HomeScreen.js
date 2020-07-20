@@ -1,10 +1,12 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
-import GeneralStatusBar from './components/GeneralStatusBar.js';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, StyleSheet, Text, View, Image, StatusBar, TouchableOpacity } from 'react-native';
+import threebar from './img/threelines.png';
 
-const list = ["1", "2", "3", "4", "5", "6"];
-
+/* Modules */
+import iconPomodoro from "./modules/Pomodoro/iconPomodoro.png";
+const list = [
+	["PomodoroMod", "Pomodoro", iconPomodoro],
+];
 
 export default class StartScreen extends React.Component {
 	render() {
@@ -28,8 +30,10 @@ export default class StartScreen extends React.Component {
 							list.map(item => {
 								return (
 									<View style={{marginTop: 30, marginRight: 10, marginLeft: 10, flexDirection: 'column', alignItems: 'center',}}>
-										<Image source={{ uri: "https://tribunadejundiai.com.br/wp-content/uploads/2020/05/barbary-ape-3562358_1280-min.jpg", }} style={{width: 75, height: 75, backgroundColor: '#C4C4C4', borderRadius: 100,}}/>
-										<Text style={{fontFamily: 'robotoThin', fontSize: 13, color: '#5B5B58',}}>Exemplo Módulo</Text>
+										<TouchableOpacity onPress={() => {this.props.navigation.navigate(item[0], {})}} style={{flexDirection: 'column', alignItems: 'center',}}>
+											<Image source={item[2]} style={{width: 75, height: 75, backgroundColor: '#C4C4C4', borderRadius: 100,}}/>
+											<Text style={{fontFamily: 'robotoThin', fontSize: 13, color: '#5B5B58',}}>{item[1]}</Text>
+										</TouchableOpacity>
 									</View>
 								);
 							})
@@ -43,7 +47,10 @@ export default class StartScreen extends React.Component {
 						</View>
 					</View>
 				</ScrollView>
-				<GeneralStatusBar/>
+				<TouchableOpacity style={{width:40, height: 30, backgroundColor: 'transparent', position: 'absolute', right: 10, top: 35,}}>
+					<Image source={threebar} style={{width: 40, height: 30, resizeMode: 'stretch'}} tintColor='#5B5B58'/>
+				</TouchableOpacity>
+				<StatusBar translucent backgroundColor="#E6E2D6"/>
 			</View>
 		);
 	}
@@ -55,9 +62,5 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		backgroundColor: '#EAE6DA',
 		justifyContent: 'flex-start',
-	},
-	bg: {
-		flex: 1,
-		resizeMode: 'stretch',
 	},
 });

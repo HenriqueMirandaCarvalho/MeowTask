@@ -4,6 +4,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import StartScreen from "./StartScreen.js";
 import HomeScreen from "./HomeScreen.js";
 
+/* Modules */
+import PomodoroModule from "./modules/Pomodoro/Pomodoro.mod.js";
+
 const Stack = createStackNavigator();
 
 import * as Font from 'expo-font';
@@ -36,6 +39,10 @@ export default class App extends React.Component {
 						<Stack.Screen
 							name="Home"
 							component={HomeScreen}
+						/>
+						<Stack.Screen
+							name="PomodoroMod"
+							component={PomodoroModule}
 						/>
 					</Stack.Navigator>
 				</NavigationContainer>
