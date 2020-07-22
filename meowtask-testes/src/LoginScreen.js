@@ -90,7 +90,7 @@ class LoginScreen extends React.Component {
                 <Text style={{fontFamily: 'meriendaRegular', fontSize: 64, color: '#5B5B58'}}>Login</Text>
                 <View>
                     <Text style={{fontFamily: 'robotoThin', fontSize: 24, color: '#5B5B58'}}>E-mail</Text>
-                    <TextInput onChangeText={(text) => {this.setState({email: text})}} textContentType="emailAddress" style={{height: 40, width: 230, borderColor: 'black', borderBottomWidth: 0.4, fontFamily: 'robotoThin', fontSize: 24, color: '#5B5B58',}}/>
+                    <TextInput onChangeText={(text) => {this.setState({email: text.toLowerCase()})}} textContentType="emailAddress" style={{height: 40, width: 230, borderColor: 'black', borderBottomWidth: 0.4, fontFamily: 'robotoThin', fontSize: 24, color: '#5B5B58',}}/>
                     <Text style={{fontFamily: 'robotoThin', color: '#A44',}}>{this.state.emailError}</Text>
                 </View>
                 <View>
