@@ -189,7 +189,7 @@ export default function telaInicial() {
                 transparent={true}
                 visible={modalCriarVisivel}
                 onRequestClose={() => {
-                    setModalEntrarVisivel(false);
+                    setModalCriarVisivel(false);
                 }}
             >
                 <TouchableWithoutFeedback onPress={() => {setModalCriarVisivel(false)}}>
