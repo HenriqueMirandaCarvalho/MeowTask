@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import telaInicio from './components/telaLista'; // eu vou mudar o lugar pra testar as telas ¯\_(ツ)_/¯
+import telaInicio from './components/telaArquivos'; // eu vou mudar o lugar pra testar as telas ¯\_(ツ)_/¯
 import telaLogin from './components/telaLogin';
 import telaCadastro from './components/telaCadastro';
 import telaListaGrupos from './components/telaListaGrupos';
