@@ -1,10 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
-import telaInicio from './components/telaArquivos'; // eu vou mudar o lugar pra testar as telas ¯\_(ツ)_/¯
+import telaInicio from './components/telaInicio'; // eu vou mudar o lugar pra testar as telas ¯\_(ツ)_/¯
 import telaLogin from './components/telaLogin';
 import telaCadastro from './components/telaCadastro';
+import telaHome from './components/telaHome';
 import telaListaGrupos from './components/telaListaGrupos';
 import telaGrupo from './components/telaGrupo';
 
@@ -26,6 +23,12 @@ const RootStack = createStackNavigator({
 		},
 		Cadastro: {
 			screen: telaCadastro,
+			navigationOptions: {
+				headerShown: false,
+			}
+		},
+		Home: {
+			screen: telaHome,
 			navigationOptions: {
 				headerShown: false,
 			}

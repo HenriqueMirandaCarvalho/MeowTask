@@ -6,7 +6,7 @@ import icone from './img/icone.png';
 
 const telaInicio = (props) => {   
     function btnComecar() {
-        props.navigation.navigate('ListaGrupos');
+        props.navigation.navigate('Home');
     }
     function btnLogar() {
         props.navigation.navigate('Login');

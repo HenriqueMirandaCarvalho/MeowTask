@@ -11,8 +11,7 @@ export const Grupo = props =>
             </View>
             <View style={styles.viewTexto}>
                 <Text style={styles.nome}> {props.nome} </Text>
-                <Text style={styles.informacoes}> membros online: {props.membros} </Text>
-                <Text style={styles.informacoes}> atividades pendentes: {props.atividades} </Text>
+                <Text style={styles.informacoes}> Membros: {props.membros} </Text>
             </View>
         </View>
     </TouchableOpacity>

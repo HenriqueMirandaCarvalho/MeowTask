@@ -1,83 +1,11 @@
 import React, { useState, version } from "react";
-import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput, Image, ScrollView} from "react-native";
-import { Ionicons, AntDesign } from '@expo/vector-icons'; 
+import { View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, FlatList, Modal, TouchableWithoutFeedback, TextInput, Image, ScrollView } from "react-native";
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import {Grupo} from './grupo.js';
-import {AmigoModal} from './amigosmodal';
-
-const grupos = [
-    {
-        id: "1",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "2",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "3",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "4",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "5",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "6",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "7",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "8",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "9",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "10",
-        nome: "grupo de atividades",
-        membros: "20",
-        atividades: "30",
-        imagem: require('./img/turquesa10.png'),
-    },
-]
+import { Grupo } from './grupo.js';
+import { AmigoModal } from './amigosmodal';
+import Conexao from './classes/Conexao.js';
 
 const amigos = [
     {
@@ -97,11 +25,14 @@ const amigos = [
     },
 ]
 
-export default function telaInicial() {
+const telaListaGrupos = (props) => {
     const [modalEntrarVisivel, setModalEntrarVisivel] = useState(false);
     const [modalCriarVisivel, setModalCriarVisivel] = useState(false);
     const [inputCodigo, setInputCodigo] = useState();
     const [inputNomeGrupo, setInputNomeGrupo] = useState();
+
+    const imagensGrupos = [];
+    imagensGrupos.push(require("./img/turquesa10.png"));
 
     function validaNumero(numero) {
         // code to remove non-numeric characters from text
@@ -110,7 +41,7 @@ export default function telaInicial() {
     }
 
     function voltar() {
-        
+        props.navigation.navigate("Home");
     }
 
     function trocarTela(id) {
@@ -137,168 +68,178 @@ export default function telaInicial() {
         alert("é pra colocar um meio de selecionar imagem aqui");
     }
 
+    const [grupos, setGrupos] = useState([]);
+
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
         'Merienda-Regular': require('./font/Merienda-Regular.ttf'),
     });
-        
+
+    function carregarGrupos() {
+        let conn = new Conexao();
+        conn.getGruposByUserId().then((obj) => {
+            setGrupos(obj);
+        });
+    }
+
+    carregarGrupos();
+
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
-    return (
-        <View style={styles.container}>
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalEntrarVisivel}
-                onRequestClose={() => {
-                    setModalEntrarVisivel(false);
-                }}
-            >
-                <TouchableWithoutFeedback onPress={() => {setModalEntrarVisivel(false)}}>
-                    <View style={styles.overlay}/>
-                </TouchableWithoutFeedback>
+        return (
+            <View style={styles.container}>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalEntrarVisivel}
+                    onRequestClose={() => {
+                        setModalEntrarVisivel(false);
+                    }}
+                >
+                    <TouchableWithoutFeedback onPress={() => { setModalEntrarVisivel(false) }}>
+                        <View style={styles.overlay} />
+                    </TouchableWithoutFeedback>
 
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <View style={styles.divTituloModal}>
-                            <Text style={styles.textoTituloModal}>Insira o código do Grupo</Text>
-                        </View>
-                        <TextInput 
-                            style={styles.input}
-                            textContentType="none"
-                            keyboardType="number-pad"
-                            maxLength={6}
-                            returnKeyType="done"
-                            textAlign="center"
-                            onChangeText={(numero) => validaNumero(numero)}
-                            value={inputCodigo}
-                        />
-                        <TouchableOpacity onPress={() => entrarGrupo(inputCodigo)}>
-                            <View style={styles.botaoModal}>
-                                <Text style={styles.textoBotaoModal}>Adicionar</Text>
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <View style={styles.divTituloModal}>
+                                <Text style={styles.textoTituloModal}>Insira o código do Grupo</Text>
                             </View>
-                        </TouchableOpacity>
-                    </View>
-                </View>     
-            </Modal>
-
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalCriarVisivel}
-                onRequestClose={() => {
-                    setModalCriarVisivel(false);
-                }}
-            >
-                <TouchableWithoutFeedback onPress={() => {setModalCriarVisivel(false)}}>
-                    <View style={styles.overlay}/>
-                </TouchableWithoutFeedback>
-
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView2}>
-                        <Text style={styles.textoTituloModal}>Informações</Text>
-                        <TouchableOpacity onPress={() => selecionarImagem()}>
-                            <Image source={require('./img/turquesa10.png')} style={styles.imagemModal} />
-                        </TouchableOpacity>
-
-                        <TextInput 
-                            style={styles.input2}
-                            textContentType="none"
-                            returnKeyType="done"
-                            textAlign="center"
-                            placeholder="Insira o nome do grupo"
-                            placeholderTextColor="#a4a4a4"
-                            onChangeText={(nome) => setInputNomeGrupo(nome)}
-                        />
-
-                        <View style={styles.divListaAmigos}>
-                            <ScrollView>
-                                <FlatList
-                                    data={amigos}
-                                    keyExtractor={item=>item.id}
-                                    ListHeaderComponent={
-                                        function rodapeLista() {
-                                            return (
-                                                <Text style={styles.tituloListaAmigos}>Convidar amigos</Text>
-                                            )
-                                        }
-                                    }
-                                    renderItem={({item})=>
-                                        <AmigoModal 
-                                            imagem={item.imagem}
-                                            nome={item.nome} 
-                                            onPress={() => trocarTela(item.id)}
-                                        />}
-                                />
-                            </ScrollView>
-                        </View>
-
-                        <TouchableOpacity style={styles.botaoCriarGrupoModal} onPress={() => criarGrupo()}>
-                            <Text style={styles.textoBotaoCriarGrupoModal}>Criar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>     
-            </Modal>
-
-            <View style={styles.cabecalho}>
-                <View style={styles.divSetinha}>
-                    <TouchableOpacity onPress={voltar}>
-                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.divCabecalho}>
-                    <Text style={styles.titulo}>Grupos</Text>
-                </View>
-            </View>
-            <View style={styles.conteudo}>
-                <FlatList
-                    data={grupos}
-                    keyExtractor={item=>item.id}
-                    renderItem={({item})=>
-                        <Grupo 
-                            imagem={item.imagem}
-                            nome={item.nome} 
-                            membros={item.membros} 
-                            atividades={item.atividades}
-                            onPress={() => trocarTela(item.id)}
-                        />}
-                    ListFooterComponent={
-                        function rodapeLista() {
-                            return (
-                                <View style={styles.rodapeLista}>
-                                    <TouchableOpacity onPress={toggleModalCriar} style={styles.botoesRodapeLista}>
-                                        <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
-                                        <Text style={styles.textoBotaoRodapeLista}>Criar novo grupo</Text>
-                                    </TouchableOpacity>
-                                    <View style={styles.tracinho}/>
-                                    <TouchableOpacity onPress={toggleModalEntrar} style={styles.botoesRodapeLista}>
-                                        <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
-                                        <Text style={styles.textoBotaoRodapeLista}>Entrar em um grupo</Text>
-                                    </TouchableOpacity>
+                            <TextInput
+                                style={styles.input}
+                                textContentType="none"
+                                keyboardType="number-pad"
+                                maxLength={6}
+                                returnKeyType="done"
+                                textAlign="center"
+                                onChangeText={(numero) => validaNumero(numero)}
+                                value={inputCodigo}
+                            />
+                            <TouchableOpacity onPress={() => entrarGrupo(inputCodigo)}>
+                                <View style={styles.botaoModal}>
+                                    <Text style={styles.textoBotaoModal}>Adicionar</Text>
                                 </View>
-                            )
-                        }
-                    }
-                />
-                
-            </View>
-            <View style={styles.rodape}>
-                <TouchableNativeFeedback onPress={toggleModalCriar}>
-                    <View style={styles.botao}>
-                        <Text style={styles.textoBotao}>Criar</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </TouchableNativeFeedback>
+                </Modal>
 
-                <TouchableNativeFeedback onPress={toggleModalEntrar}>
-                    <View style={styles.botao}>
-                        <Text style={styles.textoBotao}>Entrar</Text>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalCriarVisivel}
+                    onRequestClose={() => {
+                        setModalCriarVisivel(false);
+                    }}
+                >
+                    <TouchableWithoutFeedback onPress={() => { setModalCriarVisivel(false) }}>
+                        <View style={styles.overlay} />
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView2}>
+                            <Text style={styles.textoTituloModal}>Informações</Text>
+                            <TouchableOpacity onPress={() => selecionarImagem()}>
+                                <Image source={require('./img/turquesa10.png')} style={styles.imagemModal} />
+                            </TouchableOpacity>
+
+                            <TextInput
+                                style={styles.input2}
+                                textContentType="none"
+                                returnKeyType="done"
+                                textAlign="center"
+                                placeholder="Insira o nome do grupo"
+                                placeholderTextColor="#a4a4a4"
+                                onChangeText={(nome) => setInputNomeGrupo(nome)}
+                            />
+
+                            <View style={styles.divListaAmigos}>
+                                <ScrollView>
+                                    <FlatList
+                                        data={amigos}
+                                        keyExtractor={item => item.id}
+                                        ListHeaderComponent={
+                                            function rodapeLista() {
+                                                return (
+                                                    <Text style={styles.tituloListaAmigos}>Convidar amigos</Text>
+                                                )
+                                            }
+                                        }
+                                        renderItem={({ item }) =>
+                                            <AmigoModal
+                                                imagem={item.imagem}
+                                                nome={item.nome}
+                                                onPress={() => trocarTela(item.id)}
+                                            />}
+                                    />
+                                </ScrollView>
+                            </View>
+
+                            <TouchableOpacity style={styles.botaoCriarGrupoModal} onPress={() => criarGrupo()}>
+                                <Text style={styles.textoBotaoCriarGrupoModal}>Criar</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </TouchableNativeFeedback>
+                </Modal>
+
+                <View style={styles.cabecalho}>
+                    <View style={styles.divSetinha}>
+                        <TouchableOpacity onPress={voltar}>
+                            <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.divCabecalho}>
+                        <Text style={styles.titulo}>Grupos</Text>
+                    </View>
+                </View>
+                <View style={styles.conteudo}>
+                    <FlatList
+                        data={grupos}
+                        keyExtractor={item => item.id}
+                        renderItem={({ item }) =>
+                            <Grupo
+                                imagem={imagensGrupos[0]}
+                                nome={item.nome}
+                                membros={item.membros.length}
+                                onPress={() => trocarTela(item.id)}
+                            />}
+                        ListFooterComponent={
+                            function rodapeLista() {
+                                return (
+                                    <View style={styles.rodapeLista}>
+                                        <TouchableOpacity onPress={toggleModalCriar} style={styles.botoesRodapeLista}>
+                                            <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
+                                            <Text style={styles.textoBotaoRodapeLista}>Criar novo grupo</Text>
+                                        </TouchableOpacity>
+                                        <View style={styles.tracinho} />
+                                        <TouchableOpacity onPress={toggleModalEntrar} style={styles.botoesRodapeLista}>
+                                            <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
+                                            <Text style={styles.textoBotaoRodapeLista}>Entrar em um grupo</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            }
+                        }
+                    />
+
+                </View>
+                <View style={styles.rodape}>
+                    <TouchableNativeFeedback onPress={toggleModalCriar}>
+                        <View style={styles.botao}>
+                            <Text style={styles.textoBotao}>Criar</Text>
+                        </View>
+                    </TouchableNativeFeedback>
+
+                    <TouchableNativeFeedback onPress={toggleModalEntrar}>
+                        <View style={styles.botao}>
+                            <Text style={styles.textoBotao}>Entrar</Text>
+                        </View>
+                    </TouchableNativeFeedback>
+                </View>
             </View>
-        </View>
-    );  
+        );
     }
 }
 
@@ -364,7 +305,7 @@ const styles = StyleSheet.create({
     },
     rodapeLista: {
         marginTop: "8%",
-        alignSelf:'stretch',
+        alignSelf: 'stretch',
     },
     botoesRodapeLista: {
         flexDirection: "row",
@@ -409,8 +350,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
-          width: 0,
-          height: 2
+            width: 0,
+            height: 2
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
@@ -426,8 +367,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
-          width: 0,
-          height: 2
+            width: 0,
+            height: 2
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
@@ -505,3 +446,5 @@ const styles = StyleSheet.create({
         color: '#000000',
     },
 });
+
+export default telaListaGrupos;

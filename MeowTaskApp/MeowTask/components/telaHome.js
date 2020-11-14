@@ -15,12 +15,27 @@ import { AntDesign, Octicons, Ionicons, FontAwesome, Entypo } from '@expo/vector
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { useState } from "react";
+import Conexao from "./classes/Conexao.js";
 
-export default function telaInicial() {
+const telaHome = (props) => {
+    const [username, setUsername] = useState("...");
+    const [avatar, setAvatar] = useState(0);
     const [modalConfigVisivel, setModalConfigVisivel] = useState(false);
 
+    const imagensUsuario = [];
+    imagensUsuario.push(require("./img/turquesa10.png"));
+    imagensUsuario.push(require("./img/gato1.png"));
+    imagensUsuario.push(require("./img/gato2.png"));
+    imagensUsuario.push(require("./img/gato3.png"));
+
     function trocarTela(id) {
-        alert("insira uma troca de tela aqui, id do grupo: " + id);
+        switch(id) {
+            case 1:
+                props.navigation.navigate("ListaGrupos");
+                break;
+            default:
+                break;
+        }
     }
 
     function toggleModalConfig() {
@@ -69,6 +84,16 @@ export default function telaInicial() {
         'Merienda-Regular': require('./font/Merienda-Regular.ttf'),
     });
         
+    function loadUserData() {
+        let conn = new Conexao();
+        conn.getUser().then((obj) => {
+            setUsername(obj[1].username);
+            setAvatar(obj[1].imagem);
+        });
+    }
+
+    loadUserData();
+
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
@@ -79,7 +104,7 @@ export default function telaInicial() {
                 transparent={true}
                 visible={modalConfigVisivel}
                 onRequestClose={() => {
-                    setModalVisivel(false);
+                    setModalConfigVisivel(false);
                 }}
             >
                 <View style={styles.containerConfig}>
@@ -177,10 +202,10 @@ export default function telaInicial() {
             <View style={styles.cabecalho}>
                 <View style={styles.divAvatar}>
                     <TouchableOpacity onPress={() => trocarTela(1)}>
-                        <Image source={require('./img/turquesa10.png')} style={styles.imagemAvatar}></Image>
+                        <Image source={imagensUsuario[avatar]} style={styles.imagemAvatar}></Image>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => trocarTela(1)}>
-                        <Text style={styles.textoAvatar}>grgjgjgiojeiogjeriowbvnh</Text>
+                        <Text style={styles.textoAvatar}>{username}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.divConfig}>
@@ -200,10 +225,22 @@ export default function telaInicial() {
                     </View>
                     <View style={styles.divTextoModulo}>
                         <TouchableOpacity onPress={() => trocarTela(1)}>
+                            <Text style={styles.textoModulo}>Grupos</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.modulo}>
+                    <View style={styles.divImagemModulo}>
+                        <TouchableOpacity onPress={() => trocarTela(2)}>
+                            <Image source={require('./img/turquesa10.png')} style={styles.imagemModulo}></Image>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.divTextoModulo}>
+                        <TouchableOpacity onPress={() => trocarTela(2)}>
                             <Text style={styles.textoModulo}>Pomodoro</Text>
                         </TouchableOpacity>
                     </View>
-                </View>    
+                </View>
             </View>
             <View style={styles.rodape}>
                 <TouchableOpacity onPress={() => trocarTela(1)}>
@@ -251,7 +288,7 @@ const styles = StyleSheet.create({
         maxWidth: '80%',
         height: "62%",
         marginBottom: "5%",
-        marginLeft: "11%",
+        marginLeft: "7%",
         flexDirection: "row",
         alignItems: "center",
     },
@@ -265,7 +302,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
         fontSize: 18,
         color: '#5b5b58',
-        marginLeft: "2.2%",
+        marginLeft: "10%",
     },
     divConfig: {
         position: 'absolute',
@@ -391,3 +428,5 @@ const styles = StyleSheet.create({
         marginLeft: "3%",
     }
 });
+
+export default telaHome;

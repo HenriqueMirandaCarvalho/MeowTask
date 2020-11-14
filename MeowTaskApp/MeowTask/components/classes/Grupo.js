@@ -1,4 +1,4 @@
-export default class Usuario {
+export default class Grupo {
     constructor() {
         this.id = "";
         this.nome = "";

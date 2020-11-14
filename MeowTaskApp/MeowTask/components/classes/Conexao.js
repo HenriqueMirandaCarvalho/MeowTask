@@ -84,7 +84,9 @@ export default class Conexao {
             .collection('Usuarios')
             .add({
                 email: usuario.getEmail(),
-                username: usuario.getNome()
+                username: usuario.getNome(),
+                imagem: "1",
+                amigos: []
             })
             .then((data) => {
                 userData.user.sendEmailVerification();
@@ -130,6 +132,44 @@ export default class Conexao {
             else {
                 resolve("Inicio");
             }
+        });
+    }
+
+    getUser() {
+        return new Promise(function(resolve, reject) {
+            let usuarioAtual = [];
+            usuarioAtual[0] = firebase.auth().currentUser;
+            firebase.firestore()
+            .collection("Usuarios")
+            .where('email', '==', usuarioAtual[0].email)
+            .get().then(snapshot => {
+                snapshot.forEach(obj => {
+                    usuarioAtual[1] = obj.data();
+                });
+                resolve(usuarioAtual);
+            });
+        });
+    }
+
+    getGruposByUserId() {
+        return new Promise(function(resolve, reject) {
+            grupos = [];
+            firebase.firestore()
+            .collection("Grupos")
+            .where('membros', 'array-contains', firebase.auth().currentUser.uid)
+            .get().then(snapshot => {
+                if (snapshot.empty) {
+                    resolve(grupos);
+                }
+                snapshot.forEach(doc => {
+                    grupos.push(doc.data());
+                });
+
+                resolve(grupos);
+            })
+            .catch(err => {
+                reject("Erro ao procurar grupos!");
+            });
         });
     }
 }
