@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import {View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar } from "react-native";
+import { Alert, View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar} from "react-native";
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
+import Conexao from './classes/Conexao.js';
 
-export default function telaInicial() {
-    const imagemGrupo = require("./img/turquesa10.png");
-    const nomeGrupo = "Grupo Legal";
+const telaGrupo = (props) => {
+    const idGrupo = props.navigation.state.params.idGrupo;
+    const [nomeGrupo, setNomeGrupo] = useState("...");
+    const [imagem, setImagem] = useState(0);
+
+    const imagensGrupos = [];
+    imagensGrupos.push(require("./img/turquesa10.png"));
+    imagensGrupos.push(require("./img/LogoGrupos1.png"));
+    imagensGrupos.push(require("./img/LogoGrupos2.png"));
+    imagensGrupos.push(require("./img/LogoGrupos3.png"));
 
     function btnTarefas() {
         alert("Tarefas");
@@ -45,6 +53,20 @@ export default function telaInicial() {
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
     });
+    
+    function carregarGrupos() {
+        let conn = new Conexao();
+        conn.getGrupoById(idGrupo)
+        .catch((error) => {
+            //alert(error);
+        })
+        .then((obj) => {
+            setNomeGrupo(obj.nome);
+            setImagem(obj.imagem);
+        });
+    }
+
+    carregarGrupos();
         
     if (!fontsLoaded) {
         return <AppLoading />;
@@ -56,7 +78,7 @@ export default function telaInicial() {
                     <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
                 </View>
                 <View style={styles.divImagem}> 
-                    <Image source={imagemGrupo} style={styles.imagem}/>
+                    <Image source={imagensGrupos[imagem]} style={styles.imagem}/>
                 </View>
             </View>
             <Text style={styles.textoNomeGrupo}>{nomeGrupo}</Text>
@@ -164,3 +186,5 @@ const styles = StyleSheet.create({
         marginLeft: "3%",
     },
 });
+
+export default telaGrupo;

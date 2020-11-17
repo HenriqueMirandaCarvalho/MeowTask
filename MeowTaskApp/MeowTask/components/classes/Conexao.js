@@ -167,7 +167,9 @@ export default class Conexao {
                     resolve(grupos);
                 }
                 snapshot.forEach(doc => {
-                    grupos.push(doc.data());
+                    let grupo = doc.data();
+                    grupo.id = doc.id;
+                    grupos.push(grupo);
                 });
 
                 resolve(grupos);
@@ -189,6 +191,24 @@ export default class Conexao {
             })
             .then((data) => {
                 resolve(data);
+            });
+        });
+    }
+
+    getGrupoById(id) {
+        return new Promise(function(resolve, reject) {
+            let grupo = null;
+            firebase.firestore()
+            .collection("Grupos")
+            .doc(id)
+            .get()
+            .then(snapshot => {
+                grupo = snapshot.data();
+
+                resolve(grupo);
+            })
+            .catch(err => {
+                reject("Erro ao procurar grupo!");
             });
         });
     }

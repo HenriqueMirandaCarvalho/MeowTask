@@ -32,7 +32,9 @@ const telaListaGrupos = (props) => {
     }
 
     function trocarTela(id) {
-        alert("insira uma troca de tela aqui, id do grupo: " + id);
+        props.navigation.navigate('Grupo', {
+            idGrupo: id
+        });
     }
 
     function toggleModalCriar() {
