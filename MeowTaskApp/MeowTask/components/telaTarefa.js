@@ -35,7 +35,9 @@ export default function telaInicial() {
         <View style={styles.container}>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
-                    <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
+                    <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
+                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
+                    </TouchableNativeFeedback>
                 </View>
                 <View style={styles.divImagem}> 
                     <Image source={imagemTarefa} style={styles.imagem}/>

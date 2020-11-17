@@ -36,10 +36,6 @@ export default function telaInicial() {
         // (validação roubada do stack overflow)
     }
 
-    function voltar() {
-        
-    }
-
     function trocarTela(id) {
         alert("insira uma troca de tela aqui, id do amigo: " + id);
     }
@@ -101,9 +97,9 @@ export default function telaInicial() {
 
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
-                    <TouchableOpacity onPress={() => voltar}>
+                    <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
                         <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
-                    </TouchableOpacity>
+                    </TouchableNativeFeedback>
                 </View>
                 <View style={styles.divCabecalho}>
                     <Text style={styles.titulo}>Amigos</Text>
