@@ -270,13 +270,13 @@ const telaListaGrupos = (props) => {
 
                 </View>
                 <View style={styles.rodape}>
-                    <TouchableNativeFeedback onPress={toggleModalCriar}>
+                    <TouchableNativeFeedback onPress={() => toggleModalCriar()}>
                         <View style={styles.botao}>
                             <Text style={styles.textoBotao}>Criar</Text>
                         </View>
                     </TouchableNativeFeedback>
 
-                    <TouchableNativeFeedback onPress={toggleModalEntrar}>
+                    <TouchableNativeFeedback onPress={() => toggleModalEntrar()}>
                         <View style={styles.botao}>
                             <Text style={styles.textoBotao}>Entrar</Text>
                         </View>
