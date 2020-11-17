@@ -15,10 +15,10 @@ export default class Grupo {
             this.nome = val;
         }
         else if (val.length < 5) {
-            alert("Nome do Grupo deve ter ao menos 5 caracteres!");
+            throw "Nome do Grupo deve ter ao menos 5 caracteres!";
         }
         else if (val.length > 20) {
-            alert("Nome do Grupo não pode ter mais de 20 caracteres!");
+            throw "Nome do Grupo não pode ter mais de 20 caracteres!";
         }
     }
 

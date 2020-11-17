@@ -40,7 +40,7 @@ const telaInicio = (props) => {
                     <Text style={styles.texto2}>Continuar sem uma conta</Text>
                 </View>
             </TouchableOpacity>
-            <StatusBar translucent backgroundColor={'#649DF1'}/>
+            <StatusBar translucent backgroundColor={'#eae6da'}/>
         </View>
     );  
     }  

@@ -131,7 +131,7 @@ const telaCadastro = (props) => {
                     </View>
                 </TouchableNativeFeedback>
             </View>
-            <StatusBar translucent backgroundColor={'#649DF1'}/>
+            <StatusBar translucent backgroundColor={'#eae6da'}/>
         </View>
     );  
     }

@@ -35,7 +35,7 @@ const telaLogin = (props) => {
             user.setSenha(inputSenha);
             let conn = new Conexao();
             conn.entrarUsuario(user).then((obj) => {
-                props.navigation.navigate("ListaGrupos");
+                props.navigation.navigate("Home");
             });
         } catch (err) {
             Alert.alert("Erro", err.toString());
@@ -113,7 +113,7 @@ const telaLogin = (props) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                <StatusBar translucent backgroundColor={"#649DF1"} />
+                <StatusBar translucent backgroundColor={'#eae6da'}/>
             </View>
         );
     }

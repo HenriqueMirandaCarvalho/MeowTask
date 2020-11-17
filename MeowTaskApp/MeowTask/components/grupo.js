@@ -36,8 +36,8 @@ let styles = StyleSheet.create({
     },
     viewTexto: {
         flex: 70,
-        marginLeft: "3%",
-        alignItems: "center",
+        marginLeft: "5%",
+        alignItems: "flex-start",
     },
     nome: {
         fontFamily: 'Roboto-Regular',

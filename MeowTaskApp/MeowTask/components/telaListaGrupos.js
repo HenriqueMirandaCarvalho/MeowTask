@@ -1,35 +1,19 @@
 import React, { useState, version } from "react";
-import { View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, FlatList, Modal, TouchableWithoutFeedback, TextInput, Image, ScrollView } from "react-native";
+import { Alert, View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, FlatList, Modal, TouchableWithoutFeedback, TextInput, Image, ScrollView } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Grupo } from './grupo.js';
 import { AmigoModal } from './amigosmodal';
+import GrupoClasse from './classes/Grupo.js';
 import Conexao from './classes/Conexao.js';
-
-const amigos = [
-    {
-        id: "1",
-        nome: "amiguinho",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "2",
-        nome: "amiguinho",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "3",
-        nome: "amiguinho",
-        imagem: require('./img/turquesa10.png'),
-    },
-]
 
 const telaListaGrupos = (props) => {
     const [modalEntrarVisivel, setModalEntrarVisivel] = useState(false);
     const [modalCriarVisivel, setModalCriarVisivel] = useState(false);
     const [inputCodigo, setInputCodigo] = useState();
     const [inputNomeGrupo, setInputNomeGrupo] = useState();
+    const [inputImagem, setInputImagem] = useState(1);
 
     const imagensGrupos = [];
     imagensGrupos.push(require("./img/turquesa10.png"));
@@ -50,10 +34,23 @@ const telaListaGrupos = (props) => {
 
     function toggleModalCriar() {
         setModalCriarVisivel(!modalCriarVisivel);
+
     }
 
     function criarGrupo() {
-        alert("pode mandar criar o grupo!");
+        try {
+            let grupo = new GrupoClasse();
+            grupo.setNome(inputNomeGrupo);
+            grupo.setImagem(inputImagem);
+            let conn = new Conexao();
+            conn.cadastrarGrupo(grupo).then((data) => {
+                Alert.alert("Aviso", "Grupo criado com sucesso!");
+                toggleModalCriar();
+                carregarGrupos();
+            });
+        } catch (err) {
+            Alert.alert("Erro", err.toString());
+        }
     }
 
     function toggleModalEntrar() {
@@ -65,10 +62,21 @@ const telaListaGrupos = (props) => {
     }
 
     function selecionarImagem() {
-        alert("é pra colocar um meio de selecionar imagem aqui");
+        switch (inputImagem) {
+            case 1:
+                setInputImagem(2);
+                break;
+            case 2:
+                setInputImagem(3);
+                break;
+            case 3:
+                setInputImagem(1);
+                break;
+        }
     }
 
     const [grupos, setGrupos] = useState([]);
+    const [amigos, setAmigos] = useState([]);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -78,7 +86,11 @@ const telaListaGrupos = (props) => {
 
     function carregarGrupos() {
         let conn = new Conexao();
-        conn.getGruposByUserId().then((obj) => {
+        conn.getGruposByUserId()
+        .catch((error) => {
+            Alert("Erro", error);
+        })
+        .then((obj) => {
             setGrupos(obj);
         });
     }
@@ -173,6 +185,9 @@ const telaListaGrupos = (props) => {
                                                 nome={item.nome}
                                                 onPress={() => trocarTela(item.id)}
                                             />}
+                                        ListEmptyComponent={() => 
+                                            <Text style={styles.tituloListaAmigos}>Você não possuí amigos!</Text>
+                                        }
                                     />
                                 </ScrollView>
                             </View>
@@ -221,6 +236,9 @@ const telaListaGrupos = (props) => {
                                     </View>
                                 )
                             }
+                        }
+                        ListEmptyComponent={() => 
+                            <Text style={{marginTop: '10%', fontFamily: 'Roboto-Light', fontSize: 18, alignSelf: 'center'}}>Você não possuí nenhum grupo!</Text>
                         }
                     />
 

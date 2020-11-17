@@ -82,7 +82,8 @@ export default class Conexao {
         return new Promise(function(resolve, reject) {
             firebase.firestore()
             .collection('Usuarios')
-            .add({
+            .doc(userData.user.uid)
+            .set({
                 email: usuario.getEmail(),
                 username: usuario.getNome(),
                 imagem: "1",
@@ -156,11 +157,12 @@ export default class Conexao {
 
     getGruposByUserId() {
         return new Promise(function(resolve, reject) {
-            grupos = [];
+            let grupos = [];
             firebase.firestore()
             .collection("Grupos")
             .where('membros', 'array-contains', firebase.auth().currentUser.uid)
-            .get().then(snapshot => {
+            .get()
+            .then(snapshot => {
                 if (snapshot.empty) {
                     resolve(grupos);
                 }
@@ -172,6 +174,21 @@ export default class Conexao {
             })
             .catch(err => {
                 reject("Erro ao procurar grupos!");
+            });
+        });
+    }
+
+    cadastrarGrupo(grupo) {
+        return new Promise(function(resolve, reject) {
+            firebase.firestore()
+            .collection('Grupos')
+            .add({
+                nome: grupo.getNome(),
+                imagem: grupo.getImagem(),
+                membros: [firebase.auth().currentUser.uid]
+            })
+            .then((data) => {
+                resolve(data);
             });
         });
     }

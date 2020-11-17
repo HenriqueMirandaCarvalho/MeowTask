@@ -27,6 +27,11 @@ const telaHome = (props) => {
     imagensUsuario.push(require("./img/gato1.png"));
     imagensUsuario.push(require("./img/gato2.png"));
     imagensUsuario.push(require("./img/gato3.png"));
+    const imagensModulos = [];
+    imagensModulos.push(require("./img/LogoGrupo.png"));
+    imagensModulos.push(require("./img/LogoPaineis.png"));
+    imagensModulos.push(require("./img/LogoNotificacoes.png"));
+    imagensModulos.push(require("./img/LogoPomodoro.png"));
     
     function trocarTela(id) {
         switch(id) {
@@ -223,7 +228,7 @@ const telaHome = (props) => {
                 <View style={styles.modulo}>
                     <View style={styles.divImagemModulo}>
                         <TouchableOpacity onPress={() => trocarTela(1)}>
-                            <Image source={require('./img/turquesa10.png')} style={styles.imagemModulo}></Image>
+                            <Image source={imagensModulos[0]} style={styles.imagemModulo}></Image>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.divTextoModulo}>
@@ -235,7 +240,7 @@ const telaHome = (props) => {
                 <View style={styles.modulo}>
                     <View style={styles.divImagemModulo}>
                         <TouchableOpacity onPress={() => trocarTela(2)}>
-                            <Image source={require('./img/turquesa10.png')} style={styles.imagemModulo}></Image>
+                            <Image source={imagensModulos[1]} style={styles.imagemModulo}></Image>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.divTextoModulo}>
@@ -247,7 +252,7 @@ const telaHome = (props) => {
                 <View style={styles.modulo}>
                     <View style={styles.divImagemModulo}>
                         <TouchableOpacity onPress={() => trocarTela(2)}>
-                            <Image source={require('./img/turquesa10.png')} style={styles.imagemModulo}></Image>
+                            <Image source={imagensModulos[2]} style={styles.imagemModulo}></Image>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.divTextoModulo}>
@@ -259,7 +264,7 @@ const telaHome = (props) => {
                 <View style={styles.modulo}>
                     <View style={styles.divImagemModulo}>
                         <TouchableOpacity onPress={() => trocarTela(2)}>
-                            <Image source={require('./img/turquesa10.png')} style={styles.imagemModulo}></Image>
+                            <Image source={imagensModulos[3]} style={styles.imagemModulo}></Image>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.divTextoModulo}>
@@ -275,7 +280,7 @@ const telaHome = (props) => {
                 </TouchableOpacity>            
                 <Text style={styles.textoRodape}>lorem ipsum dolor sit amet</Text>
             </View>
-            <StatusBar translucent backgroundColor={'#649DF1'}/>
+            <StatusBar translucent backgroundColor={'#eae6da'}/>
         </View>
     );  
     }
