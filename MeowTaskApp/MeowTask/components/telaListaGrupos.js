@@ -244,7 +244,7 @@ const telaListaGrupos = (props) => {
                                 }
                                 else
                                 {
-                                    return(<View></View>);
+                                    return(<View style={{width: "10%", aspectRatio: 1}}></View>);
                                 }
                             }
                         }
