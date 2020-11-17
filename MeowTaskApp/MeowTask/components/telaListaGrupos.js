@@ -28,7 +28,7 @@ const telaListaGrupos = (props) => {
     }
 
     function voltar() {
-        props.navigation.navigate("Home");
+        props.navigation.goBack();
     }
 
     function trocarTela(id) {
@@ -93,7 +93,7 @@ const telaListaGrupos = (props) => {
         let conn = new Conexao();
         conn.getGruposByUserId()
         .catch((error) => {
-            Alert("Erro", error);
+            Alert.alert("Erro", error);
         })
         .then((obj) => {
             setGrupos(obj);

@@ -24,7 +24,7 @@ const telaCadastro = (props) => {
             conn.criarUsuario(user).then((obj) => {
                 conn.cadastrarUsuario(user, obj).then((data) => {
                     Alert.alert("Aviso", "Confirme seu email!");
-                    props.navigation.navigate("telaLogin");
+                    props.navigation.goBack();
                 });
             });
         } catch (err) {
