@@ -4,6 +4,7 @@ import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import Conexao from './classes/Conexao.js';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const telaGrupo = (props) => {
     const idGrupo = props.navigation.state.params.idGrupo;
@@ -74,9 +75,9 @@ const telaGrupo = (props) => {
     return (
         <View style={styles.container}>
             <View style={styles.cabecalho}>
-                <View style={styles.divSetinha}>
+                <TouchableOpacity style={styles.divSetinha} onPress={() => props.navigation.goBack()}>
                     <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
-                </View>
+                </TouchableOpacity>
                 <View style={styles.divImagem}> 
                     <Image source={imagensGrupos[imagem]} style={styles.imagem}/>
                 </View>
