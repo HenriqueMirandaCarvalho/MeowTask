@@ -143,8 +143,19 @@ const telaListaGrupos = (props) => {
                         </View>
                     </View>
                 </Modal>
-                <Modal visible={loading}>
+
+                <Modal 
+                    visible={loading}
+                    animationType="fade"
+                    transparent={true}
+                >
+                    <View style={styles.centeredViewCarregar}>
+                        <View style={styles.modalCarregar}>
+                            <ActivityIndicator size={70} color="#53A156"/>
+                        </View>
+                    </View>
                 </Modal>
+
                 <Modal
                     animationType="fade"
                     transparent={true}
@@ -208,9 +219,9 @@ const telaListaGrupos = (props) => {
 
                 <View style={styles.cabecalho}>
                     <View style={styles.divSetinha}>
-                        <TouchableOpacity onPress={voltar}>
+                        <TouchableNativeFeedback onPress={() => props.navigation.goBack()}>
                             <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha} />
-                        </TouchableOpacity>
+                        </TouchableNativeFeedback>
                     </View>
                     <View style={styles.divCabecalho}>
                         <Text style={styles.titulo}>Grupos</Text>
@@ -370,6 +381,28 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginTop: 22
+    },
+    centeredViewCarregar: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    },
+    modalCarregar: {
+        width: "30%",
+        aspectRatio: 1,
+        backgroundColor: "#ededed",
+        borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent: "center",
     },
     modalView: {
         width: "80%",
