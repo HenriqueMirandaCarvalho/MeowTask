@@ -44,6 +44,7 @@ const telaListaGrupos = (props) => {
 
     function criarGrupo() {
         try {
+            setLoading(true);
             let grupo = new GrupoClasse();
             grupo.setNome(inputNomeGrupo);
             grupo.setImagem(inputImagem);
@@ -52,9 +53,11 @@ const telaListaGrupos = (props) => {
                 Alert.alert("Aviso", "Grupo criado com sucesso!");
                 toggleModalCriar();
                 carregarGrupos();
+                setLoading(false);
             });
         } catch (err) {
             Alert.alert("Erro", err.toString());
+            setLoading(false);
         }
     }
 
