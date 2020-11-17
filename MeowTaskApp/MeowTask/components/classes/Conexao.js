@@ -137,6 +137,9 @@ export default class Conexao {
 
     getUser() {
         return new Promise(function(resolve, reject) {
+            if (!firebase.auth().currentUser) {
+                reject();
+            }
             let usuarioAtual = [];
             usuarioAtual[0] = firebase.auth().currentUser;
             firebase.firestore()

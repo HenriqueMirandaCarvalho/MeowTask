@@ -27,7 +27,7 @@ const telaHome = (props) => {
     imagensUsuario.push(require("./img/gato1.png"));
     imagensUsuario.push(require("./img/gato2.png"));
     imagensUsuario.push(require("./img/gato3.png"));
-
+    
     function trocarTela(id) {
         switch(id) {
             case 1:
@@ -89,6 +89,9 @@ const telaHome = (props) => {
         conn.getUser().then((obj) => {
             setUsername(obj[1].username);
             setAvatar(obj[1].imagem);
+        })
+        .catch((obj) => {
+            setUsername("Não logado");
         });
     }
 
@@ -226,6 +229,30 @@ const telaHome = (props) => {
                     <View style={styles.divTextoModulo}>
                         <TouchableOpacity onPress={() => trocarTela(1)}>
                             <Text style={styles.textoModulo}>Grupos</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.modulo}>
+                    <View style={styles.divImagemModulo}>
+                        <TouchableOpacity onPress={() => trocarTela(2)}>
+                            <Image source={require('./img/turquesa10.png')} style={styles.imagemModulo}></Image>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.divTextoModulo}>
+                        <TouchableOpacity onPress={() => trocarTela(2)}>
+                            <Text style={styles.textoModulo}>Paineis</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.modulo}>
+                    <View style={styles.divImagemModulo}>
+                        <TouchableOpacity onPress={() => trocarTela(2)}>
+                            <Image source={require('./img/turquesa10.png')} style={styles.imagemModulo}></Image>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.divTextoModulo}>
+                        <TouchableOpacity onPress={() => trocarTela(2)}>
+                            <Text style={styles.textoModulo}>Notificações</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
