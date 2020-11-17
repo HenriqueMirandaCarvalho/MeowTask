@@ -75,9 +75,11 @@ const telaGrupo = (props) => {
     return (
         <View style={styles.container}>
             <View style={styles.cabecalho}>
-                <TouchableOpacity style={styles.divSetinha} onPress={() => props.navigation.goBack()}>
-                    <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
-                </TouchableOpacity>
+                <View style={styles.divSetinha}>
+                    <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
+                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
+                    </TouchableNativeFeedback>
+                </View>
                 <View style={styles.divImagem}> 
                     <Image source={imagensGrupos[imagem]} style={styles.imagem}/>
                 </View>

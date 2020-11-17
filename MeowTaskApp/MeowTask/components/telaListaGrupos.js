@@ -230,12 +230,12 @@ const telaListaGrupos = (props) => {
                                 if (grupos.length == 0) {
                                     return (
                                         <View style={styles.rodapeLista}>
-                                            <TouchableOpacity onPress={toggleModalCriar} style={styles.botoesRodapeLista}>
+                                            <TouchableOpacity onPress={() => toggleModalCriar()} style={styles.botoesRodapeLista}>
                                                 <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
                                                 <Text style={styles.textoBotaoRodapeLista}>Criar novo grupo</Text>
                                             </TouchableOpacity>
                                             <View style={styles.tracinho} />
-                                            <TouchableOpacity onPress={toggleModalEntrar} style={styles.botoesRodapeLista}>
+                                            <TouchableOpacity onPress={() => toggleModalEntrar()} style={styles.botoesRodapeLista}>
                                                 <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
                                                 <Text style={styles.textoBotaoRodapeLista}>Entrar em um grupo</Text>
                                             </TouchableOpacity>
