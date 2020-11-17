@@ -1,5 +1,5 @@
 import React, { useState, version } from "react";
-import { Alert, View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, FlatList, Modal, TouchableWithoutFeedback, TextInput, Image, ScrollView } from "react-native";
+import { Alert, View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, FlatList, Modal, TouchableWithoutFeedback, TextInput, Image, SafeAreaView } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
@@ -17,6 +17,9 @@ const telaListaGrupos = (props) => {
 
     const imagensGrupos = [];
     imagensGrupos.push(require("./img/turquesa10.png"));
+    imagensGrupos.push(require("./img/LogoGrupos1.png"));
+    imagensGrupos.push(require("./img/LogoGrupos2.png"));
+    imagensGrupos.push(require("./img/LogoGrupos3.png"));
 
     function validaNumero(numero) {
         // code to remove non-numeric characters from text
@@ -154,7 +157,7 @@ const telaListaGrupos = (props) => {
                         <View style={styles.modalView2}>
                             <Text style={styles.textoTituloModal}>Informações</Text>
                             <TouchableOpacity onPress={() => selecionarImagem()}>
-                                <Image source={require('./img/turquesa10.png')} style={styles.imagemModal} />
+                                <Image source={imagensGrupos[inputImagem]} style={styles.imagemModal} />
                             </TouchableOpacity>
 
                             <TextInput
@@ -168,7 +171,7 @@ const telaListaGrupos = (props) => {
                             />
 
                             <View style={styles.divListaAmigos}>
-                                <ScrollView>
+                                <SafeAreaView style={{flex: 1}}>
                                     <FlatList
                                         data={amigos}
                                         keyExtractor={item => item.id}
@@ -189,7 +192,7 @@ const telaListaGrupos = (props) => {
                                             <Text style={styles.tituloListaAmigos}>Você não possuí amigos!</Text>
                                         }
                                     />
-                                </ScrollView>
+                                </SafeAreaView>
                             </View>
 
                             <TouchableOpacity style={styles.botaoCriarGrupoModal} onPress={() => criarGrupo()}>
@@ -215,26 +218,32 @@ const telaListaGrupos = (props) => {
                         keyExtractor={item => item.id}
                         renderItem={({ item }) =>
                             <Grupo
-                                imagem={imagensGrupos[0]}
+                                imagem={imagensGrupos[item.imagem]}
                                 nome={item.nome}
                                 membros={item.membros.length}
                                 onPress={() => trocarTela(item.id)}
                             />}
                         ListFooterComponent={
                             function rodapeLista() {
-                                return (
-                                    <View style={styles.rodapeLista}>
-                                        <TouchableOpacity onPress={toggleModalCriar} style={styles.botoesRodapeLista}>
-                                            <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
-                                            <Text style={styles.textoBotaoRodapeLista}>Criar novo grupo</Text>
-                                        </TouchableOpacity>
-                                        <View style={styles.tracinho} />
-                                        <TouchableOpacity onPress={toggleModalEntrar} style={styles.botoesRodapeLista}>
-                                            <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
-                                            <Text style={styles.textoBotaoRodapeLista}>Entrar em um grupo</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                )
+                                if (grupos.length == 0) {
+                                    return (
+                                        <View style={styles.rodapeLista}>
+                                            <TouchableOpacity onPress={toggleModalCriar} style={styles.botoesRodapeLista}>
+                                                <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
+                                                <Text style={styles.textoBotaoRodapeLista}>Criar novo grupo</Text>
+                                            </TouchableOpacity>
+                                            <View style={styles.tracinho} />
+                                            <TouchableOpacity onPress={toggleModalEntrar} style={styles.botoesRodapeLista}>
+                                                <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
+                                                <Text style={styles.textoBotaoRodapeLista}>Entrar em um grupo</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    );
+                                }
+                                else
+                                {
+                                    return(<View></View>);
+                                }
                             }
                         }
                         ListEmptyComponent={() => 
