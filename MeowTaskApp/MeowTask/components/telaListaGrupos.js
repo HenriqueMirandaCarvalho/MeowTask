@@ -1,5 +1,5 @@
 import React, { useState, version } from "react";
-import { Alert, View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, FlatList, Modal, TouchableWithoutFeedback, TextInput, Image, SafeAreaView } from "react-native";
+import { Alert, View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, FlatList, Modal, TouchableWithoutFeedback, TextInput, Image, SafeAreaView, ActivityIndicator } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
@@ -82,6 +82,7 @@ const telaListaGrupos = (props) => {
 
     const [grupos, setGrupos] = useState([]);
     const [amigos, setAmigos] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -92,14 +93,14 @@ const telaListaGrupos = (props) => {
     function carregarGrupos() {
         let conn = new Conexao();
         conn.getGruposByUserId()
-        .catch((error) => {
-            Alert.alert("Erro", error);
-        })
-        .then((obj) => {
-            setGrupos(obj);
-        });
+            .catch((error) => {
+                Alert.alert("Erro", error);
+            })
+            .then((obj) => {
+                setGrupos(obj);
+                setLoading(false);
+            });
     }
-
     carregarGrupos();
 
     if (!fontsLoaded) {
@@ -142,7 +143,8 @@ const telaListaGrupos = (props) => {
                         </View>
                     </View>
                 </Modal>
-
+                <Modal visible={loading}>
+                </Modal>
                 <Modal
                     animationType="fade"
                     transparent={true}
@@ -173,7 +175,7 @@ const telaListaGrupos = (props) => {
                             />
 
                             <View style={styles.divListaAmigos}>
-                                <SafeAreaView style={{flex: 1}}>
+                                <SafeAreaView style={{ flex: 1 }}>
                                     <FlatList
                                         data={amigos}
                                         keyExtractor={item => item.id}
@@ -190,7 +192,7 @@ const telaListaGrupos = (props) => {
                                                 nome={item.nome}
                                                 onPress={() => trocarTela(item.id)}
                                             />}
-                                        ListEmptyComponent={() => 
+                                        ListEmptyComponent={() =>
                                             <Text style={styles.tituloListaAmigos}>Você não possuí amigos!</Text>
                                         }
                                     />
@@ -242,14 +244,13 @@ const telaListaGrupos = (props) => {
                                         </View>
                                     );
                                 }
-                                else
-                                {
-                                    return(<View style={{width: "10%", aspectRatio: 1}}></View>);
+                                else {
+                                    return (<View style={{ width: "10%", aspectRatio: 1 }}></View>);
                                 }
                             }
                         }
-                        ListEmptyComponent={() => 
-                            <Text style={{marginTop: '10%', fontFamily: 'Roboto-Light', fontSize: 18, alignSelf: 'center'}}>Você não possuí nenhum grupo!</Text>
+                        ListEmptyComponent={() =>
+                            <Text style={{ marginTop: '10%', fontFamily: 'Roboto-Light', fontSize: 18, alignSelf: 'center' }}>Você não possuí nenhum grupo!</Text>
                         }
                     />
 
@@ -473,7 +474,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Light',
         fontSize: 25,
         color: '#000000',
-    },
+    }
 });
 
 export default telaListaGrupos;
