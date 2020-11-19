@@ -34,7 +34,7 @@ const telaInicio = (props) => {
         firebase.initializeApp(firebaseConfig);
     }
 
-    if (typeof firebase.auth().currentUser != undefined)
+    if (firebase.auth().currentUser)
     {
         props.navigation.navigate('Home');
     }

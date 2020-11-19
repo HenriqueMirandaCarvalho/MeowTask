@@ -40,6 +40,9 @@ const telaHome = (props) => {
             case 1:
                 props.navigation.navigate("ListaGrupos");
                 break;
+            case 5:
+                props.navigation.navigate("Amigos");
+                break;
             default:
                 break;
         }
@@ -267,25 +270,37 @@ const telaHome = (props) => {
                 </View>
                 <View style={styles.modulo}>
                     <View style={styles.divImagemModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(2)}>
+                        <TouchableOpacity onPress={() => trocarTela(3)}>
                             <Image source={imagensModulos[2]} style={styles.imagemModulo}></Image>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.divTextoModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(2)}>
+                        <TouchableOpacity onPress={() => trocarTela(3)}>
                             <Text style={styles.textoModulo}>Notificações</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.modulo}>
                     <View style={styles.divImagemModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(2)}>
+                        <TouchableOpacity onPress={() => trocarTela(4)}>
                             <Image source={imagensModulos[3]} style={styles.imagemModulo}></Image>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.divTextoModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(2)}>
+                        <TouchableOpacity onPress={() => trocarTela(4)}>
                             <Text style={styles.textoModulo}>Pomodoro</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.modulo}>
+                    <View style={styles.divImagemModulo}>
+                        <TouchableOpacity onPress={() => trocarTela(5)}>
+                            <Image source={imagensModulos[0]} style={styles.imagemModulo}></Image>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.divTextoModulo}>
+                        <TouchableOpacity onPress={() => trocarTela(5)}>
+                            <Text style={styles.textoModulo}>Amigos</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

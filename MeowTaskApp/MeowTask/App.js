@@ -7,6 +7,8 @@ import telaGrupo from './components/telaGrupo';
 import telaListaTarefas from './components/telaListaTarefas';
 import telaPostIts from './components/telaPostIts';
 import telaTarefa from './components/telaTarefa';
+import telaAmigos from './components/telaAmigos';
+import telaDescricao from './components/telaDescricao';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -62,6 +64,18 @@ const RootStack = createStackNavigator({
 		},
 		Tarefa: {
 			screen: telaTarefa,
+			navigationOptions: {
+				headerShown: false,
+			}
+		},
+		Amigos: {
+			screen: telaAmigos,
+			navigationOptions: {
+				headerShown: false,
+			}
+		},
+		Descricao: {
+			screen: telaDescricao,
 			navigationOptions: {
 				headerShown: false,
 			}
