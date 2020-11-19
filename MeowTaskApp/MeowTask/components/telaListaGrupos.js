@@ -56,7 +56,7 @@ const telaListaGrupos = (props) => {
                 setLoading(false);
             });
         } catch (err) {
-            Alert.alert("Erro", err.message);
+            Alert.alert("Erro", err);
             setLoading(false);
         }
     }
