@@ -26,7 +26,7 @@ const amigos = [
 const meuCodigo = "123456";
 
 
-export default function telaInicial() {   
+const telaAmigo = (props) => {   
     const [modalVisivel, setModalVisivel] = useState(false);
     const [inputCodigo, setInputCodigo] = useState();
 
@@ -298,3 +298,5 @@ const styles = StyleSheet.create({
         fontSize: 25,
     },
 });
+
+export default telaAmigo;
