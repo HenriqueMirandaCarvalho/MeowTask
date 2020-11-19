@@ -11,6 +11,9 @@ export default class Grupo {
 
     getNome() { return this.nome; }
     setNome(val) {
+        if (typeof val === undefined) {
+            throw "Nome do Grupo não pode estar vazio!";
+        }
         if (val.length >= 5 && val.length <= 20) {
             this.nome = val;
         }

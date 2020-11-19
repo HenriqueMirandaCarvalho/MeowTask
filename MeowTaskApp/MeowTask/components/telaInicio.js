@@ -3,8 +3,9 @@ import {View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar , Touc
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import icone from './img/icone.png';
+import * as firebase from 'firebase';
 
-const telaInicio = (props) => {   
+const telaInicio = (props) => {  
     function btnComecar() {
         props.navigation.navigate('Home');
     }
@@ -18,7 +19,26 @@ const telaInicio = (props) => {
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
     });
-        
+    
+    if (!firebase.apps.length) {
+        var firebaseConfig = {
+            apiKey: "AIzaSyApt9TUJkguD9IDJ2LmU4ReiqF06hPLH4o",
+            authDomain: "meowtask-ea038.firebaseapp.com",
+            databaseURL: "https://meowtask-ea038.firebaseio.com",
+            projectId: "meowtask-ea038",
+            storageBucket: "meowtask-ea038.appspot.com",
+            messagingSenderId: "256053222242",
+            appId: "1:256053222242:web:92e7b03603d6674e2d2a3b",
+            measurementId: "G-FJH8MESQTJ"
+        };
+        firebase.initializeApp(firebaseConfig);
+    }
+    
+    if (typeof firebase.auth().currentUser != undefined)
+    {
+        props.navigation.navigate('Home');
+    }
+
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {

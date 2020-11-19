@@ -91,11 +91,12 @@ const telaHome = (props) => {
         
     function loadUserData() {
         let conn = new Conexao();
-        conn.getUser().then((obj) => {
-            setUsername(obj[1].username);
-            setAvatar(obj[1].imagem);
+        conn.getUserInfo().then((user) => {
+            setUsername(user.username);
+            setAvatar(user.imagem);
         })
-        .catch((obj) => {
+        .catch((err) => {
+            alert(err);
             setUsername("Não logado");
         });
     }

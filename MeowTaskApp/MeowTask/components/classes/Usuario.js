@@ -13,14 +13,17 @@ export default class Usuario {
 
     getNome() { return this.nome; }
     setNome(val) {
+        if (typeof val === undefined) {
+            throw "Nome de Usuário não pode estar vazio!";
+        }
         if (val.length >= 8 && val.length <= 20) {
             this.nome = val;
         }
         else if (val.length < 8) {
-            alert("Nome de Usuário deve ter ao menos 8 caracteres!");
+            throw "Nome de Usuário deve ter ao menos 8 caracteres!";
         }
         else if (val.length > 20) {
-            alert("Nome de Usuário não pode ter mais de 20 caracteres!");
+            throw "Nome de Usuário não pode ter mais de 20 caracteres!";
         }
     }
 

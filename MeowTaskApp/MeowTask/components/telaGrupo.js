@@ -50,24 +50,27 @@ const telaGrupo = (props) => {
 
     const [corEstrela, setCorEstrela] = useState('#BBBBBB');
     const [statusEstrela, setStatusEstrela] = useState('false'); // true = ativado (amarela)
+    const [loadedGrupo, setLoadGrupo] = useState(false);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
     });
     
-    function carregarGrupos() {
+    function carregarGrupo() {
         let conn = new Conexao();
         conn.getGrupoById(idGrupo)
         .catch((error) => {
-            //alert(error);
+            Alert.alert("Erro", error.message);
         })
         .then((obj) => {
             setNomeGrupo(obj.nome);
             setImagem(obj.imagem);
         });
+        setLoadGrupo(true);
     }
-
-    carregarGrupos();
+    if (!loadedGrupo) {
+        carregarGrupo();
+    }
         
     if (!fontsLoaded) {
         return <AppLoading />;

@@ -56,7 +56,7 @@ const telaListaGrupos = (props) => {
                 setLoading(false);
             });
         } catch (err) {
-            Alert.alert("Erro", err.toString());
+            Alert.alert("Erro", err.message);
             setLoading(false);
         }
     }
@@ -86,6 +86,7 @@ const telaListaGrupos = (props) => {
     const [grupos, setGrupos] = useState([]);
     const [amigos, setAmigos] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadedGrupos, setLoadGrupos] = useState(false);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -97,15 +98,17 @@ const telaListaGrupos = (props) => {
         let conn = new Conexao();
         conn.getGruposByUserId()
             .catch((error) => {
-                Alert.alert("Erro", error);
+                Alert.alert("Erro", error.message);
             })
             .then((obj) => {
                 setGrupos(obj);
                 setLoading(false);
             });
+        setLoadGrupos(true);
     }
-    carregarGrupos();
-
+    if (!loadedGrupos) {
+        carregarGrupos();
+    }
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {

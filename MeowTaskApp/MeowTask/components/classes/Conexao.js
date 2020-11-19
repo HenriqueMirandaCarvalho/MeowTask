@@ -136,22 +136,26 @@ export default class Conexao {
         });
     }
 
-    getUser() {
+    getUserInfo() {
         return new Promise(function(resolve, reject) {
-            if (!firebase.auth().currentUser) {
-                reject();
-            }
-            let usuarioAtual = [];
-            usuarioAtual[0] = firebase.auth().currentUser;
-            firebase.firestore()
-            .collection("Usuarios")
-            .where('email', '==', usuarioAtual[0].email)
-            .get().then(snapshot => {
-                snapshot.forEach(obj => {
-                    usuarioAtual[1] = obj.data();
-                });
-                resolve(usuarioAtual);
-            });
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user == null) {
+                    reject();
+                }
+                else {
+                    let usuario = firebase.auth().currentUser;
+                    firebase.firestore()
+                    .collection("Usuarios")
+                    .where('email', '==', usuario.email)
+                    .get().then(snapshot => {
+                        snapshot.forEach(obj => {
+                            usuario.username = obj.data().username;
+                            usuario.imagem = obj.data().imagem;
+                        });
+                        resolve(usuario);
+                    });
+                }
+           });
         });
     }
 
