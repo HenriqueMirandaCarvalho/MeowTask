@@ -1,32 +1,21 @@
 import React, { useState, version } from "react";
-import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput} from "react-native";
+import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator} from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import {Tarefa} from './tarefa.js';
+import Conexao from './classes/Conexao.js';
 
-const tarefas = [
-    {
-        id: "1",
-        nome: "Submit Scan",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "2",
-        nome: "Empty Garbage",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "3",
-        nome: "Clear Asteroids",
-        imagem: require('./img/turquesa10.png'),
-    },
-]
-
-export default function telaInicial() {   
+const telaListaTarefas = (props) => {
+    const idGrupo = props.navigation.state.params.idGrupo;
+    const [tarefas, setTarefas] = useState([]);
+    const [loadedTarefas, setLoadTarefas] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     function trocarTela(id) {
-        alert("insira uma troca de tela aqui, id do amigo: " + id);
+        props.navigation.navigate("Tarefa", {
+            idTarefa: id
+        });
     }
 
     function btnCriar() {
@@ -42,12 +31,40 @@ export default function telaInicial() {
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
         'Merienda-Regular': require('./font/Merienda-Regular.ttf'),
     });
+
+    function carregarTarefas() {
+        let conn = new Conexao();
+        conn.getTarefasByGrupoId(idGrupo)
+            .catch((error) => {
+                Alert.alert("Erro", error.message);
+            })
+            .then((obj) => {
+                setTarefas(obj);
+                setLoading(false);
+            });
+        setLoadTarefas(true);
+    }
+    
+    if (!loadedTarefas) {
+        carregarTarefas();
+    }
         
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
     return (
         <View style={styles.container}>
+            <Modal 
+                visible={loading}
+                animationType="fade"
+                transparent={true}
+            >
+                <View style={styles.centeredViewCarregar}>
+                    <View style={styles.modalCarregar}>
+                        <ActivityIndicator size={70} color="#53A156"/>
+                    </View>
+                </View>
+            </Modal>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
                     <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
@@ -179,4 +196,28 @@ const styles = StyleSheet.create({
         color: '#5b5b58',
         marginLeft: "5%",
     },
+    centeredViewCarregar: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    },
+    modalCarregar: {
+        width: "30%",
+        aspectRatio: 1,
+        backgroundColor: "#ededed",
+        borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent: "center",
+    }
 });
+
+export default telaListaTarefas;

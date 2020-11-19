@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar} from "react-native";
+import { Alert, View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar, Modal, ActivityIndicator} from "react-native";
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
@@ -18,7 +18,9 @@ const telaGrupo = (props) => {
     imagensGrupos.push(require("./img/LogoGrupos3.png"));
 
     function btnTarefas() {
-        alert("Tarefas");
+        props.navigation.navigate("ListaTarefas", {
+            idGrupo: idGrupo
+        });
     }
 
     function btnAgenda() {
@@ -26,7 +28,9 @@ const telaGrupo = (props) => {
     }
 
     function btnPostIts() {
-        alert("Post-Its");
+        props.navigation.navigate("PostIts", {
+            idGrupo: idGrupo
+        });
     }
 
     function btnPostagens() {
@@ -51,6 +55,7 @@ const telaGrupo = (props) => {
     const [corEstrela, setCorEstrela] = useState('#BBBBBB');
     const [statusEstrela, setStatusEstrela] = useState('false'); // true = ativado (amarela)
     const [loadedGrupo, setLoadGrupo] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -65,6 +70,7 @@ const telaGrupo = (props) => {
         .then((obj) => {
             setNomeGrupo(obj.nome);
             setImagem(obj.imagem);
+            setLoading(false);
         });
         setLoadGrupo(true);
     }
@@ -77,6 +83,17 @@ const telaGrupo = (props) => {
     } else {
     return (
         <View style={styles.container}>
+            <Modal 
+                visible={loading}
+                animationType="fade"
+                transparent={true}
+            >
+                <View style={styles.centeredViewCarregar}>
+                    <View style={styles.modalCarregar}>
+                        <ActivityIndicator size={70} color="#53A156"/>
+                    </View>
+                </View>
+            </Modal>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
                     <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
@@ -191,6 +208,28 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginLeft: "3%",
     },
+    centeredViewCarregar: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    },
+    modalCarregar: {
+        width: "30%",
+        aspectRatio: 1,
+        backgroundColor: "#ededed",
+        borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent: "center",
+    }
 });
 
 export default telaGrupo;

@@ -216,4 +216,124 @@ export default class Conexao {
             });
         });
     }
+
+    getPostItsByGrupoId(id) {
+        return new Promise(function(resolve, reject) {
+            let postIts = [];
+            firebase.firestore()
+            .collection("PostIts")
+            .where('grupo', '==', id)
+            .get()
+            .then(snapshot => {
+                if (snapshot.empty) {
+                    resolve(postIts);
+                }
+                snapshot.forEach(doc => {
+                    let postIt = doc.data();
+                    postIt.id = doc.id;
+                    postIts.push(postIt);
+                });
+
+                resolve(postIts);
+            })
+            .catch(err => {
+                reject("Erro ao procurar Post-Its!");
+            });
+        });
+    }
+
+    deleteDocFromCollection(docId, collec) {
+        return new Promise(function(resolve, reject) {
+            firebase.firestore()
+                .collection(collec)
+                .doc(docId)
+                .delete()
+                .then(() => resolve());
+        });
+    }
+
+    criarPostIt(idGrupo) {
+        return new Promise(function(resolve, reject) {
+            firebase.firestore()
+            .collection("PostIts")
+            .add({
+                descricao: "",
+                usuario: firebase.auth().currentUser.uid,
+                grupo: idGrupo
+            })
+            .then((data) => {
+                resolve(data);
+            });
+        });
+    }
+
+    alterarPostIt(id, descricao) {
+        return new Promise(function(resolve, reject) {
+            firebase.firestore()
+            .collection("PostIts")
+            .doc(id)
+            .update({
+                descricao: descricao
+            })
+            .then(() => {
+                resolve();
+            });
+        });
+    }
+
+    entrarGrupo(id) {
+        return new Promise(function(resolve, reject) {
+            let grupo = null;
+            firebase.firestore()
+            .collection("Grupos")
+            .doc(id)
+            .get()
+            .then(snapshot => {
+                grupo = snapshot.data();
+                if (grupo.membros.includes(firebase.auth().currentUser.uid)) {
+                    reject("Você já está nesse grupo!");
+                }
+                else {
+                    grupo.membros.push(firebase.auth().currentUser.uid);
+                    firebase.firestore()
+                    .collection("Grupos")
+                    .doc(id)
+                    .update({
+                        membros: grupo.membros
+                    })
+                    .then(() => {
+                        resolve();
+                    });
+                }
+            })
+            .catch(err => {
+                reject("Grupo não encontrado!");
+            });
+        });
+    }
+
+    getTarefasByGrupoId(id) {
+        return new Promise(function(resolve, reject) {
+            let tarefas = [];
+            firebase.firestore()
+            .collection("Tarefas")
+            .where('grupo', '==', id)
+            .get()
+            .then(snapshot => {
+                if (snapshot.empty) {
+                    resolve(tarefas);
+                }
+                snapshot.forEach(doc => {
+                    let tarefa = doc.data();
+                    tarefa.id = doc.id;
+                    tarefas.push(tarefa);
+                });
+
+                resolve(tarefas);
+            })
+            .catch(err => {
+                reject("Erro ao procurar tarefas!");
+            });
+        });
+    }
 }

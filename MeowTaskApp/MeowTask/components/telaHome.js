@@ -9,6 +9,7 @@ import {
     Image,
     Modal,
     TouchableNativeFeedback,
+    ActivityIndicator
 } from "react-native";
 
 import { AntDesign, Octicons, Ionicons, FontAwesome, Entypo } from '@expo/vector-icons'; 
@@ -21,6 +22,7 @@ const telaHome = (props) => {
     const [username, setUsername] = useState("...");
     const [avatar, setAvatar] = useState(0);
     const [modalConfigVisivel, setModalConfigVisivel] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const imagensUsuario = [];
     imagensUsuario.push(require("./img/turquesa10.png"));
@@ -94,6 +96,7 @@ const telaHome = (props) => {
         conn.getUserInfo().then((user) => {
             setUsername(user.username);
             setAvatar(user.imagem);
+            setLoading(false);
         })
         .catch((err) => {
             alert(err);
@@ -206,6 +209,18 @@ const telaHome = (props) => {
                         </TouchableNativeFeedback>
                     </View>
                 </View>     
+            </Modal>
+
+            <Modal 
+                visible={loading}
+                animationType="fade"
+                transparent={true}
+            >
+                <View style={styles.centeredViewCarregar}>
+                    <View style={styles.modalCarregar}>
+                        <ActivityIndicator size={70} color="#53A156"/>
+                    </View>
+                </View>
             </Modal>
 
             <View style={styles.cabecalho}>
@@ -459,6 +474,28 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#5b5b58',
         marginLeft: "3%",
+    },
+    centeredViewCarregar: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    },
+    modalCarregar: {
+        width: "30%",
+        aspectRatio: 1,
+        backgroundColor: "#ededed",
+        borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent: "center",
     }
 });
 

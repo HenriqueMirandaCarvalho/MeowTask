@@ -33,7 +33,7 @@ const telaInicio = (props) => {
         };
         firebase.initializeApp(firebaseConfig);
     }
-    
+
     if (typeof firebase.auth().currentUser != undefined)
     {
         props.navigation.navigate('Home');

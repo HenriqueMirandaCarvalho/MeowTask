@@ -4,7 +4,7 @@ import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 
-export default function telaInicial() {
+const telaTarefa = (props) => {
     const imagemTarefa = require("./img/turquesa10.png");
     const nomeTarefa = "Clear Asteroids";
 
@@ -144,3 +144,5 @@ const styles = StyleSheet.create({
         marginLeft: "6%",
     },
 });
+
+export default telaTarefa;

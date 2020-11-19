@@ -11,7 +11,7 @@ import Conexao from './classes/Conexao.js';
 const telaListaGrupos = (props) => {
     const [modalEntrarVisivel, setModalEntrarVisivel] = useState(false);
     const [modalCriarVisivel, setModalCriarVisivel] = useState(false);
-    const [inputCodigo, setInputCodigo] = useState();
+    const [inputCodigo, setInputCodigo] = useState("");
     const [inputNomeGrupo, setInputNomeGrupo] = useState();
     const [inputImagem, setInputImagem] = useState(1);
 
@@ -66,7 +66,28 @@ const telaListaGrupos = (props) => {
     }
 
     function entrarGrupo() {
-        alert(inputCodigo);
+        try {
+            setLoading(true);
+            let conn = new Conexao();
+            if (inputCodigo == "") {
+                throw "Código não pode estar vazio!";
+            }
+            if (inputCodigo.length <= 5) {
+                throw "Código deve ter ao menos 5 caracteres!";
+            }
+            conn.entrarGrupo(inputCodigo).then(() => {
+                Alert.alert("Aviso", "Entrou no grupo!");
+                toggleModalEntrar();
+                carregarGrupos();
+                setLoading(false);
+            }).catch((erro) => {
+                Alert.alert("Erro", erro);
+                setLoading(false);
+            });
+        } catch (err) {
+            Alert.alert("Erro", err);
+            setLoading(false);
+        }
     }
 
     function selecionarImagem() {
@@ -134,8 +155,7 @@ const telaListaGrupos = (props) => {
                             <TextInput
                                 style={styles.input}
                                 textContentType="none"
-                                keyboardType="number-pad"
-                                maxLength={6}
+                                maxLength={20}
                                 returnKeyType="done"
                                 textAlign="center"
                                 onChangeText={(numero) => validaNumero(numero)}

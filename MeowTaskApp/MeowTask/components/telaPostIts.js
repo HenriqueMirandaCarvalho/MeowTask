@@ -1,33 +1,22 @@
 import React, { useState } from "react";
-import {View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Modal, TouchableWithoutFeedback, TextInput } from "react-native";
+import {View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator } from "react-native";
 import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import {PostIt} from './postit.js';
+import Conexao from './classes/Conexao.js';
 
 
-export default function telaInicial() {
-
-    const [postits, setPostits] = useState([
-        {
-            id: "0",
-            textoPostIt: "tarefa 1",
-        },
-        {
-            id: "1",
-            textoPostIt: "tarefa 2",
-        },
-        {
-            id: "2",
-            textoPostIt: "tarefa 3",
-        },
-    ]);
+const telaPostIts = (props) => {
+    const idGrupo = props.navigation.state.params.idGrupo;
+    const [postIts, setPostIts] = useState([]);
     const [modalEditarVisivel, setModalEditarVisivel] = useState(false);
     const [guardaTexto, setGuardaTexto] = useState();
     const [guardaId, setGuardaId] = useState();
+    const [loading, setLoading] = useState(true);
 
     function voltar() {
-        alert("voltar");
+        props.navigation.goBack();
     }
 
     function toggleModalEditar(id, texto) {
@@ -37,41 +26,64 @@ export default function telaInicial() {
     }
     
     function editarItem(_id) {
-        const NewData = postits.map( item => {
-            if(item.id === _id){
-                item.textoPostIt = guardaTexto;
-                return item;
-            }
-            return item;
-        })
-        setPostits(NewData);
+        setLoading(true);
+        let conn = new Conexao();
+        conn.alterarPostIt(_id, guardaTexto).then(() => carregarPotsIts());
     }
 
     function deletarItem(_id) {
-        const NewData = postits.filter(item => item.id !== _id);
-        setPostits(NewData);
+        setLoading(true);
+        let conn = new Conexao();
+        conn.deleteDocFromCollection(_id, "PostIts").then(() => carregarPotsIts());
     }
 
     function criarItem() {
-        postits.push(
-            {
-                id: postits.length,
-                textoPostIt: "",
-            }
-        )
-        setPostits([...postits]);
+        setLoading(true);
+        let conn = new Conexao();
+        conn.criarPostIt(idGrupo).then(() => carregarPotsIts());
     }
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
     });
+
+    const [loadedPostIts, setLoadPostIts] = useState(false);
+
+    function carregarPotsIts() {
+        let conn = new Conexao();
+        conn.getPostItsByGrupoId(idGrupo)
+            .catch((error) => {
+                Alert.alert("Erro", error.message);
+            })
+            .then((obj) => {
+                setPostIts(obj);
+                setLoading(false);
+            });
+        setLoadPostIts(true);
+    }
+
+    if (!loadedPostIts) {
+        carregarPotsIts();
+    }
         
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
     return (
         <View style={styles.container}>
+            <Modal 
+                visible={loading}
+                animationType="fade"
+                transparent={true}
+            >
+                <View style={styles.centeredViewCarregar}>
+                    <View style={styles.modalCarregar}>
+                        <ActivityIndicator size={70} color="#53A156"/>
+                    </View>
+                </View>
+            </Modal>
+
             <Modal
                 animationType="fade"
                 transparent={true}
@@ -130,13 +142,13 @@ export default function telaInicial() {
             </View>
             <View style={styles.conteudo}>
                 <FlatList
-                    data={postits}
+                    data={postIts}
                     keyExtractor={item=>item.id}
                     renderItem={({item})=>
                         <PostIt 
-                            onPress={() => toggleModalEditar(item.id, item.textoPostIt)}
-                            onLongPress={() => toggleModalEditar(item.id, item.textoPostIt)}
-                            texto={item.textoPostIt}
+                            onPress={() => toggleModalEditar(item.id, item.descricao)}
+                            onLongPress={() => toggleModalEditar(item.id, item.descricao)}
+                            texto={item.descricao}
                         />
                     }
                     style={{width: "100%"}}
@@ -279,4 +291,28 @@ const styles = StyleSheet.create({
         marginRight: "3.3%",
         marginTop: "4%",
     },
+    centeredViewCarregar: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    },
+    modalCarregar: {
+        width: "30%",
+        aspectRatio: 1,
+        backgroundColor: "#ededed",
+        borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent: "center",
+    }
 });
+
+export default telaPostIts;
