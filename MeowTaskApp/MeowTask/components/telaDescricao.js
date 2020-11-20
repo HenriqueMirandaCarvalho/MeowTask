@@ -1,18 +1,47 @@
 import React, { useState } from "react";
-import {View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, TextInput } from "react-native";
+import {View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, TextInput, Alert, Modal, ActivityIndicator } from "react-native";
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
+import Conexao from './classes/Conexao.js';
 
-export default function telaInicial() {
-    const dadoDescricao = "";
-    const [descricao, setDescricao] = useState(dadoDescricao);
+const telaDescricao = (props) => {
+    let idTarefa = props.navigation.state.params.idTarefa;
+    const [loadedDescricao, setLoadDescricao] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [descricao, setDescricao] = useState("...");
     function voltar() {
-        alert("voltar");
+        props.navigation.goBack();
     }
 
     function btnSalvar() {
-        alert("Salvar");
+        setLoading(true);
+        let conn = new Conexao();
+        conn.updateDescricaoTarefa(idTarefa, descricao)
+            .catch((error) => {
+                Alert.alert("Erro", error);
+            })
+            .then((obj) => {
+                setLoading(false);
+            });
+    }
+
+    function carregarDescricao() {
+        setLoading(true);
+        let conn = new Conexao();
+        conn.getTarefaById(idTarefa)
+            .catch((error) => {
+                Alert.alert("Erro", error);
+            })
+            .then((obj) => {
+                setDescricao(obj.descricao);
+                setLoading(false);
+            });
+        setLoadDescricao(true);
+    }
+
+    if (!loadedDescricao) {
+        carregarDescricao();
     }
 
     let [fontsLoaded] = useFonts({
@@ -25,6 +54,17 @@ export default function telaInicial() {
     } else {
     return (
         <View style={styles.container}>
+            <Modal 
+                visible={loading}
+                animationType="fade"
+                transparent={true}
+            >
+                <View style={styles.centeredViewCarregar}>
+                    <View style={styles.modalCarregar}>
+                        <ActivityIndicator size={70} color="#53A156"/>
+                    </View>
+                </View>
+            </Modal>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
                     <TouchableOpacity onPress={() => voltar()}>
@@ -40,6 +80,7 @@ export default function telaInicial() {
                     style={styles.input}
                     onChangeText={(texto) => setDescricao(texto)}
                     value={descricao}
+                    placeholder={"Insira a descrição da tarefa aqui."}
                     maxLength={2000}
                     multiline
                 />
@@ -124,4 +165,28 @@ const styles = StyleSheet.create({
         color: '#5b5b58',
         padding: "2%",
     },
+    centeredViewCarregar: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    },
+    modalCarregar: {
+        width: "30%",
+        aspectRatio: 1,
+        backgroundColor: "#ededed",
+        borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent: "center",
+    }
 });
+
+export default telaDescricao;

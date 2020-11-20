@@ -372,4 +372,40 @@ export default class Conexao {
                 });
         });
     }
+
+    getTarefaById(id) {
+        return new Promise(function (resolve, reject) {
+            let tarefa = null;
+            firebase.firestore()
+                .collection("Tarefas")
+                .doc(id)
+                .get()
+                .then(snapshot => {
+                    tarefa = snapshot.data();
+
+                    resolve(tarefa);
+                })
+                .catch(err => {
+                    reject("Erro ao procurar tarefa!");
+                });
+        });
+    }
+
+    updateDescricaoTarefa(id, descricao) {
+        return new Promise(function (resolve, reject) {
+            let tarefa = null;
+            firebase.firestore()
+                .collection("Tarefas")
+                .doc(id)
+                .update({
+                    descricao: descricao
+                })
+                .then(() => {
+                    resolve();
+                })
+                .catch(err => {
+                    reject("Erro ao atualizar tarefa!");
+                });
+        });
+    }
 }

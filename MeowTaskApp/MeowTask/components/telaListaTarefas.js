@@ -36,7 +36,7 @@ const telaListaTarefas = (props) => {
         let conn = new Conexao();
         conn.getTarefasByGrupoId(idGrupo)
             .catch((error) => {
-                Alert.alert("Erro", error.message);
+                Alert.alert("Erro", error);
             })
             .then((obj) => {
                 setTarefas(obj);
