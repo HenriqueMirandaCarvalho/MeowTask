@@ -1,4 +1,4 @@
-import telaInicio from './components/telaPostagens'; // eu vou mudar o lugar pra testar as telas ¯\_(ツ)_/¯
+import telaInicio from './components/telaInicio'; // eu vou mudar o lugar pra testar as telas ¯\_(ツ)_/¯
 import telaLogin from './components/telaLogin';
 import telaCadastro from './components/telaCadastro';
 import telaHome from './components/telaHome';

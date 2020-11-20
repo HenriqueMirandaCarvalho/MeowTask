@@ -1,27 +1,11 @@
 import React, { useState, version } from "react";
-import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput} from "react-native";
+import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator, Alert } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import {Amigo} from './amigo.js';
-
-const amigos = [
-    {
-        id: "1",
-        nome: "amiguinho",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "2",
-        nome: "amiguinho",
-        imagem: require('./img/turquesa10.png'),
-    },
-    {
-        id: "3",
-        nome: "amiguinho",
-        imagem: require('./img/turquesa10.png'),
-    },
-]
+import {AmigoModal} from './amigosmodal';
+import Conexao from './classes/Conexao.js';
 
 const meuCodigo = "123456";
 
@@ -29,6 +13,13 @@ const meuCodigo = "123456";
 const telaAmigo = (props) => {   
     const [modalVisivel, setModalVisivel] = useState(false);
     const [inputCodigo, setInputCodigo] = useState();
+    const [loading, setLoading] = useState(true);
+    const [amigos, setAmigos] = useState([]);
+    const imagensUsuario = [];
+    imagensUsuario.push(require("./img/turquesa10.png"));
+    imagensUsuario.push(require("./img/gato1.png"));
+    imagensUsuario.push(require("./img/gato2.png"));
+    imagensUsuario.push(require("./img/gato3.png"));
 
     function validaNumero(numero) {
         // code to remove non-numeric characters from text
@@ -46,6 +37,26 @@ const telaAmigo = (props) => {
 
     function adicionarAmigo() {
         alert(inputCodigo);
+    }
+
+    const [loadedAmigos, setLoadAmigos] = useState(false);
+
+    function carregarAmigos() {
+        let conn = new Conexao();
+        conn.getAmigosByUserId()
+            .catch((error) => {
+                Alert.alert("Erro", error);
+            })
+            .then((obj) => {
+                setAmigos(obj);
+                console.log(obj);
+                setLoading(false);
+            });
+        setLoadAmigos(true);
+    }
+
+    if (!loadedAmigos) {
+        carregarAmigos();
     }
 
     let [fontsLoaded] = useFonts({
@@ -95,6 +106,18 @@ const telaAmigo = (props) => {
                 </View>     
             </Modal>
 
+            <Modal 
+                visible={loading}
+                animationType="fade"
+                transparent={true}
+            >
+                <View style={styles.centeredViewCarregar}>
+                    <View style={styles.modalCarregar}>
+                        <ActivityIndicator size={70} color="#53A156"/>
+                    </View>
+                </View>
+            </Modal>
+
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
                     <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
@@ -111,8 +134,8 @@ const telaAmigo = (props) => {
                     keyExtractor={item=>item.id}
                     renderItem={({item})=>
                         <Amigo 
-                            imagem={item.imagem}
-                            nome={item.nome} 
+                            imagem={imagensUsuario[item.imagem]}
+                            nome={item.username} 
                             onPress={() => trocarTela(item.id)}
                         />}
                     ListFooterComponent={
@@ -297,6 +320,28 @@ const styles = StyleSheet.create({
         borderColor: '#5b5b58',
         fontSize: 25,
     },
+    centeredViewCarregar: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    },
+    modalCarregar: {
+        width: "30%",
+        aspectRatio: 1,
+        backgroundColor: "#ededed",
+        borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent: "center",
+    }
 });
 
 export default telaAmigo;
