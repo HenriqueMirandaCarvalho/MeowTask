@@ -28,13 +28,21 @@ const telaPostIts = (props) => {
     function editarItem(_id) {
         setLoading(true);
         let conn = new Conexao();
-        conn.alterarPostIt(_id, guardaTexto).then(() => carregarPotsIts());
+        conn.alterarPostIt(_id, guardaTexto).then(() => carregarPotsIts())
+        .catch((error) => {
+            Alert.alert("Erro", error);
+            setLoading(false);
+        });
     }
 
     function deletarItem(_id) {
         setLoading(true);
         let conn = new Conexao();
-        conn.deleteDocFromCollection(_id, "PostIts").then(() => carregarPotsIts());
+        conn.deleteDocFromCollection(_id, "PostIts").then(() => carregarPotsIts())
+        .catch((error) => {
+            Alert.alert("Erro", error);
+            setLoading(false);
+        });
     }
 
     function criarItem() {
