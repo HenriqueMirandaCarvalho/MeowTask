@@ -7,7 +7,7 @@ import {Postagem} from './postagem.js';
 
 const altura = Dimensions.get('window').height;
 
-export default function telaInicial() {
+const telaPostagens = (props) => {
 
     const [postagens, setPostagens] = useState([
         {
@@ -311,3 +311,5 @@ const styles = StyleSheet.create({
         padding: "1%",
     },
 });
+
+export default telaPostagens;

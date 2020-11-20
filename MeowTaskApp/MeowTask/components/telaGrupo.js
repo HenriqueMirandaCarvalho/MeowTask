@@ -34,7 +34,9 @@ const telaGrupo = (props) => {
     }
 
     function btnPostagens() {
-        alert("Postagens");
+        props.navigation.navigate("Postagens", {
+            idGrupo: idGrupo
+        });
     }
 
     function btnEstrela() {

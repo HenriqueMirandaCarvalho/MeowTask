@@ -1,4 +1,4 @@
-import telaInicio from './components/telaPostagens'; // eu vou mudar o lugar pra testar as telas ¯\_(ツ)_/¯
+import telaInicio from './components/telaInicio'; // eu vou mudar o lugar pra testar as telas ¯\_(ツ)_/¯
 import telaLogin from './components/telaLogin';
 import telaCadastro from './components/telaCadastro';
 import telaHome from './components/telaHome';
@@ -10,6 +10,7 @@ import telaTarefa from './components/telaTarefa';
 import telaAmigos from './components/telaAmigos';
 import telaDescricao from './components/telaDescricao';
 import telaArquivos from './components/telaArquivos';
+import telaPostagens from './components/telaPostagens';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -83,6 +84,12 @@ const RootStack = createStackNavigator({
 		},
 		Arquivos: {
 			screen: telaArquivos,
+			navigationOptions: {
+				headerShown: false,
+			}
+		},
+		Postagens: {
+			screen: telaPostagens,
 			navigationOptions: {
 				headerShown: false,
 			}
