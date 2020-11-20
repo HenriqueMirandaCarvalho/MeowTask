@@ -54,7 +54,8 @@ const telaPostIts = (props) => {
         let conn = new Conexao();
         conn.getPostItsByGrupoId(idGrupo)
             .catch((error) => {
-                Alert.alert("Erro", error.message);
+                Alert.alert("Erro", error);
+                setLoading(false);
             })
             .then((obj) => {
                 setPostIts(obj);

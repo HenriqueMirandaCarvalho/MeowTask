@@ -274,6 +274,9 @@ export default class Conexao {
                 })
                 .then(() => {
                     resolve();
+                })
+                .catch(() => {
+                    reject("Este Post It não existe mais!");
                 });
         });
     }

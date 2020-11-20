@@ -49,7 +49,6 @@ const telaAmigo = (props) => {
             })
             .then((obj) => {
                 setAmigos(obj);
-                console.log(obj);
                 setLoading(false);
             });
         setLoadAmigos(true);
