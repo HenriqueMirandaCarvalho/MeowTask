@@ -31,6 +31,7 @@ const telaPostIts = (props) => {
         conn.alterarPostIt(_id, guardaTexto).then(() => carregarPotsIts())
         .catch((error) => {
             Alert.alert("Erro", error);
+            carregarPotsIts();
             setLoading(false);
         });
     }
@@ -41,6 +42,7 @@ const telaPostIts = (props) => {
         conn.deleteDocFromCollection(_id, "PostIts").then(() => carregarPotsIts())
         .catch((error) => {
             Alert.alert("Erro", error);
+            carregarPotsIts();
             setLoading(false);
         });
     }
@@ -51,6 +53,7 @@ const telaPostIts = (props) => {
         conn.criarPostIt(idGrupo).then(() => carregarPotsIts())
         .catch((error) => {
             Alert.alert("Erro", error);
+            carregarPotsIts();
             setLoading(false);
         });
     }
