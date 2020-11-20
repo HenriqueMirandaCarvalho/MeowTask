@@ -40,7 +40,11 @@ const telaPostIts = (props) => {
     function criarItem() {
         setLoading(true);
         let conn = new Conexao();
-        conn.criarPostIt(idGrupo).then(() => carregarPotsIts());
+        conn.criarPostIt(idGrupo).then(() => carregarPotsIts())
+        .catch((error) => {
+            Alert.alert("Erro", error);
+            setLoading(false);
+        });
     }
 
     let [fontsLoaded] = useFonts({
