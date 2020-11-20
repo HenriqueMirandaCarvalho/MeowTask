@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity
 import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import {Postagem} from './postagemm.js';
+import {Postagem} from './postagem.js';
 
 const altura = Dimensions.get('window').height;
 
@@ -14,7 +14,7 @@ export default function telaInicial() {
             id: "0",
             avatarPostador: require('./img/turquesa10.png'),
             nomePostador: "fulano",
-            texto: "tarefa 1",
+            texto: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam convallis nisl ac eleifend interdum. Sed tellus orci, rutrum vel interdum consectetur, convallis id quam. In vitae hendrerit velit. Donec in urna eget ex tempus lacinia. Quisque euismod pulvinar urna, id efficitur orci porttitor sit amet. Vestibulum hendrerit pretium erat. Cras dignissim dignissim egestas. Aliquam erat volutpat.",
         },
     ]);
     const [modalEditarVisivel, setModalEditarVisivel] = useState(false);
@@ -42,30 +42,32 @@ export default function telaInicial() {
     }
     
     function editarItem(_id) {
-        const NewData = itens.map( item => {
+        const NewData = postagens.map( item => {
             if(item.id === _id){
-                item.textoItemLista = guardaTexto;
+                item.texto = guardaTexto;
                 return item;
             }
             return item;
         })
-        setItens(NewData);
+        setPostagens(NewData);
     }
 
     function deletarItem(_id) {
-        const NewData = itens.filter(item => item.id !== _id);
-        setItens(NewData);
+        const NewData = postagens.filter(item => item.id !== _id);
+        setPostagens(NewData);
     }
 
-    function criarItem() {
-        itens.push(
+    function postar() {
+        postagens.push(
             {
-                id: itens.length,
-                check: false,
-                textoItemLista: guardaNovoTexto,
+                id: postagens.length,
+                avatarPostador: require('./img/turquesa10.png'),
+                nomePostador: "fulano",
+                texto: guardaNovoTexto,
             }
         )
-        setItens([...itens]);
+        setPostagens([...postagens]);
+        setGuardaNovoTexto("");
     }
 
     let [fontsLoaded] = useFonts({
@@ -86,79 +88,36 @@ export default function telaInicial() {
                     setModalEditarVisivel(false);
                 }}
             >
-                <TouchableWithoutFeedback onPress={() => {setModalEditarVisivel(false)}}>
-                    <View style={styles.overlay}/>
-                </TouchableWithoutFeedback>
-
-                <View style={styles.centeredView}>
-                    <View style={styles.modalEditarView}>
-                        <View style={styles.overlay}>
-                            <TouchableOpacity onPress={() => setModalEditarVisivel(false)}>
-                                <AntDesign name="close" size={28} color="#5b5b58" style={styles.Xzinho}/>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={styles.overlayDelete}>
-                            <TouchableOpacity onPress={() => {deletarItem(guardaId), setModalEditarVisivel(false)}}>
-                                <FontAwesome5 name="trash-alt" size={24} color="#5b5b58" style={styles.delete}/>
-                            </TouchableOpacity>
-                        </View>
-                        
-                        <Text style={styles.textoTituloModal}>Editar</Text>
-
-                        <TextInput 
-                            style={styles.input}
-                            textContentType="none"
-                            returnKeyType="done"
-                            textAlign="center"
-                            defaultValue={guardaTexto}
-                            maxLength={30}
-                            onChangeText={(texto) => setGuardaTexto(texto)}
-                        />
-
-                        <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => {editarItem(guardaId), setModalEditarVisivel(false)}}>
-                            <Text style={styles.textoBotaoSalvarModalEditar}>Salvar</Text>
+                <View style={styles.modalEditarView}>
+                    <View style={styles.overlayXzinho}>
+                        <TouchableOpacity style={styles.Xzinho} onPress={() => setModalEditarVisivel(false)}>
+                            <AntDesign name="close" size={30} color="#5b5b58"/>
                         </TouchableOpacity>
                     </View>
-                </View>     
-            </Modal>
 
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalCriarVisivel}
-                onRequestClose={() => {
-                    setModalCriarVisivel(false);
-                }}
-            >
-                <TouchableWithoutFeedback onPress={() => {setModalCriarVisivel(false)}}>
-                    <View style={styles.overlay}/>
-                </TouchableWithoutFeedback>
-
-                <View style={styles.centeredView}>
-                    <View style={styles.modalEditarView}>
-                        <View style={styles.overlay}>
-                            <TouchableOpacity onPress={() => setModalCriarVisivel(false)}>
-                                <AntDesign name="close" size={28} color="#5b5b58" style={styles.Xzinho}/>
-                            </TouchableOpacity>
-                        </View>
-                        
-                        <Text style={styles.textoTituloModal}>Criar</Text>
-
-                        <TextInput 
-                            style={styles.input}
-                            textContentType="none"
-                            returnKeyType="done"
-                            textAlign="center"
-                            maxLength={30}
-                            onChangeText={(texto) => setGuardaNovoTexto(texto)}
-                        />
-
-                        <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => {criarItem(), setModalCriarVisivel(false)}}>
-                            <Text style={styles.textoBotaoSalvarModalEditar}>Salvar</Text>
+                    <View style={styles.overlayDelete}>
+                        <TouchableOpacity onPress={() => {deletarItem(guardaId), setModalEditarVisivel(false)}}>
+                            <FontAwesome5 name="trash-alt" size={24} color="#5b5b58" style={styles.delete}/>
                         </TouchableOpacity>
                     </View>
-                </View>     
+                    
+                    <Text style={styles.textoTituloModal}>Editar</Text>
+
+                    <TextInput 
+                        style={styles.input}
+                        textContentType="none"
+                        returnKeyType="done"
+                        textAlign="justify"
+                        defaultValue={guardaTexto}
+                        multiline
+                        maxLength={300}
+                        onChangeText={(texto) => setGuardaTexto(texto)}
+                    />
+
+                    <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => {editarItem(guardaId), setModalEditarVisivel(false)}}>
+                        <Text style={styles.textoBotaoSalvarModalEditar}>Salvar</Text>
+                    </TouchableOpacity>
+                </View>
             </Modal>
 
             <View style={styles.cabecalho}>
@@ -180,20 +139,10 @@ export default function telaInicial() {
                             avatarPostador={item.avatarPostador}
                             nomePostador={item.nomePostador}
                             texto={item.texto}
+                            onLongPress={() => toggleModalEditar(item.id, item.texto)}
                         />
                     }
                     style={{width: "100%"}}
-                    ListFooterComponent={
-                        function rodapeLista() {
-                            return (
-                                <View style={styles.rodapeLista}>
-                                    <TouchableOpacity onPress={() => btnNovoItem()} style={styles.botoesRodapeLista}>
-                                        <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
-                                    </TouchableOpacity>
-                                </View>
-                            )
-                        }
-                    }
                 />
             </View>
             <View style={styles.rodape}>
@@ -204,9 +153,12 @@ export default function telaInicial() {
                     textAlign="center"
                     multiline
                     maxLength={300}
+                    value={guardaNovoTexto}
                     onChangeText={(texto) => setGuardaNovoTexto(texto)}
-                    />
-                <AntDesign name="smileo" size={40} color="white"/>
+                />
+                <TouchableOpacity onPress={() => postar()}>
+                    <AntDesign name="smileo" size={40} color="white"/>
+                </TouchableOpacity>
             </View>
         </View>
     );  
@@ -281,7 +233,7 @@ const styles = StyleSheet.create({
         marginTop: "2%",
         marginBottom: "2%",
     },
-    overlay: {
+    overlayXzinho: {
         position: "absolute",
         top: 0, // não faço ideia de como o top, right, bottom e left funcionam
         right: 0, // mas eles fazem o view com absolute ocupar toda a tela
@@ -292,12 +244,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 22
     },
     modalEditarView: {
-        width: "80%",
-        height: null,
-        aspectRatio: 2,
+        width: "100%",
+        height: "100%",
         backgroundColor: "#c4c4c4",
         // borderRadius: 20,
         justifyContent: "space-evenly",
@@ -312,9 +262,9 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     textoTituloModal: {
-        marginTop: "2%",
+        marginBottom: "15%",
         fontFamily: 'Roboto-Light',
-        fontSize: 23,
+        fontSize: 29,
     },
     input: {
         width: '85%',
@@ -324,7 +274,8 @@ const styles = StyleSheet.create({
         paddingBottom: "2%",
     },
     botaoSalvarModalEditar: {
-        marginTop: "3.5%",
+        marginTop: "10%",
+        marginBottom: "5%",
         borderRadius: 40,
         width: "82%",
         height: null,
@@ -339,8 +290,12 @@ const styles = StyleSheet.create({
         color: '#000000',
     },
     Xzinho: {
+        position: "absolute",
+        aspectRatio: 1,
         marginLeft: "3%",
-        marginTop: "4%",
+        marginTop: "2%",
+        justifyContent: "center",
+        alignItems: "center",
     },
     overlayDelete: {
         position: "absolute",
@@ -353,5 +308,6 @@ const styles = StyleSheet.create({
     delete: {
         marginRight: "3.3%",
         marginTop: "4%",
+        padding: "1%",
     },
 });
