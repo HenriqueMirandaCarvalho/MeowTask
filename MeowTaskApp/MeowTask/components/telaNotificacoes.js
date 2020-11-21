@@ -1,4 +1,4 @@
-import React, { useState, version } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, LayoutAnimation, Platform, UIManager } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
@@ -14,10 +14,17 @@ if (Platform.OS === 'android') {
 
 const telaNotificacoes = (props) => {
 
+    const [refrescando, setRefrescando] = useState(false);
+
     function deletar(_id) {
         const NewData = notificacoes.filter(item => item.id !== _id);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         setNotificacoes(NewData);
+    }
+
+    function refrescar(){
+        setRefrescando(true);
+        alert("olha o refresco!");
     }
 
     const [notificacoes, setNotificacoes] = useState([
@@ -76,6 +83,8 @@ const telaNotificacoes = (props) => {
                     <FlatList
                         data={notificacoes}
                         keyExtractor={item=>item.id}
+                        refreshing={refrescando}
+                        onRefresh={() => refrescar()}
                         renderItem={({item})=>
                             <SwipeRow
                                 key={item.key}

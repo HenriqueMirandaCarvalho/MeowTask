@@ -12,6 +12,8 @@ const {
   block,
   set,
   eq,
+  or,
+  multiply,
   not,
   clockRunning,
   and,
@@ -73,7 +75,7 @@ class SwipeRow extends React.Component {
             set(this.animState.position, translationX),
             // If swipe distance exceeds threshold, delete item
             cond(
-              lessThan(translationX, this.props.swipeThreshold),
+              or(lessThan(translationX, this.props.swipeThreshold), greaterThan(translationX, multiply(-1, this.props.swipeThreshold))),
               call([this.animState.position], () =>
                 this.props.onSwipe(this.props.item)
               )
