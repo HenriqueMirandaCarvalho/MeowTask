@@ -101,7 +101,7 @@ const telaTarefa = (props) => {
             <View style={styles.divUltimoBotao}>
                 <TouchableNativeFeedback onPress={btnConcluir}>
                     <View style={styles.ultimoBotao}>
-                        <AntDesign name="smileo" size={32} color="white"/>
+                        <Image source={require('./img/Logos/CadaTarefaCertinho.png')} style={styles.imagemBotao}></Image>
                         <Text style={styles.textoBotao}>Concluir</Text>
                     </View>
                 </TouchableNativeFeedback>
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         marginBottom: "15%",
-        paddingLeft: "4%",
+        paddingLeft: "3%",
     },
     imagemBotao: {
         height: "90%",
