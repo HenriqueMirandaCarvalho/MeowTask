@@ -1,12 +1,11 @@
 import React, { useState, version } from "react";
-import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator, Alert } from "react-native";
+import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator, Alert, Clipboard } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import {Amigo} from './amigo.js';
 import {AmigoModal} from './amigosmodal';
 import Conexao from './classes/Conexao.js';
-import Clipboard from '@react-native-community/clipboard';
 
 const meuCodigo = "123456";
 

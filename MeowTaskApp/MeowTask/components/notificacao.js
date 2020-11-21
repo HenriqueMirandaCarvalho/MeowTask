@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, StyleSheet, Image, Text, TouchableWithoutFeedback} from "react-native";
+import {View, StyleSheet, Image, Text, TouchableWithoutFeedback, Clipboard} from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons'; 
 
 export const Notificacao = props => 
-    <TouchableWithoutFeedback style={styles.container}>
+    <TouchableWithoutFeedback onPress={() => Clipboard.setString("aaa")} style={styles.container}>
         <View style={styles.conteudo}>
             <Image source={props.imagem} style={styles.imagem}/>
             <Text style={styles.texto}>{props.texto}</Text>
