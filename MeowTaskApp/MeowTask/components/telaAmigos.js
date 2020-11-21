@@ -34,7 +34,15 @@ const telaAmigo = (props) => {
     }
 
     function adicionarAmigo() {
-        alert(inputCodigo);
+        setLoading(true);
+        let conn = new Conexao();
+        conn.addAmigo(inputCodigo)
+            .catch((error) => {
+                Alert.alert("Erro", error);
+            })
+            .then((obj) => {
+                carregarAmigos();
+            });
     }
 
     const [loadedAmigos, setLoadAmigos] = useState(false);
@@ -94,8 +102,7 @@ const telaAmigo = (props) => {
                         <TextInput 
                             style={styles.input}
                             textContentType="none"
-                            keyboardType="number-pad"
-                            maxLength={6}
+                            maxLength={32}
                             returnKeyType="done"
                             textAlign="center"
                             onChangeText={(numero) => validaNumero(numero)}

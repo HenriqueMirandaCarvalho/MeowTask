@@ -340,9 +340,10 @@ export default class Conexao {
     getAmigosByUserId() {
         return new Promise(function (resolve, reject) {
             let amigos = [];
+            let userId = firebase.auth().currentUser.uid;
             firebase.firestore()
                 .collection("Usuarios")
-                .doc(firebase.auth().currentUser.uid)
+                .doc(userId)
                 .get()
                 .then(snapshot => {
                     let usuario = snapshot.data();
@@ -405,6 +406,50 @@ export default class Conexao {
                 })
                 .catch(err => {
                     reject("Erro ao atualizar tarefa!");
+                });
+        });
+    }
+
+    addAmigo(id) {
+        return new Promise(function (resolve, reject) {
+            let usuario = null;
+            let userId = firebase.auth().currentUser.uid;
+            firebase.firestore()
+                .collection("Usuarios")
+                .doc(userId)
+                .get()
+                .then(snapshot => {
+                    usuario = snapshot.data();
+                    if (usuario.amigos.includes(id)) {
+                        reject("Você já é amigo deste usuário!");
+                    }
+                    else {
+                        firebase.firestore()
+                            .collection("Usuarios")
+                            .doc(id)
+                            .get()
+                            .then(snap => {
+                                if (snap.data() == undefined) {
+                                    reject("Usuario não encontrado!");
+                                }
+                                else {
+                                    usuario.amigos.push(id);
+                                    firebase.firestore()
+                                        .collection("Usuarios")
+                                        .doc(userId)
+                                        .update({
+                                            amigos: usuario.amigos
+                                        })
+                                        .then(() => {
+                                            resolve();
+                                        });
+                                }
+                            })
+                            .catch((err) => { reject("Usuário não encontrado!"); })
+                    }
+                })
+                .catch(err => {
+                    reject("Usuário não encontrada!");
                 });
         });
     }
