@@ -50,7 +50,14 @@ const telaAmigo = (props) => {
             })
             .then((obj) => {
                 setAmigos(obj);
-                setLoading(false);
+                conn.getUserInfo().then((user) => {
+                    setInputCodigo(user.uid);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    Alert.alert("Erro", err);
+                    setUsername("Não logado");
+                });
             });
         setLoadAmigos(true);
     }

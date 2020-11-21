@@ -9,7 +9,8 @@ import {
     Image,
     Modal,
     TouchableNativeFeedback,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from "react-native";
 
 import { AntDesign, Octicons, Ionicons, FontAwesome, Entypo } from '@expo/vector-icons'; 
@@ -102,7 +103,7 @@ const telaHome = (props) => {
             setLoading(false);
         })
         .catch((err) => {
-            alert(err);
+            Alert.alert("Erro", err);
             setUsername("Não logado");
         });
     }
