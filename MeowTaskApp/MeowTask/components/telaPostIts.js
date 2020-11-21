@@ -23,7 +23,7 @@ const telaPostIts = (props) => {
 
     function refrescar(){
         setRefrescando(true);
-        alert("olha o refresco!");
+        carregarPotsIts();
     }
 
     function toggleModalEditar(id, texto) {
@@ -82,6 +82,7 @@ const telaPostIts = (props) => {
             .then((obj) => {
                 setPostIts(obj);
                 setLoading(false);
+                setRefrescando(false);
             });
         setLoadPostIts(true);
     }

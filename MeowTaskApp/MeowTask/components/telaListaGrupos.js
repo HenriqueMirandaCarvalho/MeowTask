@@ -35,7 +35,7 @@ const telaListaGrupos = (props) => {
 
     function refrescar(){
         setRefrescando(true);
-        alert("olha o refresco!");
+        carregarGrupos();
     }
 
     function trocarTela(id) {
@@ -131,6 +131,7 @@ const telaListaGrupos = (props) => {
             .then((obj) => {
                 setGrupos(obj);
                 setLoading(false);
+                setRefrescando(false);
             });
         setLoadGrupos(true);
     }
