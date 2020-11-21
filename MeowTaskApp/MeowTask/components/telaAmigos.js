@@ -6,7 +6,7 @@ import { useFonts } from 'expo-font';
 import {Amigo} from './amigo.js';
 import {AmigoModal} from './amigosmodal';
 import Conexao from './classes/Conexao.js';
-import {Clipboard} from 'react-native-clipboard';
+import Clipboard from '@react-native-community/clipboard';
 
 const meuCodigo = "123456";
 

@@ -14,8 +14,6 @@ let styles = StyleSheet.create({
     container: {
         marginTop: "3%",
         marginBottom: "1%",
-        marginLeft: "8.5%",
-        marginRight: "8.5%",
         backgroundColor: "#C4C4C4",
         borderRadius: 10,
         justifyContent: "center",
@@ -26,7 +24,7 @@ let styles = StyleSheet.create({
         paddingTop: "3%",
     },
     imagem: {
-        width: "7.5%",
+        width: "16%",
         marginLeft: "7.8%",
         height: null,
         aspectRatio: 1,
