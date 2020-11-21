@@ -406,7 +406,6 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
         width: '100%',
         height: null,
-        borderRadius: 150,
     },
     textoModulo: {
         fontFamily: 'Roboto-Regular',
