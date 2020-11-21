@@ -1,15 +1,23 @@
 import React, { useState, version } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, LayoutAnimation, Platform, UIManager } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Notificacao } from './notificacao.js';
-import { Swipeable } from './swipe.js';
+import SwipeRow from './swipe.js';
+
+if (Platform.OS === 'android') {
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+}
 
 const telaNotificacoes = (props) => {
 
-    function deletar() {
-        alert('deletar');
+    function deletar(_id) {
+        const NewData = notificacoes.filter(item => item.id !== _id);
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+        setNotificacoes(NewData);
     }
 
     const [notificacoes, setNotificacoes] = useState([
@@ -20,6 +28,26 @@ const telaNotificacoes = (props) => {
         },
         {
             id: "1",
+            imagem: require("./img/turquesa10.png"),
+            texto: "Notificação 2",
+        },
+        {
+            id: "2",
+            imagem: require("./img/turquesa10.png"),
+            texto: "Notificação 2",
+        },
+        {
+            id: "3",
+            imagem: require("./img/turquesa10.png"),
+            texto: "Notificação 2",
+        },
+        {
+            id: "4",
+            imagem: require("./img/turquesa10.png"),
+            texto: "Notificação 2",
+        },
+        {
+            id: "5",
             imagem: require("./img/turquesa10.png"),
             texto: "Notificação 2",
         },
@@ -49,17 +77,17 @@ const telaNotificacoes = (props) => {
                         data={notificacoes}
                         keyExtractor={item=>item.id}
                         renderItem={({item})=>
-                            <Swipeable
+                            <SwipeRow
                                 key={item.key}
                                 item={item}
                                 swipeThreshold={-150}
-                                onSwipe={() => deletar()} 
+                                onSwipe={() => deletar(item.id)} 
                             >
                                 <Notificacao
                                     imagem={item.imagem}
                                     texto={item.texto}
                                 />
-                            </Swipeable>
+                            </SwipeRow>
                         }
                         style={{width: "100%"}}
                     />
