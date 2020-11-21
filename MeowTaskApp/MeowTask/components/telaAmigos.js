@@ -164,7 +164,7 @@ const telaAmigo = (props) => {
                     </View>
                 </TouchableNativeFeedback>
 
-                <TouchableNativeFeedback onPress={() => Clipboard.setString('123456')}>
+                <TouchableNativeFeedback onPress={() => { Clipboard.setString(meuCodigo); Alert.alert("Aviso", "Código copiado com sucesso!"); }}>
                     <View style={styles.botao}>
                         <Text style={styles.textoBotao}>Copiar</Text>
                         <Text style={styles.textoBotao}>Código</Text>
