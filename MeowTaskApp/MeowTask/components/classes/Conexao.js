@@ -417,6 +417,9 @@ export default class Conexao {
         return new Promise(function (resolve, reject) {
             let usuario = null;
             let userId = firebase.auth().currentUser.uid;
+            if (userId == id) {
+                reject("Você não pode adicionar você mesmo como amigo!");
+            }
             firebase.firestore()
                 .collection("Usuarios")
                 .doc(userId)
