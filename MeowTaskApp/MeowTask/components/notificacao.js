@@ -1,28 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Image, Text, TouchableWithoutFeedback, Clipboard} from "react-native";
-import {
-    PanGestureHandler,
-    State as GestureState,
-} from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
-const {
-    event,
-    cond,
-    Value,
-    block,
-    set,
-    eq,
-    not,
-    clockRunning,
-    and,
-    startClock,
-    stopClock,
-    spring,
-    greaterThan,
-    lessThan,
-    call,
-    Clock,
-} = Animated;
+import {View, StyleSheet, Image, Text, TouchableWithoutFeedback} from "react-native";
 
 export const Notificacao = props => 
     <TouchableWithoutFeedback>

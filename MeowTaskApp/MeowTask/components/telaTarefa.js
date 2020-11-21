@@ -82,19 +82,19 @@ const telaTarefa = (props) => {
             <Text style={styles.textoNomeTarefa}>{nomeTarefa}</Text>
             <TouchableNativeFeedback onPress={btnDescricao}>
                 <View style={styles.botao}>
-                    <AntDesign name="smileo" size={32} color="white"/>
+                    <Image source={require('./img/Logos/Descricao.png')} style={styles.imagemBotao}></Image>
                     <Text style={styles.textoBotao}>Descrição</Text>
                 </View>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback onPress={btnLista}>
                 <View style={styles.botao}>
-                    <AntDesign name="smileo" size={32} color="white"/>
+                    <Image source={require('./img/Logos/Lista.png')} style={styles.imagemBotao}></Image>
                     <Text style={styles.textoBotao}>Lista</Text>
                 </View>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback onPress={btnArquivos}>
                 <View style={styles.botao}>
-                    <AntDesign name="smileo" size={32} color="white"/>
+                    <Image source={require('./img/Logos/Arquivos.png')} style={styles.imagemBotao}></Image>
                     <Text style={styles.textoBotao}>Arquivos</Text>
                 </View>
             </TouchableNativeFeedback>
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         marginBottom: "4.4%",
-        paddingLeft: "4%",
+        paddingLeft: "3%",
     },
     divUltimoBotao: {
         justifyContent: "flex-end",
@@ -174,10 +174,15 @@ const styles = StyleSheet.create({
         marginBottom: "15%",
         paddingLeft: "4%",
     },
+    imagemBotao: {
+        height: "90%",
+        width: null,
+        aspectRatio: 1,
+    },
     textoBotao: {
         fontFamily: "Roboto-Light",
         fontSize: 28,
-        marginLeft: "6%",
+        marginLeft: "2.5%",
     },
     centeredViewCarregar: {
         flex: 1,

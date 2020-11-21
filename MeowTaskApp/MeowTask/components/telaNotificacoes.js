@@ -4,8 +4,13 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Notificacao } from './notificacao.js';
+import { Swipeable } from './swipe.js';
 
 const telaNotificacoes = (props) => {
+
+    function deletar() {
+        alert('deletar');
+    }
 
     const [notificacoes, setNotificacoes] = useState([
         {
@@ -44,10 +49,17 @@ const telaNotificacoes = (props) => {
                         data={notificacoes}
                         keyExtractor={item=>item.id}
                         renderItem={({item})=>
-                            <Notificacao
-                                imagem={item.imagem}
-                                texto={item.texto}
-                            />
+                            <Swipeable
+                                key={item.key}
+                                item={item}
+                                swipeThreshold={-150}
+                                onSwipe={() => deletar()} 
+                            >
+                                <Notificacao
+                                    imagem={item.imagem}
+                                    texto={item.texto}
+                                />
+                            </Swipeable>
                         }
                         style={{width: "100%"}}
                     />
