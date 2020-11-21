@@ -13,14 +13,14 @@ if (Platform.OS === 'android') {
 }
 
 const telaNotificacoes = (props) => {
-
-    const [refrescando, setRefrescando] = useState(false);
-
+    
     function deletar(_id) {
         const NewData = notificacoes.filter(item => item.id !== _id);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         setNotificacoes(NewData);
     }
+    
+    const [refrescando, setRefrescando] = useState(false);
 
     function refrescar(){
         setRefrescando(true);

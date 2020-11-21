@@ -27,8 +27,11 @@ const telaPostagens = (props) => {
         alert("voltar");
     }
 
-    function btnSalvar() {
-        alert("Salvar");
+    const [refrescando, setRefrescando] = useState(false);
+
+    function refrescar(){
+        setRefrescando(true);
+        alert("olha o refresco!");
     }
 
     function btnNovoItem() {
@@ -134,6 +137,8 @@ const telaPostagens = (props) => {
                 <FlatList
                     data={postagens}
                     keyExtractor={item=>item.id}
+                    refreshing={refrescando}
+                    onRefresh={() => refrescar()}
                     renderItem={({item})=>
                         <Postagem 
                             avatarPostador={item.avatarPostador}

@@ -24,6 +24,13 @@ export default function telaInicial() {
     const [guardaNovoTexto, setGuardaNovoTexto] = useState();
     const [guardaId, setGuardaId] = useState();
 
+    const [refrescando, setRefrescando] = useState(false);
+
+    function refrescar(){
+        setRefrescando(true);
+        alert("olha o refresco!");
+    }
+
     function voltar() {
         alert("voltar");
     }
@@ -173,6 +180,8 @@ export default function telaInicial() {
                 <FlatList
                     data={arquivos}
                     keyExtractor={item=>item.id}
+                    refreshing={refrescando}
+                    onRefresh={() => refrescar()}
                     renderItem={({item})=>
                         <Arquivo 
                             onPress={() => baixar(item.id)}

@@ -31,6 +31,13 @@ const telaListaGrupos = (props) => {
         props.navigation.goBack();
     }
 
+    const [refrescando, setRefrescando] = useState(false);
+
+    function refrescar(){
+        setRefrescando(true);
+        alert("olha o refresco!");
+    }
+
     function trocarTela(id) {
         props.navigation.navigate('Grupo', {
             idGrupo: id
@@ -257,6 +264,8 @@ const telaListaGrupos = (props) => {
                     <FlatList
                         data={grupos}
                         keyExtractor={item => item.id}
+                        refreshing={refrescando}
+                        onRefresh={() => refrescar()}
                         renderItem={({ item }) =>
                             <Grupo
                                 imagem={imagensGrupos[item.imagem]}

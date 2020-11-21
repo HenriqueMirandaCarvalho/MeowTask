@@ -14,6 +14,13 @@ const telaListaTarefas = (props) => {
 
     const logoTarefa = [require("./img/Logos/LogoPraCadaTarefa.png"), require("./img/Logos/CadaTarefaCertinho.png")];
 
+    const [refrescando, setRefrescando] = useState(false);
+
+    function refrescar(){
+        setRefrescando(true);
+        alert("olha o refresco!");
+    }
+
     function trocarTela(id) {
         props.navigation.navigate("Tarefa", {
             idTarefa: id
@@ -81,6 +88,8 @@ const telaListaTarefas = (props) => {
                 <FlatList
                     data={tarefas}
                     keyExtractor={item=>item.id}
+                    refreshing={refrescando}
+                    onRefresh={() => refrescar()}
                     renderItem={({item})=>
                         <Tarefa 
                             imagem={logoTarefa[0]}

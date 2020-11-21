@@ -19,6 +19,13 @@ const telaPostIts = (props) => {
         props.navigation.goBack();
     }
 
+    const [refrescando, setRefrescando] = useState(false);
+
+    function refrescar(){
+        setRefrescando(true);
+        alert("olha o refresco!");
+    }
+
     function toggleModalEditar(id, texto) {
         setModalEditarVisivel(true);
         setGuardaId(id);
@@ -160,6 +167,8 @@ const telaPostIts = (props) => {
                 <FlatList
                     data={postIts}
                     keyExtractor={item=>item.id}
+                    refreshing={refrescando}
+                    onRefresh={() => refrescar()}
                     renderItem={({item})=>
                         <PostIt 
                             onPress={() => toggleModalEditar(item.id, item.descricao)}
