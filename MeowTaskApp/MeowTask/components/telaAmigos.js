@@ -7,11 +7,9 @@ import {Amigo} from './amigo.js';
 import {AmigoModal} from './amigosmodal';
 import Conexao from './classes/Conexao.js';
 
-const meuCodigo = "123456";
-
-
 const telaAmigo = (props) => {   
     const [modalVisivel, setModalVisivel] = useState(false);
+    const [meuCodigo, setMeuCodigo] = useState("")
     const [inputCodigo, setInputCodigo] = useState();
     const [loading, setLoading] = useState(true);
     const [amigos, setAmigos] = useState([]);
@@ -50,7 +48,7 @@ const telaAmigo = (props) => {
             .then((obj) => {
                 setAmigos(obj);
                 conn.getUserInfo().then((user) => {
-                    setInputCodigo(user.uid);
+                    setMeuCodigo(user.uid);
                     setLoading(false);
                 })
                 .catch((err) => {
