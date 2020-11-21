@@ -42,6 +42,8 @@ const telaAmigo = (props) => {
             })
             .then((obj) => {
                 carregarAmigos();
+                setInputCodigo("");
+                toggleModal();
             });
     }
 
@@ -52,6 +54,7 @@ const telaAmigo = (props) => {
         conn.getAmigosByUserId()
             .catch((error) => {
                 Alert.alert("Erro", error);
+                setLoading(false);
             })
             .then((obj) => {
                 setAmigos(obj);

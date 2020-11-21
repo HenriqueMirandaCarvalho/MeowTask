@@ -349,6 +349,9 @@ export default class Conexao {
                     let usuario = snapshot.data();
                     let amigosCarregados = 0;
                     let totalAmigos = usuario.amigos.length;
+                    if (totalAmigos == 0) {
+                        resolve(amigos);
+                    }
                     usuario.amigos.forEach(friend => {
                         firebase.firestore()
                             .collection("Usuarios")
