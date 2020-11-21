@@ -6,6 +6,7 @@ import { useFonts } from 'expo-font';
 import {Amigo} from './amigo.js';
 import {AmigoModal} from './amigosmodal';
 import Conexao from './classes/Conexao.js';
+import {Clipboard} from 'react-native-clipboard';
 
 const meuCodigo = "123456";
 
@@ -159,10 +160,12 @@ const telaAmigo = (props) => {
                     </View>
                 </TouchableNativeFeedback>
 
-                <View>
-                    <Text style={styles.seuCodigo}>Seu código:</Text>
-                    <Text style={styles.codigo}>#{meuCodigo}</Text>
-                </View>
+                <TouchableNativeFeedback onPress={() => Clipboard.setString('123456')}>
+                    <View style={styles.botao}>
+                        <Text style={styles.textoBotao}>Copiar</Text>
+                        <Text style={styles.textoBotao}>Código</Text>
+                    </View>
+                </TouchableNativeFeedback>
             </View>
         </View>
     );  
@@ -246,16 +249,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Light',
         color: '#5b5b58',
         marginLeft: "5%",
-    },
-    seuCodigo: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 15,
-        color: '#5b5b58',
-    },
-    codigo: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 23,
-        color: '#5b5b58',
     },
     overlay: {
         position: "absolute",
