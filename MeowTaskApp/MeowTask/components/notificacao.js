@@ -1,9 +1,31 @@
 import React from 'react';
 import {View, StyleSheet, Image, Text, TouchableWithoutFeedback, Clipboard} from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import {
+    PanGestureHandler,
+    State as GestureState,
+} from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
+const {
+    event,
+    cond,
+    Value,
+    block,
+    set,
+    eq,
+    not,
+    clockRunning,
+    and,
+    startClock,
+    stopClock,
+    spring,
+    greaterThan,
+    lessThan,
+    call,
+    Clock,
+} = Animated;
 
 export const Notificacao = props => 
-    <TouchableWithoutFeedback onPress={() => Clipboard.setString("aaa")} style={styles.container}>
+    <TouchableWithoutFeedback>
         <View style={styles.conteudo}>
             <Image source={props.imagem} style={styles.imagem}/>
             <Text style={styles.texto}>{props.texto}</Text>
@@ -11,24 +33,19 @@ export const Notificacao = props =>
     </TouchableWithoutFeedback>
 
 let styles = StyleSheet.create({
-    container: {
+    conteudo: {
         marginTop: "3%",
         marginBottom: "1%",
-        backgroundColor: "#C4C4C4",
-        borderRadius: 10,
-        justifyContent: "center",
-    },
-    conteudo: {
         flexDirection: "row",
         width: "100%",
-        paddingTop: "3%",
+        alignItems: "center",
     },
     imagem: {
         width: "16%",
-        marginLeft: "7.8%",
+        marginLeft: "7.5%",
         height: null,
         aspectRatio: 1,
-        borderRadius: 150,
+        borderRadius: 18,
     },
     texto: {
         width: "85%",

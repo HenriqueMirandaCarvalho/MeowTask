@@ -11,12 +11,12 @@ const telaNotificacoes = (props) => {
         {
             id: "0",
             imagem: require("./img/turquesa10.png"),
-            texto: "Arquivo 1",
+            texto: "Notificação 1",
         },
         {
             id: "1",
             imagem: require("./img/turquesa10.png"),
-            texto: "Arquivo 2",
+            texto: "Notificação 2",
         },
     ]);
 
