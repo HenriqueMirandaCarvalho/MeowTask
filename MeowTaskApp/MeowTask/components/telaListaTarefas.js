@@ -12,6 +12,8 @@ const telaListaTarefas = (props) => {
     const [loadedTarefas, setLoadTarefas] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    const logoTarefa = [require("./img/Logos/LogoPraCadaTarefa.png"), require("./img/Logos/CadaTarefaCertinho.png")];
+
     function trocarTela(id) {
         props.navigation.navigate("Tarefa", {
             idTarefa: id
@@ -81,7 +83,7 @@ const telaListaTarefas = (props) => {
                     keyExtractor={item=>item.id}
                     renderItem={({item})=>
                         <Tarefa 
-                            imagem={item.imagem}
+                            imagem={logoTarefa[0]}
                             nome={item.nome} 
                             onPress={() => trocarTela(item.id)}
                         />}

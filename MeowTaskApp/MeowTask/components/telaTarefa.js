@@ -9,7 +9,7 @@ const telaTarefa = (props) => {
     let idTarefa = props.navigation.state.params.idTarefa;
     const [loadedTarefa, setLoadTarefa] = useState(false);
     const [loading, setLoading] = useState(true);
-    const imagemTarefa = require("./img/turquesa10.png");
+    const logoTarefa = [require("./img/Logos/LogoPraCadaTarefa.png"), require("./img/Logos/CadaTarefaCertinho.png")];
     const [nomeTarefa, setNomeTarefa] = useState("...");
 
     function btnDescricao() {
@@ -76,7 +76,7 @@ const telaTarefa = (props) => {
                     </TouchableNativeFeedback>
                 </View>
                 <View style={styles.divImagem}> 
-                    <Image source={imagemTarefa} style={styles.imagem}/>
+                    <Image source={logoTarefa[0]} style={styles.imagem}/>
                 </View>
             </View>
             <Text style={styles.textoNomeTarefa}>{nomeTarefa}</Text>

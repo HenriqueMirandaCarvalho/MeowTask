@@ -420,7 +420,8 @@ export default class Conexao {
             if (userId == id) {
                 reject("Você não pode adicionar você mesmo como amigo!");
             }
-            firebase.firestore()
+            else {
+                firebase.firestore()
                 .collection("Usuarios")
                 .doc(userId)
                 .get()
@@ -457,6 +458,7 @@ export default class Conexao {
                 .catch(err => {
                     reject("Usuário não encontrada!");
                 });
+            }
         });
     }
 }
