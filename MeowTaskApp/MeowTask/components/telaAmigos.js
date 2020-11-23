@@ -10,7 +10,7 @@ import * as firebase from 'firebase';
 const telaAmigo = (props) => {
     const [meuCodigo, setMeuCodigo] = useState();
     const [modalVisivel, setModalVisivel] = useState(false);
-    const [inputCodigo, setInputCodigo] = useState();
+    const [inputCodigo, setInputCodigo] = useState("");
     const [amigos, setAmigos] = useState([]);
     const [refresco, setRefresco] = useState(false);
     const imagensUsuario = [];
@@ -53,11 +53,15 @@ const telaAmigo = (props) => {
     }
 
     function adicionarAmigo() {
+        setRefresco(true);
         let amigo = {};
         firebase.firestore()
             .collection("Codigos")
             .where("codigo", "==", inputCodigo)
             .get().then((snapshot) => {
+                if (snapshot.empty) {
+                    Alert.alert("Erro", "Usuário não encontrado!");
+                }
                 snapshot.forEach(doc => {
                     amigo.id = doc.id;
                     amigo.nome = doc.data().nome;
@@ -65,22 +69,57 @@ const telaAmigo = (props) => {
                     if (amigo.id != firebase.auth().currentUser.uid) {
                         firebase.firestore()
                             .collection("Amigos")
-                            .add({
-                                confirmado: false,
-                                data: new Date().getTime(),
-                                usuarios: [
-                                    {
-                                        id: firebase.auth().currentUser.uid,
-                                        nome: firebase.auth().currentUser.displayName,
-                                        imagem: firebase.auth().currentUser.photoURL
-                                    }, amigo
-                                ]
+                            .where("usuarios", "array-contains", {
+                                id: firebase.auth().currentUser.uid,
+                                nome: firebase.auth().currentUser.displayName,
+                                imagem: firebase.auth().currentUser.photoURL
                             })
-                            .then((data) => {
-                                setMeuCodigo(novoCodigo);
-                                Clipboard.setString(meuCodigo);
-                                Alert.alert("Aviso", "Código copiado com sucesso!");
-                                setRefresco(false);
+                            .get().then((snap) => {
+                                let cont = true;
+                                let sender = false;
+                                let idAmg = "";
+                                if (!snap.empty) {
+                                    snap.forEach(duc => {
+                                        if (duc.data().usuarios[0].id == amigo.id || duc.data().usuarios[1].id == amigo.id) {
+                                            cont = false;
+                                            if (duc.data().sender == firebase.auth().currentUser.uid) {
+                                                sender = true;
+                                            }
+                                            else {
+                                                idAmg = duc.id;
+                                            }
+                                        }
+                                    });
+                                }
+                                if (cont) {
+                                    firebase.firestore()
+                                        .collection("Amigos")
+                                        .add({
+                                            confirmado: false,
+                                            sender: firebase.auth().currentUser.uid,
+                                            data: new Date().getTime(),
+                                            usuarios: [
+                                                {
+                                                    id: firebase.auth().currentUser.uid,
+                                                    nome: firebase.auth().currentUser.displayName,
+                                                    imagem: firebase.auth().currentUser.photoURL
+                                                }, amigo
+                                            ]
+                                        })
+                                        .then((data) => {
+                                            toggleModal();
+                                            Alert.alert("Aviso", "B");
+                                            setRefresco(false);
+                                        });
+                                }
+                                else if (sender) {
+                                    toggleModal();
+                                    Alert.alert("Aviso", "Você já enviou um convite para este usuário!");
+                                    setRefresco(false);
+                                }
+                                else {
+                                    console.log(idAmg);
+                                }
                             });
                     }
                     else {
