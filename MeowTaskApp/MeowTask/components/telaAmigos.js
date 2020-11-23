@@ -5,12 +5,10 @@ import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Amigo } from './amigo.js';
 import { AmigoModal } from './amigosmodal';
-import Conexao from './classes/Conexao.js';
 import * as firebase from 'firebase';
-import * as admin from 'firebase-admin';
 
 const telaAmigo = (props) => {
-    const meuCodigo = firebase.auth().currentUser.uid;
+    const [meuCodigo, setMeuCodigo] = useState();
     const [modalVisivel, setModalVisivel] = useState(false);
     const [inputCodigo, setInputCodigo] = useState();
     const [amigos, setAmigos] = useState([]);
@@ -27,6 +25,25 @@ const telaAmigo = (props) => {
         // (validação roubada do stack overflow)
     }
 
+    function gerarCodigo() {
+        setRefresco(true);
+        let novoCodigo = Math.random().toString(36).slice(-6);
+        firebase.firestore()
+            .collection("Codigos")
+            .doc(firebase.auth().currentUser.uid)
+            .set({
+                nome: firebase.auth().currentUser.displayName,
+                imagem: firebase.auth().currentUser.photoURL,
+                codigo: novoCodigo
+            })
+            .then((data) => {
+                setMeuCodigo(novoCodigo);
+                Clipboard.setString(meuCodigo);
+                Alert.alert("Aviso", "Código copiado com sucesso!");
+                setRefresco(false);
+            });
+    }
+
     function trocarTela(id) {
         alert("insira uma troca de tela aqui, id do amigo: " + id);
     }
@@ -36,7 +53,7 @@ const telaAmigo = (props) => {
     }
 
     function adicionarAmigo() {
-        admin.auth().getUser(firebase.auth().currentUser.uid).then(() => console.log("a"));
+
     }
 
     let [fontsLoaded] = useFonts({
@@ -154,7 +171,7 @@ const telaAmigo = (props) => {
                         </View>
                     </TouchableNativeFeedback>
 
-                    <TouchableNativeFeedback onPress={() => { Clipboard.setString(meuCodigo); Alert.alert("Aviso", "Código copiado com sucesso!"); }}>
+                    <TouchableNativeFeedback onPress={() => gerarCodigo()}>
                         <View style={styles.botao}>
                             <Text style={styles.textoBotao}>Copiar</Text>
                             <Text style={styles.textoBotao}>Código</Text>
