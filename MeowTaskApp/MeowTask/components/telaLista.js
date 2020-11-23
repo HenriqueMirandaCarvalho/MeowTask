@@ -6,7 +6,7 @@ import { useFonts } from 'expo-font';
 import {Item} from './item.js';
 
 
-export default function telaInicial() {
+const telaLista = (props) => {
 
     const [itens, setItens] = useState([
         {
@@ -416,3 +416,5 @@ const styles = StyleSheet.create({
         marginTop: "4%",
     },
 });
+
+export default telaLista;

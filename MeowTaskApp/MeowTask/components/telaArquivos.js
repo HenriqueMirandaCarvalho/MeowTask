@@ -6,7 +6,7 @@ import { useFonts } from 'expo-font';
 import {Arquivo} from './arquivo.js';
 
 
-export default function telaInicial() {
+const telaArquivos = (props) => {
 
     const [arquivos, setArquivos] = useState([
         {
@@ -331,3 +331,5 @@ const styles = StyleSheet.create({
         marginTop: "4%",
     },
 });
+
+export default telaArquivos;
