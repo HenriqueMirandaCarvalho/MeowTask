@@ -7,8 +7,8 @@ export const Item = props =>
             <View style={styles.ultimoBotao}>
                 {
                 props.check == true
-                ? <Image source={require('./img/turquesa10.png')} style={styles.imagem} />
-                : <Image source={require('./img/menta.png')} style={styles.imagem} />
+                ? <Image source={require('./img/ComCheckIN.png')} style={styles.imagem} />
+                : <Image source={require('./img/SemcheckIn.png')} style={styles.imagem} />
                 }
                 <Text style={styles.texto}>{props.texto}</Text>
             </View>
