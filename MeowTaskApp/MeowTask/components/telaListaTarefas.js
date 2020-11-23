@@ -1,25 +1,18 @@
-import React, { useState, version } from "react";
+import React, { useState, useEffect } from "react";
 import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator} from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import {Tarefa} from './tarefa.js';
-import Conexao from './classes/Conexao.js';
+import * as firebase from 'firebase';
 
 const telaListaTarefas = (props) => {
     const idGrupo = props.navigation.state.params.idGrupo;
     const [tarefas, setTarefas] = useState([]);
-    const [loadedTarefas, setLoadTarefas] = useState(false);
-    const [loading, setLoading] = useState(true);
 
     const logoTarefa = [require("./img/Logos/LogoPraCadaTarefa.png"), require("./img/Logos/CadaTarefaCertinho.png")];
 
-    const [refrescando, setRefrescando] = useState(false);
-
-    function refrescar(){
-        setRefrescando(true);
-        alert("olha o refresco!");
-    }
+    const [refresco, setRefresco] = useState(false);
 
     function trocarTela(id) {
         props.navigation.navigate("Tarefa", {
@@ -41,39 +34,33 @@ const telaListaTarefas = (props) => {
         'Merienda-Regular': require('./font/Merienda-Regular.ttf'),
     });
 
-    function carregarTarefas() {
-        let conn = new Conexao();
-        conn.getTarefasByGrupoId(idGrupo)
-            .catch((error) => {
-                Alert.alert("Erro", error);
-            })
-            .then((obj) => {
-                setTarefas(obj);
-                setLoading(false);
+    useEffect(() => {
+        setRefresco(true);
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .orderBy('data', 'desc')
+            .onSnapshot(snapshot => {
+                const tarefas = snapshot.docs.map(doc => {
+                    const tarefa = doc.data();
+                    tarefa.id = doc.id;
+                    return tarefa;
+                });
+                if (tarefas[0] != undefined)
+                    setTarefas(tarefas);
+                else
+                    setTarefas([]);
+                setRefresco(false);
             });
-        setLoadTarefas(true);
-    }
-    
-    if (!loadedTarefas) {
-        carregarTarefas();
-    }
+        return () => listener();
+    }, []);
         
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
     return (
         <View style={styles.container}>
-            <Modal 
-                visible={loading}
-                animationType="fade"
-                transparent={true}
-            >
-                <View style={styles.centeredViewCarregar}>
-                    <View style={styles.modalCarregar}>
-                        <ActivityIndicator size={70} color="#53A156"/>
-                    </View>
-                </View>
-            </Modal>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
                     <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
@@ -88,8 +75,8 @@ const telaListaTarefas = (props) => {
                 <FlatList
                     data={tarefas}
                     keyExtractor={item=>item.id}
-                    refreshing={refrescando}
-                    onRefresh={() => refrescar()}
+                    refreshing={refresco}
+                    onRefresh={() => {}}
                     renderItem={({item})=>
                         <Tarefa 
                             imagem={logoTarefa[0]}
@@ -206,28 +193,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Light',
         color: '#5b5b58',
         marginLeft: "5%",
-    },
-    centeredViewCarregar: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: 'rgba(52, 52, 52, 0.6)',
-    },
-    modalCarregar: {
-        width: "30%",
-        aspectRatio: 1,
-        backgroundColor: "#ededed",
-        borderRadius: 20,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        justifyContent: "center",
     }
 });
 

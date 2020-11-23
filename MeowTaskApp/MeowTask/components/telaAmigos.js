@@ -6,12 +6,12 @@ import { useFonts } from 'expo-font';
 import {Amigo} from './amigo.js';
 import {AmigoModal} from './amigosmodal';
 import Conexao from './classes/Conexao.js';
+import * as firebase from 'firebase';
 
-const telaAmigo = (props) => {   
+const telaAmigo = (props) => {
+    const meuCodigo = firebase.auth().currentUser.uid;
     const [modalVisivel, setModalVisivel] = useState(false);
-    const [meuCodigo, setMeuCodigo] = useState("")
     const [inputCodigo, setInputCodigo] = useState();
-    const [loading, setLoading] = useState(true);
     const [amigos, setAmigos] = useState([]);
     const imagensUsuario = [];
     imagensUsuario.push(require("./img/turquesa10.png"));
@@ -34,6 +34,7 @@ const telaAmigo = (props) => {
     }
 
     function adicionarAmigo() {
+        if (inputCodigo)
         setLoading(true);
         let conn = new Conexao();
         conn.addAmigo(inputCodigo)
@@ -45,33 +46,6 @@ const telaAmigo = (props) => {
                 setInputCodigo("");
                 toggleModal();
             });
-    }
-
-    const [loadedAmigos, setLoadAmigos] = useState(false);
-
-    function carregarAmigos() {
-        let conn = new Conexao();
-        conn.getAmigosByUserId()
-            .catch((error) => {
-                Alert.alert("Erro", error);
-                setLoading(false);
-            })
-            .then((obj) => {
-                setAmigos(obj);
-                conn.getUserInfo().then((user) => {
-                    setMeuCodigo(user.uid);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    Alert.alert("Erro", err);
-                    setUsername("Não logado");
-                });
-            });
-        setLoadAmigos(true);
-    }
-
-    if (!loadedAmigos) {
-        carregarAmigos();
     }
 
     let [fontsLoaded] = useFonts({
@@ -118,18 +92,6 @@ const telaAmigo = (props) => {
                         </TouchableOpacity>
                     </View>
                 </View>     
-            </Modal>
-
-            <Modal 
-                visible={loading}
-                animationType="fade"
-                transparent={true}
-            >
-                <View style={styles.centeredViewCarregar}>
-                    <View style={styles.modalCarregar}>
-                        <ActivityIndicator size={70} color="#53A156"/>
-                    </View>
-                </View>
             </Modal>
 
             <View style={styles.cabecalho}>
@@ -325,28 +287,6 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: '#5b5b58',
         fontSize: 25,
-    },
-    centeredViewCarregar: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: 'rgba(52, 52, 52, 0.6)',
-    },
-    modalCarregar: {
-        width: "30%",
-        aspectRatio: 1,
-        backgroundColor: "#ededed",
-        borderRadius: 20,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        justifyContent: "center",
     }
 });
 

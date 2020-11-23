@@ -1,11 +1,12 @@
 import React from "react";
-import {View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar , TouchableOpacity} from "react-native";
+import { View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar, TouchableOpacity } from "react-native";
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import icone from './img/icone.png';
 import * as firebase from 'firebase';
+import { NavigationActions, StackActions } from 'react-navigation';
 
-const telaInicio = (props) => {  
+const telaInicio = (props) => {
     function btnComecar() {
         props.navigation.navigate('Cadastro');
     }
@@ -17,11 +18,11 @@ const telaInicio = (props) => {
             naoLogado: true
         });
     }
-    
+
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
     });
-    
+
     if (!firebase.apps.length) {
         var firebaseConfig = {
             apiKey: "AIzaSyApt9TUJkguD9IDJ2LmU4ReiqF06hPLH4o",
@@ -36,44 +37,49 @@ const telaInicio = (props) => {
         firebase.initializeApp(firebaseConfig);
     }
 
-    if (firebase.auth().currentUser)
-    {
+    if (firebase.auth().currentUser) {
         props.navigation.navigate('Home');
+        const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Home' })],
+            key: null,
+        });
+        props.navigation.dispatch(resetAction);
     }
 
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
-    return (
-        <View style={styles.container}>
-            <Image source={icone} style={styles.logo}/>
-            <TouchableNativeFeedback onPress={btnComecar}>
-                <View style={styles.botao}>
-                    <Text style={styles.texto}>Começar</Text>
-                </View>
-             </TouchableNativeFeedback>
-            <TouchableNativeFeedback onPress={btnLogar}>
-                <View style={styles.botao}>
-                    <Text style={styles.texto}>Fazer Login</Text>
-                </View>
-            </TouchableNativeFeedback>
-            <TouchableOpacity onPress={btnContinuar}>
-                <View>
-                    <Text style={styles.texto2}>Continuar sem uma conta</Text>
-                </View>
-            </TouchableOpacity>
-            <StatusBar translucent backgroundColor={'#eae6da'}/>
-        </View>
-    );  
-    }  
+        return (
+            <View style={styles.container}>
+                <Image source={icone} style={styles.logo} />
+                <TouchableNativeFeedback onPress={btnComecar}>
+                    <View style={styles.botao}>
+                        <Text style={styles.texto}>Começar</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <TouchableNativeFeedback onPress={btnLogar}>
+                    <View style={styles.botao}>
+                        <Text style={styles.texto}>Fazer Login</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <TouchableOpacity onPress={btnContinuar}>
+                    <View>
+                        <Text style={styles.texto2}>Continuar sem uma conta</Text>
+                    </View>
+                </TouchableOpacity>
+                <StatusBar translucent backgroundColor={'#eae6da'} />
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-		flexDirection: 'column',
-		backgroundColor: '#EAE6DA',
-		justifyContent: 'space-evenly',
+        flexDirection: 'column',
+        backgroundColor: '#EAE6DA',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
         // marginTop: StatusBar.currentHeight || 0,
     },
