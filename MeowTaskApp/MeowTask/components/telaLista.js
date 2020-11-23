@@ -20,13 +20,8 @@ const telaLista = (props) => {
 
     const [refresco, setRefresco] = useState(false);
 
-    function refrescar(){
-        setRefrescando(true);
-        alert("olha o refresco!");
-    }
-
     function voltar() {
-        alert("voltar");
+        props.navigation.goBack();
     }
 
     function btnSalvar() {
