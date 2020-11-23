@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Modal, TouchableWithoutFeedback, TextInput, Dimensions, Alert } from "react-native";
 import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
@@ -9,6 +9,8 @@ import * as firebase from 'firebase';
 const altura = Dimensions.get('window').height;
 
 const telaPostagens = (props) => {
+    const flatListRef = useRef(null);
+
     const idGrupo = props.navigation.state.params.idGrupo;
 
     const imagensUsuario = [];
@@ -26,6 +28,7 @@ const telaPostagens = (props) => {
 
     function voltar() {
         alert("voltar");
+        flatListRef.current.scrollToEnd();
     }
 
     const [refresco, setRefresco] = useState(false);
@@ -175,6 +178,7 @@ const telaPostagens = (props) => {
                         keyExtractor={item => item.id}
                         refreshing={refresco}
                         onRefresh={() => { }}
+                        ref={flatListRef}
                         renderItem={({ item }) =>
                             <Postagem
                                 avatarPostador={imagensUsuario[item.avatarPostador]}
@@ -265,6 +269,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         fontSize: 20,
         paddingBottom: "2%",
+        paddingLeft: "3%",
     },
     rodapeLista: {
         marginTop: "8%",
