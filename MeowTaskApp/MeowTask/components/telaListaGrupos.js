@@ -6,7 +6,6 @@ import { useFonts } from 'expo-font';
 import { Grupo } from './grupo.js';
 import { AmigoModal } from './amigosmodal';
 import * as firebase from 'firebase';
-require("firebase/firestore");
 
 const telaListaGrupos = (props) => {
     const [modalEntrarVisivel, setModalEntrarVisivel] = useState(false);
