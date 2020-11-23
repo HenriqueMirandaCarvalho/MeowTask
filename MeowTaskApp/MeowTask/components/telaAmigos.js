@@ -38,7 +38,7 @@ const telaAmigo = (props) => {
             })
             .then((data) => {
                 setMeuCodigo(novoCodigo);
-                Clipboard.setString(meuCodigo);
+                Clipboard.setString(novoCodigo);
                 Alert.alert("Aviso", "Código copiado com sucesso!");
                 setRefresco(false);
             });
@@ -53,7 +53,41 @@ const telaAmigo = (props) => {
     }
 
     function adicionarAmigo() {
-
+        let amigo = {};
+        firebase.firestore()
+            .collection("Codigos")
+            .where("codigo", "==", inputCodigo)
+            .get().then((snapshot) => {
+                snapshot.forEach(doc => {
+                    amigo.id = doc.id;
+                    amigo.nome = doc.data().nome;
+                    amigo.imagem = doc.data().imagem;
+                    if (amigo.id != firebase.auth().currentUser.uid) {
+                        firebase.firestore()
+                            .collection("Amigos")
+                            .add({
+                                confirmado: false,
+                                data: new Date().getTime(),
+                                usuarios: [
+                                    {
+                                        id: firebase.auth().currentUser.uid,
+                                        nome: firebase.auth().currentUser.displayName,
+                                        imagem: firebase.auth().currentUser.photoURL
+                                    }, amigo
+                                ]
+                            })
+                            .then((data) => {
+                                setMeuCodigo(novoCodigo);
+                                Clipboard.setString(meuCodigo);
+                                Alert.alert("Aviso", "Código copiado com sucesso!");
+                                setRefresco(false);
+                            });
+                    }
+                    else {
+                        Alert.alert("Erro", "Você não pode adicionar você mesmo como amigo!");
+                    }
+                });
+            });
     }
 
     let [fontsLoaded] = useFonts({
@@ -71,7 +105,7 @@ const telaAmigo = (props) => {
                 const amigos = snapshot.docs.map(doc => {
                     const dados = doc.data();
                     if (dados.confirmado) {
-                        const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid});
+                        const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid });
                         return amigo;
                     }
                 });
@@ -139,7 +173,7 @@ const telaAmigo = (props) => {
                         data={amigos}
                         keyExtractor={item => item.id}
                         refreshing={refresco}
-                        onRefresh={() => {}}
+                        onRefresh={() => { }}
                         renderItem={({ item }) =>
                             <Amigo
                                 imagem={imagensUsuario[item.imagem]}
