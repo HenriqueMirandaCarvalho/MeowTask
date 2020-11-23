@@ -89,7 +89,21 @@ const telaPostagens = (props) => {
         }
     }
 
+    var listaCarregada = false;
+
+    function irProFinal() {
+        if (!listaCarregada) {
+            setTimeout(() => {
+                flatListRef.current.scrollToEnd();
+                listaCarregada = true;
+            }, 1500);
+        } else {
+            flatListRef.current.scrollToEnd();
+        }
+    }
+
     useEffect(() => {
+        irProFinal();
         setRefresco(true);
         const listener = firebase.firestore()
             .collection("Grupos")
@@ -178,6 +192,7 @@ const telaPostagens = (props) => {
                         keyExtractor={item => item.id}
                         refreshing={refresco}
                         onRefresh={() => { }}
+                        onContentSizeChange={() => irProFinal()}
                         ref={flatListRef}
                         renderItem={({ item }) =>
                             <Postagem
