@@ -14,8 +14,8 @@ const telaLista = (props) => {
     const [itens, setItens] = useState([]);
     const [modalEditarVisivel, setModalEditarVisivel] = useState(false);
     const [modalCriarVisivel, setModalCriarVisivel] = useState(false);
-    const [guardaTexto, setGuardaTexto] = useState();
-    const [guardaNovoTexto, setGuardaNovoTexto] = useState();
+    const [guardaTexto, setGuardaTexto] = useState("");
+    const [guardaNovoTexto, setGuardaNovoTexto] = useState("");
     const [guardaId, setGuardaId] = useState();
 
     const [refresco, setRefresco] = useState(false);
@@ -88,14 +88,23 @@ const telaLista = (props) => {
     }
 
     function criarItem() {
+        setRefresco(true);
         itens.push(
             {
                 id: itens.length,
                 check: false,
-                textoItemLista: guardaNovoTexto,
+                texto: guardaNovoTexto,
             }
         )
         setItens([...itens]);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(idTarefa)
+            .update({
+                lista: itens
+            }).then(() => setRefresco(false));
     }
 
     useEffect(() => {
