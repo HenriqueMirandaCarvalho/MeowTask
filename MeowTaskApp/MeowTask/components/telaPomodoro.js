@@ -53,8 +53,8 @@ const telaNotificacoes = (props) => {
         },
     ]);
 
-    async function contagemRegressiva() {
-        await setSegundos(c => c + 1);
+    function contagemRegressiva() {
+        setSegundos(segundos => segundos + 1);
         guardaSegundos=guardaSegundos-1;
         console.debug(guardaSegundos)
         console.debug(segundos)
@@ -71,13 +71,20 @@ const telaNotificacoes = (props) => {
     function toggleRelogio() {
         if (running==true) {
             running = false;
-            clearInterval(intervalo);
+            window.clearInterval(intervalo);
         } else {
             running = true;
-            intervalo = setInterval(() => contagemRegressiva(), 1000);
+            intervalo = window.setInterval(() => contagemRegressiva(), 1000);
         }
         
     }
+
+    useEffect(() => {
+        const intervalo = window.setInterval(() => contagemRegressiva(), 1000);
+        return () => {
+            window.clearInterval(intervalo);
+        };
+    });
 
     function estilizador(id) {
         let somaDuracoes = 0;
