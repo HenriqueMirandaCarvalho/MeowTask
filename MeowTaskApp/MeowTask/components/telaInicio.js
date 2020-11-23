@@ -8,7 +8,10 @@ import { NavigationActions, StackActions } from 'react-navigation';
 
 const telaInicio = (props) => {
     function btnComecar() {
-        props.navigation.navigate('Cadastro');
+        if (!firebase.apps.length)
+            props.navigation.navigate('Cadastro');
+        else
+            props.navigation.navigate('Home');
     }
     function btnLogar() {
         props.navigation.navigate('Login');

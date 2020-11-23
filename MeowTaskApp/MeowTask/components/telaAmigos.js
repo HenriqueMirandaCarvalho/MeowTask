@@ -126,6 +126,9 @@ const telaAmigo = (props) => {
                             )
                         }
                     }
+                        ListEmptyComponent={() =>
+                            <Text style={{alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20, marginTop: "6%"}}>Nenhum amigo!</Text>
+                        }
                 />
                 
             </View>
@@ -209,7 +212,7 @@ const styles = StyleSheet.create({
         color: '#5b5b58',
     },
     rodapeLista: {
-        marginTop: "8%",
+        marginTop: "6%",
         alignSelf:'stretch',
     },
     botoesRodapeLista: {

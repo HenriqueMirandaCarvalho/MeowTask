@@ -93,7 +93,7 @@ const telaPostagens = (props) => {
             .collection("Grupos")
             .doc(idGrupo)
             .collection("Postagens")
-            .orderBy('data', 'desc')
+            .orderBy('data', 'asc')
             .onSnapshot(snapshot => {
                 const postagens = snapshot.docs.map(doc => {
                     const postagem = doc.data();
