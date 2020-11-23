@@ -112,7 +112,7 @@ const telaAmigo = (props) => {
                 if (amigos[0] != undefined)
                     setAmigos(amigos);
                 else
-                    setPostagens([]);
+                    setAmigos([]);
                 setRefresco(false);
             });
         return () => listener();
