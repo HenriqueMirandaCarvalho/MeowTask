@@ -247,14 +247,6 @@ const telaLista = (props) => {
                     }
                 />
             </View>
-            <View style={styles.divUltimoBotao}>
-                <TouchableNativeFeedback onPress={() => btnSalvar()}>
-                    <View style={styles.ultimoBotao}>
-                        <AntDesign name="smileo" size={32} color="white"/>
-                        <Text style={styles.textoBotao}>Salvar</Text>
-                    </View>
-                </TouchableNativeFeedback>
-            </View>
         </View>
     );  
     }  
@@ -290,26 +282,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Light',
         fontSize: 29,
         color: '#000000',
-    },
-    divUltimoBotao: {
-        flex: 1,
-        paddingTop: "1%",
-    },
-    ultimoBotao: {
-        backgroundColor: "#C4C4C4",
-        width: "80%",
-        aspectRatio: 5.7,
-        borderRadius: 10,
-        justifyContent: "flex-start",
-        alignItems: "center",
-        flexDirection: "row",
-        marginBottom: "15%",
-        paddingLeft: "4%",
-    },
-    textoBotao: {
-        fontFamily: "Roboto-Light",
-        fontSize: 28,
-        marginLeft: "6%",
     },
     conteudo: {
         width: "100%",

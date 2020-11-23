@@ -13,10 +13,9 @@ const telaNotificacoes = (props) => {
     const [textoContagem, setTextoContagem] = useState("0:00");
     const [textoBotao, setTextoBotao] = useState("Iniciar");
     const [segundos, setSegundos] = useState(10);
-    var guardaSegundos = 10;
     const [minutos, setMinutos] = useState(0);
-    var running;
-    var intervalo;
+    const [running, setRunning] = useState(false);
+    const [iterador, setIterador] = useState(0);
     
 
     let [fontsLoaded] = useFonts({
@@ -54,33 +53,37 @@ const telaNotificacoes = (props) => {
     ]);
 
     function contagemRegressiva() {
-        setSegundos(segundos => segundos + 1);
-        guardaSegundos=guardaSegundos-1;
-        console.debug(guardaSegundos)
-        console.debug(segundos)
-        if(segundos == 0) {
-            setSegundos(59);
-            if(minutos!=0){setMinutos(minutos-1);}
-            if(minutos==0){
-                alert("sem tempo irmão");
+        if (running == true) {
+            setSegundos(segundos => segundos - 1);
+            console.debug(segundos);
+            console.debug("iterador: "+iterador);
+            if(segundos == 0) {
+                setSegundos(59);
+                setIterador(iterador + 1);
+                if(minutos!=0){setMinutos(minutos => minutos - 1);}
+                if(minutos==0){
+                    if(iterador == intervalos.length - 1){
+                        alert("sem tempo irmão");
+                    } else {
+                        
+                        
+                        setSegundos(0);
+                        setMinutos(intervalos[iterador].duracao);
+                    }
+                }
             }
+            setTextoContagem(minutos+":"+segundos);
+        } else {
+            console.debug("parado")
         }
-        setTextoContagem(minutos+":"+segundos);
     }
 
     function toggleRelogio() {
-        if (running==true) {
-            running = false;
-            window.clearInterval(intervalo);
-        } else {
-            running = true;
-            intervalo = window.setInterval(() => contagemRegressiva(), 1000);
-        }
-        
+        setRunning(!running);
     }
 
     useEffect(() => {
-        const intervalo = window.setInterval(() => contagemRegressiva(), 1000);
+        const intervalo = window.setInterval(() => contagemRegressiva(), 300);
         return () => {
             window.clearInterval(intervalo);
         };
@@ -115,7 +118,10 @@ const telaNotificacoes = (props) => {
         return (
             <View style={styles.container}>
                 <View style={styles.visualizador}>
-                    <Image source={require("./img/gatoestudando.png")} style={styles.imagem} />
+                    <View style={{marginTop: "5%", borderRadius: 60, width: "90%", aspectRatio: 1, backgroundColor: "black", justifyContent: "center", alignItems: "center"}}>
+                        <View style={{borderRadius: 43, width: "83%", backgroundColor: "lime", aspectRatio: 1}}></View>
+                    </View>
+                    {/* <Image source={require("./img/gatoestudando.png")} style={styles.imagem} /> */}
                     <Text style={styles.textoContador}>{textoContagem}</Text>
                 </View>
                 <TouchableNativeFeedback onPress={() => toggleRelogio()} style={styles.botao}>
@@ -158,7 +164,8 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         alignItems: "center",
         paddingTop: "5%",
-        backgroundColor: "#C4C4C4",
+        // backgroundColor: "#C4C4C4",
+        backgroundColor: "lime",
     },
     botao: {
         width: 0.8 * largura,
