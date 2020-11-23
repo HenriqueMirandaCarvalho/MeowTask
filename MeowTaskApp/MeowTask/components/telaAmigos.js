@@ -7,6 +7,7 @@ import { Amigo } from './amigo.js';
 import { AmigoModal } from './amigosmodal';
 import Conexao from './classes/Conexao.js';
 import * as firebase from 'firebase';
+import * as admin from 'firebase-admin';
 
 const telaAmigo = (props) => {
     const meuCodigo = firebase.auth().currentUser.uid;
@@ -35,7 +36,7 @@ const telaAmigo = (props) => {
     }
 
     function adicionarAmigo() {
-        return "";
+        admin.auth().getUser(firebase.auth().currentUser.uid).then(() => console.log("a"));
     }
 
     let [fontsLoaded] = useFonts({
