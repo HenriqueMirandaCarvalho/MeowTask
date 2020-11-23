@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import Conexao from './classes/Conexao.js';
 import * as firebase from 'firebase';
 
 const telaDescricao = (props) => {

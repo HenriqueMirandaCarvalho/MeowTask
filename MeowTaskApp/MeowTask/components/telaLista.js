@@ -1,72 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Modal, TouchableWithoutFeedback, TextInput } from "react-native";
 import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import {Item} from './item.js';
+import * as firebase from 'firebase';
 
 
 const telaLista = (props) => {
+    let idGrupo = props.navigation.state.params.idGrupo;
+    let idTarefa = props.navigation.state.params.idTarefa;
 
-    const [itens, setItens] = useState([
-        {
-            id: "0",
-            check: false,
-            textoItemLista: "tarefa 1",
-        },
-        {
-            id: "1",
-            check: false,
-            textoItemLista: "tarefa 2",
-        },
-        {
-            id: "2",
-            check: true,
-            textoItemLista: "tarefa 3",
-        },
-        {
-            id: "3",
-            check: true,
-            textoItemLista: "tarefa 4",
-        },
-        {
-            id: "4",
-            check: true,
-            textoItemLista: "tarefa 5",
-        },
-        {
-            id: "5",
-            check: true,
-            textoItemLista: "tarefa 6",
-        },
-        {
-            id: "6",
-            check: true,
-            textoItemLista: "tarefa 7",
-        },
-        {
-            id: "7",
-            check: true,
-            textoItemLista: "tarefa 8",
-        },
-        {
-            id: "8",
-            check: true,
-            textoItemLista: "tarefa 9",
-        },
-        {
-            id: "9",
-            check: true,
-            textoItemLista: "tarefa 10",
-        },
-    ]);
+    const [itens, setItens] = useState([]);
     const [modalEditarVisivel, setModalEditarVisivel] = useState(false);
     const [modalCriarVisivel, setModalCriarVisivel] = useState(false);
     const [guardaTexto, setGuardaTexto] = useState();
     const [guardaNovoTexto, setGuardaNovoTexto] = useState();
     const [guardaId, setGuardaId] = useState();
 
-    const [refrescando, setRefrescando] = useState(false);
+    const [refresco, setRefresco] = useState(false);
 
     function refrescar(){
         setRefrescando(true);
@@ -92,8 +44,16 @@ const telaLista = (props) => {
                 return item;
             }
             return item;
-        })
+        });
         setItens(NewData);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(idTarefa)
+            .update({
+                lista: itens
+            });
     }
 
     function toggleModalEditar(id, texto) {
@@ -103,14 +63,23 @@ const telaLista = (props) => {
     }
     
     function editarItem(_id) {
+        setRefresco(true);
         const NewData = itens.map( item => {
             if(item.id === _id){
-                item.textoItemLista = guardaTexto;
+                item.texto = guardaTexto;
                 return item;
             }
             return item;
         })
         setItens(NewData);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(idTarefa)
+            .update({
+                lista: itens
+            }).then(() => setRefresco(false));
     }
 
     function deletarItem(_id) {
@@ -128,6 +97,20 @@ const telaLista = (props) => {
         )
         setItens([...itens]);
     }
+
+    useEffect(() => {
+        setRefresco(true);
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(idTarefa)
+            .onSnapshot(snapshot => {
+                setItens(snapshot.data().lista);
+                setRefresco(false);
+            });
+        return () => listener();
+    }, []);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -236,14 +219,14 @@ const telaLista = (props) => {
                 <FlatList
                     data={itens}
                     keyExtractor={item=>item.id}
-                    refreshing={refrescando}
-                    onRefresh={() => refrescar()}
+                    refreshing={refresco}
+                    onRefresh={() => {}}
                     renderItem={({item})=>
                         <Item 
                             check={item.check}
                             onPress={() => checkar(item.id)}
-                            onLongPress={() => toggleModalEditar(item.id, item.textoItemLista)}
-                            texto={item.textoItemLista}
+                            onLongPress={() => toggleModalEditar(item.id, item.texto)}
+                            texto={item.texto}
                         />
                     }
                     style={{width: "100%"}}

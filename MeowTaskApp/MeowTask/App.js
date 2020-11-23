@@ -11,6 +11,7 @@ import telaAmigos from './components/telaAmigos';
 import telaDescricao from './components/telaDescricao';
 import telaArquivos from './components/telaArquivos';
 import telaPostagens from './components/telaPostagens';
+import telaLista from './components/telaLista';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -90,6 +91,12 @@ const RootStack = createStackNavigator({
 		},
 		Postagens: {
 			screen: telaPostagens,
+			navigationOptions: {
+				headerShown: false,
+			}
+		},
+		Lista: {
+			screen: telaLista,
 			navigationOptions: {
 				headerShown: false,
 			}

@@ -19,7 +19,10 @@ const telaTarefa = (props) => {
     }
 
     function btnLista() {
-        alert("Lista");
+        props.navigation.navigate("Lista", {
+            idGrupo: idGrupo,
+            idTarefa: idTarefa
+        });
     }
 
     function btnArquivos() {
