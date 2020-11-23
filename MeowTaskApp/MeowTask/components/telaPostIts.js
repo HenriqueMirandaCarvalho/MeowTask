@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Alert, View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Modal, TouchableWithoutFeedback, TextInput } from "react-native";
 import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import {PostIt} from './postit.js';
-import Conexao from './classes/Conexao.js';
+import * as firebase from 'firebase';
 
 
 const telaPostIts = (props) => {
@@ -13,18 +13,12 @@ const telaPostIts = (props) => {
     const [modalEditarVisivel, setModalEditarVisivel] = useState(false);
     const [guardaTexto, setGuardaTexto] = useState();
     const [guardaId, setGuardaId] = useState();
-    const [loading, setLoading] = useState(true);
 
     function voltar() {
         props.navigation.goBack();
     }
 
-    const [refrescando, setRefrescando] = useState(false);
-
-    function refrescar(){
-        setRefrescando(true);
-        carregarPotsIts();
-    }
+    const [refresco, setRefresco] = useState(false);
 
     function toggleModalEditar(id, texto) {
         setModalEditarVisivel(true);
@@ -33,36 +27,39 @@ const telaPostIts = (props) => {
     }
     
     function editarItem(_id) {
-        setLoading(true);
-        let conn = new Conexao();
-        conn.alterarPostIt(_id, guardaTexto).then(() => carregarPotsIts())
-        .catch((error) => {
-            Alert.alert("Erro", error);
-            carregarPotsIts();
-            setLoading(false);
-        });
+        setRefresco(true);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("PostIts")
+            .doc(_id)
+            .set({
+                descricao: guardaTexto,
+                data: new Date().getTime()
+            }).then(() => { setRefresco(false); });
     }
 
     function deletarItem(_id) {
-        setLoading(true);
-        let conn = new Conexao();
-        conn.deleteDocFromCollection(_id, "PostIts").then(() => carregarPotsIts())
-        .catch((error) => {
-            Alert.alert("Erro", error);
-            carregarPotsIts();
-            setLoading(false);
-        });
+        setRefresco(true)
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("PostIts")
+            .doc(_id)
+            .delete()
+            .then(() => setRefresco(false));
     }
 
     function criarItem() {
-        setLoading(true);
-        let conn = new Conexao();
-        conn.criarPostIt(idGrupo).then(() => carregarPotsIts())
-        .catch((error) => {
-            Alert.alert("Erro", error);
-            carregarPotsIts();
-            setLoading(false);
-        });
+        setRefresco(true);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("PostIts")
+            .add({
+                descricao: "",
+                data: new Date().getTime()
+            }).then(() => { setRefresco(false); });
     }
 
     let [fontsLoaded] = useFonts({
@@ -70,44 +67,36 @@ const telaPostIts = (props) => {
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
     });
 
-    const [loadedPostIts, setLoadPostIts] = useState(false);
-
-    function carregarPotsIts() {
-        let conn = new Conexao();
-        conn.getPostItsByGrupoId(idGrupo)
-            .catch((error) => {
-                Alert.alert("Erro", error);
-                setLoading(false);
-            })
-            .then((obj) => {
-                setPostIts(obj);
-                setLoading(false);
-                setRefrescando(false);
+    useEffect(() => {
+        setRefresco(true);
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("PostIts")
+            .orderBy('data', 'desc')
+            .onSnapshot(snapshot => {
+                const postIts = snapshot.docs.map(doc => {
+                    const postIt = doc.data();
+                    postIt.id = doc.id;
+                    return postIt;
+                });
+                if (postIts[0] != undefined) {
+                    setPostIts(postIts);
+                    if (!postIts.includes(guardaId))
+                        setModalEditarVisivel(false);
+                }
+                else
+                    setPostIts([]);
+                setRefresco(false);
             });
-        setLoadPostIts(true);
-    }
-
-    if (!loadedPostIts) {
-        carregarPotsIts();
-    }
+        return () => listener();
+    }, []);
         
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
     return (
         <View style={styles.container}>
-            <Modal 
-                visible={loading}
-                animationType="fade"
-                transparent={true}
-            >
-                <View style={styles.centeredViewCarregar}>
-                    <View style={styles.modalCarregar}>
-                        <ActivityIndicator size={70} color="#53A156"/>
-                    </View>
-                </View>
-            </Modal>
-
             <Modal
                 animationType="fade"
                 transparent={true}
@@ -168,8 +157,8 @@ const telaPostIts = (props) => {
                 <FlatList
                     data={postIts}
                     keyExtractor={item=>item.id}
-                    refreshing={refrescando}
-                    onRefresh={() => refrescar()}
+                    refreshing={refresco}
+                    onRefresh={() => {}}
                     renderItem={({item})=>
                         <PostIt 
                             onPress={() => toggleModalEditar(item.id, item.descricao)}
@@ -189,6 +178,9 @@ const telaPostIts = (props) => {
                             )
                         }
                     }
+                        ListEmptyComponent={() =>
+                            <Text style={{alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20}}>Nenhum Post-it!</Text>
+                        }
                 />
             </View>
         </View>
@@ -316,28 +308,6 @@ const styles = StyleSheet.create({
     delete: {
         marginRight: "3.3%",
         marginTop: "4%",
-    },
-    centeredViewCarregar: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: 'rgba(52, 52, 52, 0.6)',
-    },
-    modalCarregar: {
-        width: "30%",
-        aspectRatio: 1,
-        backgroundColor: "#ededed",
-        borderRadius: 20,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        justifyContent: "center",
     }
 });
 

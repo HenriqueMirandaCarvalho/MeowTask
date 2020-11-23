@@ -8,38 +8,81 @@ import {
     TouchableOpacity,
     StatusBar,
     Alert,
+    Modal,
+    ActivityIndicator
 } from "react-native";
+import Dialog from 'react-native-dialog';
 import { FontAwesome } from "@expo/vector-icons";
 import { AppLoading } from "expo";
 import { useFonts } from "expo-font";
-import Usuario from './classes/Usuario.js';
-import Conexao from './classes/Conexao.js'
+import * as firebase from 'firebase';
 
 const telaLogin = (props) => {
-    function btnEsqueci() {
-        try {
-            let user = new Usuario();
-            user.setEmail(inputEmail);
-            let conn = new Conexao();
-            conn.esqueciUsuario(user).then((obj) => {
-                Alert.alert("Aviso", "Confira seu email!");
+    const [loading, setLoading] = useState(false);
+
+    function esqueciMinhaSenha(email) {
+        setLoading(true);
+        firebase.auth().sendPasswordResetEmail(email)
+            .then(() => {
+                setEsqueci(false);
+                setLoading(false);
+                Alert.alert("Aviso", "Redefinição de senha enviada para seu email!");
+            })
+            .catch(error => {
+                setLoading(false);
+                switch (error.code) {
+                    case "auth/invalid-email":
+                        Alert.alert("Erro", "Email inválido!");
+                        break;
+                    case "auth/user-not-found":
+                        Alert.alert("Erro", "Usuário não encontrado!");
+                        break;
+                    case "auth/too-many-requests":
+                        Alert.alert("Erro", "Muitas tentativas!");
+                        break;
+                    default:
+                        Alert.alert("Erro", "Erro desconhecido! (código do erro: " + error.code + ")");
+                        break;
+                }
             });
-        } catch (err) {
-            Alert.alert("Erro", err.toString());
-        }
     }
     function btnEntrar() {
-        try {
-            let user = new Usuario();
-            user.setEmail(inputEmail);
-            user.setSenha(inputSenha);
-            let conn = new Conexao();
-            conn.entrarUsuario(user).then((obj) => {
-                props.navigation.navigate("Home");
+        setLoading(true);
+        firebase.auth().signInWithEmailAndPassword(inputEmail, inputSenha)
+            .then(() => {
+                if (firebase.auth().currentUser.emailVerified) {
+                    setLoading(false);
+                    props.navigation.navigate("Home");
+                }
+                else {
+                    setLoading(false);
+                    firebase.auth().signOut();
+                    Alert.alert("Aviso", "Seu email não está verificado!");
+                }
+            })
+            .catch(error => {
+                setLoading(false);
+                switch (error.code) {
+                    case "auth/invalid-email":
+                        Alert.alert("Erro", "Email inválido!");
+                        break;
+                    case "auth/user-disabled":
+                        Alert.alert("Erro", "Usuário desabilitado!");
+                        break;
+                    case "auth/user-not-found":
+                        Alert.alert("Erro", "Usuário não encontrado!");
+                        break;
+                    case "auth/wrong-password":
+                        Alert.alert("Erro", "Senha incorreta!");
+                        break;
+                    case "auth/too-many-requests":
+                        Alert.alert("Erro", "Muitas tentativas!");
+                        break;
+                    default:
+                        Alert.alert("Erro", "Erro desconhecido! (código do erro: " + error.code + ")");
+                        break;
+                }
             });
-        } catch (err) {
-            Alert.alert("Erro", err.toString());
-        }
     }
     function btnCriarConta() {
         props.navigation.navigate("Cadastro");
@@ -59,6 +102,8 @@ const telaLogin = (props) => {
     const [inputSenha, setInputSenha] = useState("");
     const [iconeSenha, setIconeSenha] = useState("eye");
     const [senhaOculta, setSenhaOculta] = useState(true);
+    const [esqueci, setEsqueci] = useState(false);
+    const [emailEsqueci, setEmailEsqueci] = useState("");
 
     let [fontsLoaded] = useFonts({
         "Roboto-Light": require("./font/Roboto-Light.ttf"),
@@ -70,6 +115,22 @@ const telaLogin = (props) => {
     } else {
         return (
             <View style={styles.container}>
+                <Dialog.Container visible={esqueci}>
+                    <Dialog.Title>Recuperar Senha</Dialog.Title>
+                    <Dialog.Input label="Insira seu E-mail" wrapperStyle={styles.input} onChangeText={(email) => setEmailEsqueci(email)}></Dialog.Input>
+                    <Dialog.Button label="Enviar" onPress={() => esqueciMinhaSenha(emailEsqueci)}></Dialog.Button>
+                </Dialog.Container>
+                <Modal
+                    visible={loading}
+                    animationType="fade"
+                    transparent={true}
+                >
+                    <View style={styles.centeredViewCarregar}>
+                        <View style={styles.modalCarregar}>
+                            <ActivityIndicator size={70} color="#53A156" />
+                        </View>
+                    </View>
+                </Modal>
                 <Text style={styles.titulo}>Login</Text>
 
                 <View style={styles.div}>
@@ -94,7 +155,7 @@ const telaLogin = (props) => {
                             <FontAwesome name={iconeSenha} size={24} color="#5B5B58" />
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPress={btnEsqueci} style={styles.botaoEsqueci}>
+                    <TouchableOpacity onPress={() => setEsqueci(true)} style={styles.botaoEsqueci}>
                         <View>
                             <Text style={styles.textoEsqueci}>Esqueci minha senha</Text>
                         </View>
@@ -113,7 +174,7 @@ const telaLogin = (props) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                <StatusBar translucent backgroundColor={'#eae6da'}/>
+                <StatusBar translucent backgroundColor={'#eae6da'} />
             </View>
         );
     }
@@ -191,6 +252,28 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
+    centeredViewCarregar: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    },
+    modalCarregar: {
+        width: "30%",
+        aspectRatio: 1,
+        backgroundColor: "#ededed",
+        borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent: "center",
+    }
 });
 
 export default telaLogin;

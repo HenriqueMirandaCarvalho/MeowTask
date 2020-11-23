@@ -7,13 +7,15 @@ import * as firebase from 'firebase';
 
 const telaInicio = (props) => {  
     function btnComecar() {
-        props.navigation.navigate('Home');
+        props.navigation.navigate('Cadastro');
     }
     function btnLogar() {
         props.navigation.navigate('Login');
     }
     function btnContinuar() {
-        alert("continuar");
+        props.navigation.navigate('Home', {
+            naoLogado: true
+        });
     }
     
     let [fontsLoaded] = useFonts({

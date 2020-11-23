@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { Alert, View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar, Modal, ActivityIndicator} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Image, TouchableNativeFeedback } from "react-native";
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import Conexao from './classes/Conexao.js';
-import { TouchableOpacity } from "react-native-gesture-handler";
+import * as firebase from 'firebase';
 
 const telaGrupo = (props) => {
     const idGrupo = props.navigation.state.params.idGrupo;
@@ -56,46 +55,27 @@ const telaGrupo = (props) => {
 
     const [corEstrela, setCorEstrela] = useState('#BBBBBB');
     const [statusEstrela, setStatusEstrela] = useState('false'); // true = ativado (amarela)
-    const [loadedGrupo, setLoadGrupo] = useState(false);
-    const [loading, setLoading] = useState(true);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
     });
-    
-    function carregarGrupo() {
-        let conn = new Conexao();
-        conn.getGrupoById(idGrupo)
-        .catch((error) => {
-            Alert.alert("Erro", error.message);
-        })
-        .then((obj) => {
-            setNomeGrupo(obj.nome);
-            setImagem(obj.imagem);
-            setLoading(false);
-        });
-        setLoadGrupo(true);
-    }
-    if (!loadedGrupo) {
-        carregarGrupo();
-    }
+
+    useEffect(() => {
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .onSnapshot(snapshot => {
+                setNomeGrupo(snapshot.data().nome);
+                setImagem(snapshot.data().imagem);
+            });
+        return () => listener();
+    }, []);
         
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
     return (
         <View style={styles.container}>
-            <Modal 
-                visible={loading}
-                animationType="fade"
-                transparent={true}
-            >
-                <View style={styles.centeredViewCarregar}>
-                    <View style={styles.modalCarregar}>
-                        <ActivityIndicator size={70} color="#53A156"/>
-                    </View>
-                </View>
-            </Modal>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
                     <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
@@ -209,28 +189,6 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Light",
         fontSize: 20,
         marginLeft: "3%",
-    },
-    centeredViewCarregar: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: 'rgba(52, 52, 52, 0.6)',
-    },
-    modalCarregar: {
-        width: "30%",
-        aspectRatio: 1,
-        backgroundColor: "#ededed",
-        borderRadius: 20,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        justifyContent: "center",
     }
 });
 

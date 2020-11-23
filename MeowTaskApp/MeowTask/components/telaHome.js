@@ -17,13 +17,14 @@ import { AntDesign, Octicons, Ionicons, FontAwesome, Entypo } from '@expo/vector
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { useState } from "react";
-import Conexao from "./classes/Conexao.js";
+import * as firebase from 'firebase';
 
 const telaHome = (props) => {
-    const [username, setUsername] = useState("...");
-    const [avatar, setAvatar] = useState(0);
+    const user = firebase.auth().currentUser;
+    const [username, setUsername] = useState(user.displayName);
+    const [avatar, setAvatar] = useState(user.photoURL);
     const [modalConfigVisivel, setModalConfigVisivel] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const imagensUsuario = [];
     imagensUsuario.push(require("./img/turquesa10.png"));
@@ -97,21 +98,6 @@ const telaHome = (props) => {
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
         'Merienda-Regular': require('./font/Merienda-Regular.ttf'),
     });
-        
-    function loadUserData() {
-        let conn = new Conexao();
-        conn.getUserInfo().then((user) => {
-            setUsername(user.username);
-            setAvatar(user.imagem);
-            setLoading(false);
-        })
-        .catch((err) => {
-            Alert.alert("Erro", err);
-            setUsername("Não logado");
-        });
-    }
-
-    loadUserData();
 
     if (!fontsLoaded) {
         return <AppLoading />;

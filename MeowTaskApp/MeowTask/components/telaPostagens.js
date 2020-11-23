@@ -1,22 +1,23 @@
-import React, { useState } from "react";
-import {View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Modal, TouchableWithoutFeedback, TextInput, Dimensions } from "react-native";
-import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons'; 
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Modal, TouchableWithoutFeedback, TextInput, Dimensions, Alert } from "react-native";
+import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import {Postagem} from './postagem.js';
+import { Postagem } from './postagem.js';
+import * as firebase from 'firebase';
 
 const altura = Dimensions.get('window').height;
 
 const telaPostagens = (props) => {
+    const idGrupo = props.navigation.state.params.idGrupo;
 
-    const [postagens, setPostagens] = useState([
-        {
-            id: "0",
-            avatarPostador: require('./img/turquesa10.png'),
-            nomePostador: "fulano",
-            texto: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam convallis nisl ac eleifend interdum. Sed tellus orci, rutrum vel interdum consectetur, convallis id quam. In vitae hendrerit velit. Donec in urna eget ex tempus lacinia. Quisque euismod pulvinar urna, id efficitur orci porttitor sit amet. Vestibulum hendrerit pretium erat. Cras dignissim dignissim egestas. Aliquam erat volutpat.",
-        },
-    ]);
+    const imagensUsuario = [];
+    imagensUsuario.push(require("./img/turquesa10.png"));
+    imagensUsuario.push(require("./img/gato1.png"));
+    imagensUsuario.push(require("./img/gato2.png"));
+    imagensUsuario.push(require("./img/gato3.png"));
+
+    const [postagens, setPostagens] = useState([]);
     const [modalEditarVisivel, setModalEditarVisivel] = useState(false);
     const [modalCriarVisivel, setModalCriarVisivel] = useState(false);
     const [guardaTexto, setGuardaTexto] = useState();
@@ -27,9 +28,9 @@ const telaPostagens = (props) => {
         alert("voltar");
     }
 
-    const [refrescando, setRefrescando] = useState(false);
+    const [refresco, setRefresco] = useState(false);
 
-    function refrescar(){
+    function refrescar() {
         setRefrescando(true);
         alert("olha o refresco!");
     }
@@ -43,10 +44,10 @@ const telaPostagens = (props) => {
         setGuardaId(id);
         setGuardaTexto(texto);
     }
-    
+
     function editarItem(_id) {
-        const NewData = postagens.map( item => {
-            if(item.id === _id){
+        const NewData = postagens.map(item => {
+            if (item.id === _id) {
                 item.texto = guardaTexto;
                 return item;
             }
@@ -56,130 +57,168 @@ const telaPostagens = (props) => {
     }
 
     function deletarItem(_id) {
-        const NewData = postagens.filter(item => item.id !== _id);
-        setPostagens(NewData);
+        setRefresco(true);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Postagens")
+            .doc(_id)
+            .delete()
+            .then(() => { setRefresco(false); });
     }
 
     function postar() {
-        postagens.push(
-            {
-                id: postagens.length,
-                avatarPostador: require('./img/turquesa10.png'),
-                nomePostador: "fulano",
-                texto: guardaNovoTexto,
-            }
-        )
-        setPostagens([...postagens]);
-        setGuardaNovoTexto("");
+        if (guardaNovoTexto != "") {
+            setRefresco(true);
+            firebase.firestore()
+                .collection("Grupos")
+                .doc(idGrupo)
+                .collection("Postagens")
+                .add({
+                    nomePostador: firebase.auth().currentUser.displayName,
+                    avatarPostador: firebase.auth().currentUser.photoURL,
+                    texto: guardaNovoTexto,
+                    data: new Date().getTime()
+                })
+                .then(() => {
+                    setGuardaNovoTexto("");
+                    setRefresco(false);
+                });
+        }
     }
+
+    useEffect(() => {
+        setRefresco(true);
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Postagens")
+            .orderBy('data', 'desc')
+            .onSnapshot(snapshot => {
+                const postagens = snapshot.docs.map(doc => {
+                    const postagem = doc.data();
+                    postagem.id = doc.id;
+                    return postagem;
+                });
+                if (postagens[0] != undefined)
+                    setPostagens(postagens);
+                else
+                    setPostagens([]);
+                setRefresco(false);
+            });
+        return () => listener();
+    }, []);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
     });
-        
+
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
-    return (
-        <View style={styles.container}>
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalEditarVisivel}
-                onRequestClose={() => {
-                    setModalEditarVisivel(false);
-                }}
-            >
-                <View style={styles.modalEditarView}>
-                    <View style={styles.overlayXzinho}>
-                        <TouchableOpacity style={styles.Xzinho} onPress={() => setModalEditarVisivel(false)}>
-                            <AntDesign name="close" size={30} color="#5b5b58"/>
+        return (
+            <View style={styles.container}>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalEditarVisivel}
+                    onRequestClose={() => {
+                        setModalEditarVisivel(false);
+                    }}
+                >
+                    <View style={styles.modalEditarView}>
+                        <View style={styles.overlayXzinho}>
+                            <TouchableOpacity style={styles.Xzinho} onPress={() => setModalEditarVisivel(false)}>
+                                <AntDesign name="close" size={30} color="#5b5b58" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.overlayDelete}>
+                            <TouchableOpacity onPress={() => { deletarItem(guardaId), setModalEditarVisivel(false) }}>
+                                <FontAwesome5 name="trash-alt" size={24} color="#5b5b58" style={styles.delete} />
+                            </TouchableOpacity>
+                        </View>
+
+                        <Text style={styles.textoTituloModal}>Editar</Text>
+
+                        <TextInput
+                            style={styles.input}
+                            textContentType="none"
+                            returnKeyType="done"
+                            textAlign="justify"
+                            defaultValue={guardaTexto}
+                            multiline
+                            maxLength={300}
+                            onChangeText={(texto) => setGuardaTexto(texto)}
+                        />
+
+                        <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => { editarItem(guardaId), setModalEditarVisivel(false) }}>
+                            <Text style={styles.textoBotaoSalvarModalEditar}>Salvar</Text>
                         </TouchableOpacity>
                     </View>
+                </Modal>
 
-                    <View style={styles.overlayDelete}>
-                        <TouchableOpacity onPress={() => {deletarItem(guardaId), setModalEditarVisivel(false)}}>
-                            <FontAwesome5 name="trash-alt" size={24} color="#5b5b58" style={styles.delete}/>
+                <View style={styles.cabecalho}>
+                    <View style={styles.divSetinha}>
+                        <TouchableOpacity onPress={() => voltar()}>
+                            <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha} />
                         </TouchableOpacity>
                     </View>
-                    
-                    <Text style={styles.textoTituloModal}>Editar</Text>
-
-                    <TextInput 
-                        style={styles.input}
+                    <View style={styles.divTitulo}>
+                        <Text style={styles.titulo}>Postagens</Text>
+                    </View>
+                </View>
+                <View style={styles.conteudo}>
+                    <FlatList
+                        data={postagens}
+                        keyExtractor={item => item.id}
+                        refreshing={refresco}
+                        onRefresh={() => { }}
+                        renderItem={({ item }) =>
+                            <Postagem
+                                avatarPostador={imagensUsuario[item.avatarPostador]}
+                                nomePostador={item.nomePostador}
+                                texto={item.texto}
+                                onLongPress={() => toggleModalEditar(item.id, item.texto)}
+                            />
+                        }
+                        ListEmptyComponent={() =>
+                            <Text style={{alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20}}>Nenhuma postagem!</Text>
+                        }
+                        style={{ width: "100%" }}
+                    />
+                </View>
+                <View style={styles.rodape}>
+                    <TextInput
+                        style={styles.inputPostar}
                         textContentType="none"
                         returnKeyType="done"
-                        textAlign="justify"
-                        defaultValue={guardaTexto}
+                        textAlign="left"
                         multiline
                         maxLength={300}
-                        onChangeText={(texto) => setGuardaTexto(texto)}
+                        value={guardaNovoTexto}
+                        onChangeText={(texto) => setGuardaNovoTexto(texto)}
                     />
-
-                    <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => {editarItem(guardaId), setModalEditarVisivel(false)}}>
-                        <Text style={styles.textoBotaoSalvarModalEditar}>Salvar</Text>
+                    <TouchableOpacity onPress={() => postar()}>
+                        <AntDesign name="smileo" size={40} color="white" />
                     </TouchableOpacity>
                 </View>
-            </Modal>
-
-            <View style={styles.cabecalho}>
-                <View style={styles.divSetinha}>
-                    <TouchableOpacity onPress={() => voltar()}>
-                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.divTitulo}>
-                    <Text style={styles.titulo}>Postagens</Text>
-                </View>
             </View>
-            <View style={styles.conteudo}>
-                <FlatList
-                    data={postagens}
-                    keyExtractor={item=>item.id}
-                    refreshing={refrescando}
-                    onRefresh={() => refrescar()}
-                    renderItem={({item})=>
-                        <Postagem 
-                            avatarPostador={item.avatarPostador}
-                            nomePostador={item.nomePostador}
-                            texto={item.texto}
-                            onLongPress={() => toggleModalEditar(item.id, item.texto)}
-                        />
-                    }
-                    style={{width: "100%"}}
-                />
-            </View>
-            <View style={styles.rodape}>
-                <TextInput 
-                    style={styles.inputPostar}
-                    textContentType="none"
-                    returnKeyType="done"
-                    textAlign="center"
-                    multiline
-                    maxLength={300}
-                    value={guardaNovoTexto}
-                    onChangeText={(texto) => setGuardaNovoTexto(texto)}
-                />
-                <TouchableOpacity onPress={() => postar()}>
-                    <AntDesign name="smileo" size={40} color="white"/>
-                </TouchableOpacity>
-            </View>
-        </View>
-    );  
-    }  
+        );
+    }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-		flexDirection: 'column',
-		backgroundColor: '#EAE6DA',
+        flexDirection: 'column',
+        backgroundColor: '#EAE6DA',
         alignItems: 'center',
     },
     cabecalho: {
         // height: '11%',
-        height: altura*0.11,
+        height: altura * 0.11,
         flexDirection: 'row',
         alignItems: 'flex-end',
     },
@@ -210,8 +249,8 @@ const styles = StyleSheet.create({
         // backgroundColor: "royalblue",
     },
     rodape: {
-        minHeight: altura*0.11,
-        maxHeight: altura*0.21,
+        minHeight: altura * 0.11,
+        maxHeight: altura * 0.21,
         width: "100%",
         backgroundColor: "#A4A4A4",
         flexDirection: "row",
@@ -220,7 +259,7 @@ const styles = StyleSheet.create({
     },
     inputPostar: {
         width: '70.5%',
-        minHeight: altura*0.066,
+        minHeight: altura * 0.066,
         maxHeight: "90%",
         backgroundColor: "#C4C4C4",
         borderRadius: 10,
@@ -229,7 +268,7 @@ const styles = StyleSheet.create({
     },
     rodapeLista: {
         marginTop: "8%",
-        alignSelf:'stretch',
+        alignSelf: 'stretch',
     },
     botoesRodapeLista: {
         flexDirection: "row",
@@ -259,8 +298,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
-          width: 0,
-          height: 2
+            width: 0,
+            height: 2
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,

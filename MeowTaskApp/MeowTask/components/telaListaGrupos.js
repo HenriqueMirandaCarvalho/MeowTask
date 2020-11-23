@@ -1,12 +1,11 @@
-import React, { useState, version } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, FlatList, Modal, TouchableWithoutFeedback, TextInput, Image, SafeAreaView, ActivityIndicator } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Grupo } from './grupo.js';
 import { AmigoModal } from './amigosmodal';
-import GrupoClasse from './classes/Grupo.js';
-import Conexao from './classes/Conexao.js';
+import * as firebase from 'firebase';
 
 const telaListaGrupos = (props) => {
     const [modalEntrarVisivel, setModalEntrarVisivel] = useState(false);
@@ -31,13 +30,6 @@ const telaListaGrupos = (props) => {
         props.navigation.goBack();
     }
 
-    const [refrescando, setRefrescando] = useState(false);
-
-    function refrescar(){
-        setRefrescando(true);
-        carregarGrupos();
-    }
-
     function trocarTela(id) {
         props.navigation.navigate('Grupo', {
             idGrupo: id
@@ -50,21 +42,26 @@ const telaListaGrupos = (props) => {
     }
 
     function criarGrupo() {
-        try {
-            setLoading(true);
-            let grupo = new GrupoClasse();
-            grupo.setNome(inputNomeGrupo);
-            grupo.setImagem(inputImagem);
-            let conn = new Conexao();
-            conn.cadastrarGrupo(grupo).then((data) => {
-                Alert.alert("Aviso", "Grupo criado com sucesso!");
-                toggleModalCriar();
-                carregarGrupos();
-                setLoading(false);
-            });
-        } catch (err) {
-            Alert.alert("Erro", err);
+        setLoading(true);
+        if (inputNomeGrupo.length >= 5 && inputNomeGrupo.length <= 20) {
+            firebase.firestore()
+                .collection('Grupos')
+                .add({
+                    nome: inputNomeGrupo,
+                    imagem: inputImagem,
+                    dono: firebase.auth().currentUser.uid,
+                    membros: [firebase.auth().currentUser.uid],
+                    data: new Date().getTime()
+                })
+                .then((data) => {
+                    toggleModalCriar();
+                    setLoading(false);
+                    Alert.alert("Aviso", "Grupo criado com sucesso!");
+                });
+        }
+        else {
             setLoading(false);
+            Alert.alert("Erro", "O nome do grupo deve ter entre 5 e 20 caracteres!");
         }
     }
 
@@ -73,27 +70,41 @@ const telaListaGrupos = (props) => {
     }
 
     function entrarGrupo() {
-        try {
-            setLoading(true);
-            let conn = new Conexao();
-            if (inputCodigo == "") {
-                throw "Código não pode estar vazio!";
-            }
-            if (inputCodigo.length <= 5) {
-                throw "Código deve ter ao menos 5 caracteres!";
-            }
-            conn.entrarGrupo(inputCodigo).then(() => {
-                Alert.alert("Aviso", "Entrou no grupo!");
-                toggleModalEntrar();
-                carregarGrupos();
-                setLoading(false);
-            }).catch((erro) => {
-                Alert.alert("Erro", erro);
-                setLoading(false);
-            });
-        } catch (err) {
-            Alert.alert("Erro", err);
+        setLoading(true);
+        if (inputCodigo.length >= 5) {
+            let grupo = null;
+            firebase.firestore()
+                .collection("Grupos")
+                .doc(inputCodigo)
+                .get()
+                .then(snapshot => {
+                    grupo = snapshot.data();
+                    if (grupo.membros.includes(firebase.auth().currentUser.uid)) {
+                        setLoading(false);
+                        Alert.alert("Erro", "Você já está nesse grupo!");
+                    }
+                    else {
+                        grupo.membros.push(firebase.auth().currentUser.uid);
+                        firebase.firestore()
+                            .collection("Grupos")
+                            .doc(inputCodigo)
+                            .update({
+                                membros: grupo.membros
+                            })
+                            .then(() => {
+                                toggleModalEntrar();
+                                setLoading(false);
+                            });
+                    }
+                })
+                .catch(err => {
+                    setLoading(false);
+                    Alert.alert("Erro", "Grupo não encontrado!");
+                });
+        }
+        else {
             setLoading(false);
+            Alert.alert("Erro", "Código deve ter ao menos 5 caracteres!");
         }
     }
 
@@ -113,8 +124,8 @@ const telaListaGrupos = (props) => {
 
     const [grupos, setGrupos] = useState([]);
     const [amigos, setAmigos] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [loadedGrupos, setLoadGrupos] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [refresco, setRefresco] = useState(false);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -122,22 +133,28 @@ const telaListaGrupos = (props) => {
         'Merienda-Regular': require('./font/Merienda-Regular.ttf'),
     });
 
-    function carregarGrupos() {
-        let conn = new Conexao();
-        conn.getGruposByUserId()
-            .catch((error) => {
-                Alert.alert("Erro", error.message);
-            })
-            .then((obj) => {
-                setGrupos(obj);
-                setLoading(false);
-                setRefrescando(false);
+    useEffect(() => {
+        setRefresco(true);
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .orderBy('data', 'desc')
+            .onSnapshot(snapshot => {
+                const grupos = snapshot.docs.map(doc => {
+                    const grupo = doc.data();
+                    if (grupo.membros.includes(firebase.auth().currentUser.uid)) {
+                        grupo.id = doc.id;
+                        return grupo;
+                    }
+                });
+                if (grupos[0] != undefined)
+                    setGrupos(grupos);
+                else
+                    setGrupos([]);
+                setRefresco(false);
             });
-        setLoadGrupos(true);
-    }
-    if (!loadedGrupos) {
-        carregarGrupos();
-    }
+        return () => listener();
+    }, []);
+
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
@@ -178,14 +195,14 @@ const telaListaGrupos = (props) => {
                     </View>
                 </Modal>
 
-                <Modal 
+                <Modal
                     visible={loading}
                     animationType="fade"
                     transparent={true}
                 >
                     <View style={styles.centeredViewCarregar}>
                         <View style={styles.modalCarregar}>
-                            <ActivityIndicator size={70} color="#53A156"/>
+                            <ActivityIndicator size={70} color="#53A156" />
                         </View>
                     </View>
                 </Modal>
@@ -265,8 +282,8 @@ const telaListaGrupos = (props) => {
                     <FlatList
                         data={grupos}
                         keyExtractor={item => item.id}
-                        refreshing={refrescando}
-                        onRefresh={() => refrescar()}
+                        refreshing={refresco}
+                        onRefresh={() => {}}
                         renderItem={({ item }) =>
                             <Grupo
                                 imagem={imagensGrupos[item.imagem]}
