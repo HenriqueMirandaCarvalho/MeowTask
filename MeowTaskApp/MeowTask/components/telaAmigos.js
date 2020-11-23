@@ -1,10 +1,10 @@
-import React, { useState, version } from "react";
-import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator, Alert, Clipboard } from "react-native";
-import { Ionicons, AntDesign } from '@expo/vector-icons'; 
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator, Alert, Clipboard } from "react-native";
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import {Amigo} from './amigo.js';
-import {AmigoModal} from './amigosmodal';
+import { Amigo } from './amigo.js';
+import { AmigoModal } from './amigosmodal';
 import Conexao from './classes/Conexao.js';
 import * as firebase from 'firebase';
 
@@ -13,6 +13,7 @@ const telaAmigo = (props) => {
     const [modalVisivel, setModalVisivel] = useState(false);
     const [inputCodigo, setInputCodigo] = useState();
     const [amigos, setAmigos] = useState([]);
+    const [refresco, setRefresco] = useState(false);
     const imagensUsuario = [];
     imagensUsuario.push(require("./img/turquesa10.png"));
     imagensUsuario.push(require("./img/gato1.png"));
@@ -35,7 +36,7 @@ const telaAmigo = (props) => {
 
     function adicionarAmigo() {
         if (inputCodigo)
-        setLoading(true);
+            setLoading(true);
         let conn = new Conexao();
         conn.addAmigo(inputCodigo)
             .catch((error) => {
@@ -53,108 +54,132 @@ const telaAmigo = (props) => {
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
         'Merienda-Regular': require('./font/Merienda-Regular.ttf'),
     });
-        
+
+    useEffect(() => {
+        setRefresco(true);
+        const listener = firebase.firestore()
+            .collection("Amigos")
+            .orderBy('data', 'desc')
+            .onSnapshot(snapshot => {
+                const amigos = snapshot.docs.map(doc => {
+                    const dados = doc.data();
+                    if (dados.confirmado) {
+                        const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid});
+                        return amigo;
+                    }
+                });
+                if (amigos[0] != undefined)
+                    setAmigos(amigos);
+                else
+                    setPostagens([]);
+                setRefresco(false);
+            });
+        return () => listener();
+    }, []);
+
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
-    return (
-        <View style={styles.container}>
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisivel}
-                onRequestClose={() => {
-                    setModalVisivel(false);
-                }}
-            >
-                <TouchableWithoutFeedback onPress={() => {setModalVisivel(false)}}>
-                    <View style={styles.overlay}/>
-                </TouchableWithoutFeedback>
+        return (
+            <View style={styles.container}>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisivel}
+                    onRequestClose={() => {
+                        setModalVisivel(false);
+                    }}
+                >
+                    <TouchableWithoutFeedback onPress={() => { setModalVisivel(false) }}>
+                        <View style={styles.overlay} />
+                    </TouchableWithoutFeedback>
 
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <View style={styles.divTituloModal}>
-                            <Text style={styles.textoTituloModal}>Insira o código do amigo</Text>
-                        </View>
-                        <TextInput 
-                            style={styles.input}
-                            textContentType="none"
-                            maxLength={32}
-                            returnKeyType="done"
-                            textAlign="center"
-                            onChangeText={(numero) => validaNumero(numero)}
-                            value={inputCodigo}
-                        />
-                        <TouchableOpacity onPress={() => adicionarAmigo(inputCodigo)}>
-                            <View style={styles.botaoModal}>
-                                <Text style={styles.textoBotaoModal}>Adicionar</Text>
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <View style={styles.divTituloModal}>
+                                <Text style={styles.textoTituloModal}>Insira o código do amigo</Text>
                             </View>
-                        </TouchableOpacity>
+                            <TextInput
+                                style={styles.input}
+                                textContentType="none"
+                                maxLength={32}
+                                returnKeyType="done"
+                                textAlign="center"
+                                onChangeText={(numero) => validaNumero(numero)}
+                                value={inputCodigo}
+                            />
+                            <TouchableOpacity onPress={() => adicionarAmigo(inputCodigo)}>
+                                <View style={styles.botaoModal}>
+                                    <Text style={styles.textoBotaoModal}>Adicionar</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>     
-            </Modal>
+                </Modal>
 
-            <View style={styles.cabecalho}>
-                <View style={styles.divSetinha}>
-                    <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
-                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
+                <View style={styles.cabecalho}>
+                    <View style={styles.divSetinha}>
+                        <TouchableNativeFeedback style={{ padding: "2%" }} onPress={() => props.navigation.goBack()}>
+                            <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha} />
+                        </TouchableNativeFeedback>
+                    </View>
+                    <View style={styles.divCabecalho}>
+                        <Text style={styles.titulo}>Amigos</Text>
+                    </View>
+                </View>
+                <View style={styles.conteudo}>
+                    <FlatList
+                        data={amigos}
+                        keyExtractor={item => item.id}
+                        refreshing={refresco}
+                        onRefresh={() => {}}
+                        renderItem={({ item }) =>
+                            <Amigo
+                                imagem={imagensUsuario[item.imagem]}
+                                nome={item.nome}
+                                onPress={() => trocarTela(item.id)}
+                            />}
+                        ListFooterComponent={
+                            function rodapeLista() {
+                                return (
+                                    <View style={styles.rodapeLista}>
+                                        <TouchableOpacity onPress={() => toggleModal()} style={styles.botoesRodapeLista}>
+                                            <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
+                                            <Text style={styles.textoBotaoRodapeLista}>Adicionar amigo</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            }
+                        }
+                        ListEmptyComponent={() =>
+                            <Text style={{ alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20, marginTop: "6%" }}>Nenhum amigo!</Text>
+                        }
+                    />
+
+                </View>
+                <View style={styles.rodape}>
+                    <TouchableNativeFeedback onPress={() => toggleModal()}>
+                        <View style={styles.botao}>
+                            <Text style={styles.textoBotao}>Adicionar</Text>
+                        </View>
+                    </TouchableNativeFeedback>
+
+                    <TouchableNativeFeedback onPress={() => { Clipboard.setString(meuCodigo); Alert.alert("Aviso", "Código copiado com sucesso!"); }}>
+                        <View style={styles.botao}>
+                            <Text style={styles.textoBotao}>Copiar</Text>
+                            <Text style={styles.textoBotao}>Código</Text>
+                        </View>
                     </TouchableNativeFeedback>
                 </View>
-                <View style={styles.divCabecalho}>
-                    <Text style={styles.titulo}>Amigos</Text>
-                </View>
             </View>
-            <View style={styles.conteudo}>
-                <FlatList
-                    data={amigos}
-                    keyExtractor={item=>item.id}
-                    renderItem={({item})=>
-                        <Amigo 
-                            imagem={imagensUsuario[item.imagem]}
-                            nome={item.username} 
-                            onPress={() => trocarTela(item.id)}
-                        />}
-                    ListFooterComponent={
-                        function rodapeLista() {
-                            return (
-                                <View style={styles.rodapeLista}>
-                                    <TouchableOpacity onPress={() => toggleModal()} style={styles.botoesRodapeLista}>
-                                        <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
-                                        <Text style={styles.textoBotaoRodapeLista}>Adicionar amigo</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            )
-                        }
-                    }
-                        ListEmptyComponent={() =>
-                            <Text style={{alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20, marginTop: "6%"}}>Nenhum amigo!</Text>
-                        }
-                />
-                
-            </View>
-            <View style={styles.rodape}>
-                <TouchableNativeFeedback onPress={() => toggleModal()}>
-                    <View style={styles.botao}>
-                        <Text style={styles.textoBotao}>Adicionar</Text>
-                    </View>
-                </TouchableNativeFeedback>
-
-                <TouchableNativeFeedback onPress={() => { Clipboard.setString(meuCodigo); Alert.alert("Aviso", "Código copiado com sucesso!"); }}>
-                    <View style={styles.botao}>
-                        <Text style={styles.textoBotao}>Copiar</Text>
-                        <Text style={styles.textoBotao}>Código</Text>
-                    </View>
-                </TouchableNativeFeedback>
-            </View>
-        </View>
-    );  
+        );
     }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#eae6da', 
+        backgroundColor: '#eae6da',
         // marginTop: StatusBar.currentHeight || 0,
     },
     cabecalho: {
@@ -213,7 +238,7 @@ const styles = StyleSheet.create({
     },
     rodapeLista: {
         marginTop: "6%",
-        alignSelf:'stretch',
+        alignSelf: 'stretch',
     },
     botoesRodapeLista: {
         flexDirection: "row",
@@ -251,8 +276,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
-          width: 0,
-          height: 2
+            width: 0,
+            height: 2
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
