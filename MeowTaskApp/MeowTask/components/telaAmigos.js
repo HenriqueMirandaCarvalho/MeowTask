@@ -35,18 +35,7 @@ const telaAmigo = (props) => {
     }
 
     function adicionarAmigo() {
-        if (inputCodigo)
-            setLoading(true);
-        let conn = new Conexao();
-        conn.addAmigo(inputCodigo)
-            .catch((error) => {
-                Alert.alert("Erro", error);
-            })
-            .then((obj) => {
-                carregarAmigos();
-                setInputCodigo("");
-                toggleModal();
-            });
+        return "";
     }
 
     let [fontsLoaded] = useFonts({
