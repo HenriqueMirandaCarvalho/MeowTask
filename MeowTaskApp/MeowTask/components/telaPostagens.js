@@ -28,7 +28,6 @@ const telaPostagens = (props) => {
 
     function voltar() {
         alert("voltar");
-        flatListRef.current.scrollToEnd();
     }
 
     const [refresco, setRefresco] = useState(false);
@@ -108,6 +107,7 @@ const telaPostagens = (props) => {
                 else
                     setPostagens([]);
                 setRefresco(false);
+                flatListRef.current.scrollToEnd();
             });
         return () => listener();
     }, []);
