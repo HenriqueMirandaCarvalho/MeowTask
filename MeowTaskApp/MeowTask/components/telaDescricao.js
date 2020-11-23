@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, TextInput, Alert, Modal, ActivityIndicator } from "react-native";
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import Conexao from './classes/Conexao.js';
+import * as firebase from 'firebase';
 
 const telaDescricao = (props) => {
+    let idGrupo = props.navigation.state.params.idGrupo;
     let idTarefa = props.navigation.state.params.idTarefa;
-    const [loadedDescricao, setLoadDescricao] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [descricao, setDescricao] = useState("...");
     function voltar() {
         props.navigation.goBack();
@@ -16,33 +17,27 @@ const telaDescricao = (props) => {
 
     function btnSalvar() {
         setLoading(true);
-        let conn = new Conexao();
-        conn.updateDescricaoTarefa(idTarefa, descricao)
-            .catch((error) => {
-                Alert.alert("Erro", error);
-            })
-            .then((obj) => {
-                setLoading(false);
-            });
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(idTarefa)
+            .update({
+                descricao: descricao
+            }).then(() => setLoading(false));
     }
 
-    function carregarDescricao() {
-        setLoading(true);
-        let conn = new Conexao();
-        conn.getTarefaById(idTarefa)
-            .catch((error) => {
-                Alert.alert("Erro", error);
-            })
-            .then((obj) => {
-                setDescricao(obj.descricao);
-                setLoading(false);
+    useEffect(() => {
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(idTarefa)
+            .onSnapshot(snapshot => {
+                setDescricao(snapshot.data().descricao);
             });
-        setLoadDescricao(true);
-    }
-
-    if (!loadedDescricao) {
-        carregarDescricao();
-    }
+        return () => listener();
+    }, []);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),

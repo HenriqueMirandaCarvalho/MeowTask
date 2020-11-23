@@ -16,6 +16,7 @@ const telaListaTarefas = (props) => {
 
     function trocarTela(id) {
         props.navigation.navigate("Tarefa", {
+            idGrupo: idGrupo,
             idTarefa: id
         });
     }

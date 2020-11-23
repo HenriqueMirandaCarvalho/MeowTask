@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import {View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar, Modal, ActivityIndicator, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import {View, Text, StyleSheet, Image, TouchableNativeFeedback } from "react-native";
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import Conexao from './classes/Conexao.js';
+import * as firebase from 'firebase';
 
 const telaTarefa = (props) => {
+    let idGrupo = props.navigation.state.params.idGrupo;
     let idTarefa = props.navigation.state.params.idTarefa;
-    const [loadedTarefa, setLoadTarefa] = useState(false);
-    const [loading, setLoading] = useState(true);
     const logoTarefa = [require("./img/Logos/LogoPraCadaTarefa.png"), require("./img/Logos/CadaTarefaCertinho.png")];
     const [nomeTarefa, setNomeTarefa] = useState("...");
 
     function btnDescricao() {
         props.navigation.navigate("Descricao", {
+            idGrupo: idGrupo,
             idTarefa: idTarefa
         });
     }
@@ -24,6 +24,7 @@ const telaTarefa = (props) => {
 
     function btnArquivos() {
         props.navigation.navigate("Arquivos", {
+            idGrupo: idGrupo,
             idTarefa: idTarefa
         });
     }
@@ -36,39 +37,23 @@ const telaTarefa = (props) => {
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
     });
 
-    function carregarTarefa() {
-        let conn = new Conexao();
-        conn.getTarefaById(idTarefa)
-            .catch((error) => {
-                Alert.alert("Erro", error);
-            })
-            .then((obj) => {
-                setNomeTarefa(obj.nome);
-                setLoading(false);
+    useEffect(() => {
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(idTarefa)
+            .onSnapshot(snapshot => {
+                setNomeTarefa(snapshot.data().nome);
             });
-        setLoadTarefa(true);
-    }
-
-    if (!loadedTarefa) {
-        carregarTarefa();
-    }
+        return () => listener();
+    }, []);
         
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
     return (
         <View style={styles.container}>
-            <Modal 
-                visible={loading}
-                animationType="fade"
-                transparent={true}
-            >
-                <View style={styles.centeredViewCarregar}>
-                    <View style={styles.modalCarregar}>
-                        <ActivityIndicator size={70} color="#53A156"/>
-                    </View>
-                </View>
-            </Modal>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
                     <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
@@ -183,28 +168,6 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Light",
         fontSize: 28,
         marginLeft: "2.5%",
-    },
-    centeredViewCarregar: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: 'rgba(52, 52, 52, 0.6)',
-    },
-    modalCarregar: {
-        width: "30%",
-        aspectRatio: 1,
-        backgroundColor: "#ededed",
-        borderRadius: 20,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        justifyContent: "center",
     }
 });
 

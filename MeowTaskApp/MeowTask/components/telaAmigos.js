@@ -108,7 +108,7 @@ const telaAmigo = (props) => {
                                         })
                                         .then((data) => {
                                             toggleModal();
-                                            Alert.alert("Aviso", "B");
+                                            Alert.alert("Aviso", "Pedido de amizade enviado!");
                                             setRefresco(false);
                                         });
                                 }
@@ -118,7 +118,17 @@ const telaAmigo = (props) => {
                                     setRefresco(false);
                                 }
                                 else {
-                                    console.log(idAmg);
+                                    firebase.firestore()
+                                        .collection("Amigos")
+                                        .doc(idAmg)
+                                        .update({
+                                            confirmado: true
+                                        })
+                                        .then((data) => {
+                                            toggleModal();
+                                            Alert.alert("Aviso", "Vocês são amigos agora!");
+                                            setRefresco(false);
+                                        });
                                 }
                             });
                     }

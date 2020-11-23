@@ -1,4 +1,3 @@
-import { Alert } from "react-native";
 import * as firebase from 'firebase';
 import '@firebase/firestore';
 import '@firebase/auth';
@@ -18,66 +17,6 @@ export default class Conexao {
             };
             firebase.initializeApp(firebaseConfig);
         }
-    }
-
-    getGrupoById(id) {
-        return new Promise(function (resolve, reject) {
-            let grupo = null;
-            firebase.firestore()
-                .collection("Grupos")
-                .doc(id)
-                .get()
-                .then(snapshot => {
-                    grupo = snapshot.data();
-
-                    resolve(grupo);
-                })
-                .catch(err => {
-                    reject("Erro ao procurar grupo!");
-                });
-        });
-    }
-
-    getPostItsByGrupoId(id) {
-        return new Promise(function (resolve, reject) {
-            let postIts = [];
-            firebase.firestore()
-                .collection("PostIts")
-                .where('grupo', '==', id)
-                .get()
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        resolve(postIts);
-                    }
-                    snapshot.forEach(doc => {
-                        let postIt = doc.data();
-                        postIt.id = doc.id;
-                        postIts.push(postIt);
-                    });
-
-                    resolve(postIts);
-                })
-                .catch(err => {
-                    reject("Erro ao procurar Post-Its!");
-                });
-        });
-    }
-
-    alterarPostIt(id, descricao) {
-        return new Promise(function (resolve, reject) {
-            firebase.firestore()
-                .collection("PostIts")
-                .doc(id)
-                .update({
-                    descricao: descricao
-                })
-                .then(() => {
-                    resolve();
-                })
-                .catch(() => {
-                    reject("Este Post It não existe mais!");
-                });
-        });
     }
 
     getTarefasByGrupoId(id) {
@@ -101,46 +40,6 @@ export default class Conexao {
                 })
                 .catch(err => {
                     reject("Erro ao procurar tarefas!");
-                });
-        });
-    }
-
-    getAmigosByUserId() {
-        return new Promise(function (resolve, reject) {
-            let amigos = [];
-            let userId = firebase.auth().currentUser.uid;
-            firebase.firestore()
-                .collection("Usuarios")
-                .doc(userId)
-                .get()
-                .then(snapshot => {
-                    let usuario = snapshot.data();
-                    let amigosCarregados = 0;
-                    let totalAmigos = usuario.amigos.length;
-                    if (totalAmigos == 0) {
-                        resolve(amigos);
-                    }
-                    usuario.amigos.forEach(friend => {
-                        firebase.firestore()
-                            .collection("Usuarios")
-                            .doc(friend)
-                            .get()
-                            .then(doc => {
-                                let amigo = doc.data();
-                                amigo.id = friend;
-                                amigos.push(amigo);
-                                amigosCarregados++;
-                                if (amigosCarregados == totalAmigos) {
-                                    resolve(amigos);
-                                }
-                            })
-                            .catch(err => {
-                                reject("Erro ao procurar amigos!");
-                            });
-                    });
-                })
-                .catch(err => {
-                    reject("Erro ao procurar amigos!");
                 });
         });
     }
@@ -178,55 +77,6 @@ export default class Conexao {
                 .catch(err => {
                     reject("Erro ao atualizar tarefa!");
                 });
-        });
-    }
-
-    addAmigo(id) {
-        return new Promise(function (resolve, reject) {
-            let usuario = null;
-            let userId = firebase.auth().currentUser.uid;
-            if (userId == id) {
-                reject("Você não pode adicionar você mesmo como amigo!");
-            }
-            else {
-                firebase.firestore()
-                .collection("Usuarios")
-                .doc(userId)
-                .get()
-                .then(snapshot => {
-                    usuario = snapshot.data();
-                    if (usuario.amigos.includes(id)) {
-                        reject("Você já é amigo deste usuário!");
-                    }
-                    else {
-                        firebase.firestore()
-                            .collection("Usuarios")
-                            .doc(id)
-                            .get()
-                            .then(snap => {
-                                if (snap.data() == undefined) {
-                                    reject("Usuario não encontrado!");
-                                }
-                                else {
-                                    usuario.amigos.push(id);
-                                    firebase.firestore()
-                                        .collection("Usuarios")
-                                        .doc(userId)
-                                        .update({
-                                            amigos: usuario.amigos
-                                        })
-                                        .then(() => {
-                                            resolve();
-                                        });
-                                }
-                            })
-                            .catch((err) => { reject("Usuário não encontrado!"); })
-                    }
-                })
-                .catch(err => {
-                    reject("Usuário não encontrada!");
-                });
-            }
         });
     }
 }
