@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Modal, TouchableWithoutFeedback, TextInput } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity, FlatList, Alert } from "react-native";
 import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
-import { AppLoading } from 'expo';
+import { AppLoading, Notifications } from 'expo';
 import { useFonts } from 'expo-font';
 import { Arquivo } from './arquivo.js';
 import * as DocumentPicker from 'expo-document-picker';
@@ -19,35 +19,25 @@ const telaArquivos = (props) => {
 
     const [refrescando, setRefrescando] = useState(false);
 
-    function refrescar() {
-        setRefrescando(true);
-        alert("olha o refresco!");
-    }
-
     function voltar() {
-        alert("voltar");
-    }
-
-    function btnSalvar() {
-        alert("Salvar");
-    }
-
-    function btnNovoItem() {
-        criarItem();
+        props.navigation.goBack();
     }
 
     function baixar(ref, nome) {
+        setRefrescando(true);
         ref.getDownloadURL().then(async function (url) {
             try {
                 const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
                 if (status === "granted") {
-                    FileSystem.downloadAsync(url, FileSystem.documentDirectory + nome).then(async ({uri}) => {
+                    FileSystem.downloadAsync(url, FileSystem.documentDirectory + nome).then(async ({ uri }) => {
                         const asset = await MediaLibrary.createAssetAsync(uri);
                         await MediaLibrary.createAlbumAsync("Download", asset, false);
+                        setRefrescando(false);
                     });
                 }
             } catch (err) {
                 console.warn(err);
+                setRefrescando(false);
             }
         });
     }
@@ -58,27 +48,47 @@ const telaArquivos = (props) => {
         setGuardaTexto(texto);
     }
 
-    function editarItem(_id) {
-        const NewData = arquivos.map(item => {
-            if (item.id === _id) {
-                item.nomeArquivo = guardaTexto;
-                return item;
-            }
-            return item;
-        })
-        setArquivos(NewData);
+    function deletarItem(_id) {
+        Alert.alert(
+            "Aviso",
+            "Você está prestes a deletar este arquivo, tem certeza que deseja continuar?",
+            [{
+            text: "Não",
+            onPress: () => {},
+            style: "cancel"
+            },
+            {
+                text: "Sim",
+                onPress: () => deletarArquivo(_id)
+            }]);
     }
 
-    function deletarItem(_id) {
-        const NewData = arquivos.filter(item => item.id !== _id);
-        setArquivos(NewData);
+    function deletarArquivo(_id) {
+        setRefrescando(true);
+        _id.delete().then(() => {firebase.storage()
+            .ref()
+            .child(idTarefa)
+            .listAll()
+            .then((res) => {
+                let arquivos = [];
+                res.items.forEach((item) => {
+                    arquivos.push({ nome: item.name, ref: item, baixando: false });
+                });
+                setArquivos(arquivos)
+                setRefrescando(false);
+            });
+        });
     }
 
     function criarItem() {
+        setRefrescando(true);
         DocumentPicker.getDocumentAsync().then((result) => {
             if (result.type != "cancel") {
                 urlParaBlob(result.uri).then((obj) => {
-                    firebase.storage().ref().child(idTarefa + "/" + result.name).put(obj);
+                    console.log("a");
+                    firebase.storage().ref().child(idTarefa + "/" + result.name).put(obj).then(() => {
+                        setRefrescando(true);
+                    });
                 });
             }
         });
@@ -104,12 +114,15 @@ const telaArquivos = (props) => {
             .then((res) => {
                 let arquivos = [];
                 res.items.forEach((item) => {
-                    arquivos.push({ nome: item.name, ref: item });
+                    arquivos.push({ nome: item.name, ref: item, baixando: false });
                 });
                 setArquivos(arquivos)
                 setRefrescando(false);
             });
-        return () => listener();
+        if (typeof listener === "function") {
+            return () => listener();
+        }
+        return () => {};
     }, []);
 
     let [fontsLoaded] = useFonts({
@@ -135,14 +148,15 @@ const telaArquivos = (props) => {
                 <View style={styles.conteudo}>
                     <FlatList
                         data={arquivos}
-                        keyExtractor={item => item.id}
+                        keyExtractor={item => item.ref}
                         refreshing={refrescando}
-                        onRefresh={() => refrescar()}
+                        onRefresh={() => { }}
                         renderItem={({ item }) =>
                             <Arquivo
-                                onPress={() => baixar(item.ref, item.nome)}
-                                onLongPress={() => toggleModalEditar(item.ref, item.nome)}
-                                texto={item.nome}
+                                onPress={() => { baixar(item.ref, item.nome); item.baixando = true; }}
+                                onLongPress={() => deletarItem(item.ref)}
+                                baixando={() => { return item.baixando; }}
+                                texto={item.nome.length > 20 ? item.nome.substring(0, 18) + "..." : item.nome}
                             />
                         }
                         style={{ width: "100%" }}

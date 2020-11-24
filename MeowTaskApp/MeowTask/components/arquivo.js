@@ -10,7 +10,7 @@ export const Arquivo = props =>
                     <Text style={styles.texto}>{props.texto}</Text>
                 </View>
                 <View style={styles.parteInferior}>
-                    <TouchableOpacity onPress={() => props.onPress()} style={styles.botaoBaixar}>
+                    <TouchableOpacity onPress={() => props.onPress()} style={props.baixando() ? styles.botaoBaixarOff : styles.botaoBaixar}>
                         <Text style={styles.textoBotaoBaixar}>Baixar</Text>
                     </TouchableOpacity>
                 </View>
@@ -70,15 +70,23 @@ let styles = StyleSheet.create({
         paddingBottom: "2.2%",
     },
     botaoBaixar: {
-        width: "32.2%",
-        aspectRatio: 4.7,
+        width: "60%",
+        aspectRatio: 6,
         backgroundColor: "#a4a4a4",
         alignItems: "center",
         justifyContent: "center",
     },
+    botaoBaixarOff: {
+        width: "60%",
+        aspectRatio: 6,
+        backgroundColor: "#a4a4a4",
+        alignItems: "center",
+        justifyContent: "center",
+        opacity: 0.3
+    },
     textoBotaoBaixar: {
         fontFamily: "Roboto-Light",
-        fontSize: 14,
+        fontSize: 20,
         color: "black",
     }
 });
