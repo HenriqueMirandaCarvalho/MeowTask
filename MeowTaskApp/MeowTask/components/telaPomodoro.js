@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, Dimensions, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, Dimensions, Image, Modal, TouchableWithoutFeedback, TextInput } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
@@ -10,13 +10,23 @@ const altura = Dimensions.get('window').height;
 
 const telaNotificacoes = (props) => {
 
-    const [textoContagem, setTextoContagem] = useState("0:00");
     const [textoBotao, setTextoBotao] = useState("Iniciar");
-    const [segundos, setSegundos] = useState(10);
+
     const [minutos, setMinutos] = useState(0);
+    const [segundos, setSegundos] = useState(0);
     const [running, setRunning] = useState(false);
+    const [pausado, setPausado] = useState(false);
     const [iterador, setIterador] = useState(0);
+    const [textoContagem, setTextoContagem] = useState("0:00");
     
+    const [modalVisivel, setModalVisivel] = useState(false);
+
+    const [duracaoTrabalho, setDuracaoTrabalho] = useState(10);
+    const [duracaoDescanso, setDuracaoDescanso] = useState(5);
+    const [quantidadePomodoros, setQuantidadePomodoros] = useState(3);
+    const [guardaDuracaoTrabalho, setGuardaDuracaoTrabalho] = useState(duracaoTrabalho);
+    const [guardaDuracaoDescanso, setGuardaDuracaoDescanso] = useState(duracaoDescanso);
+    const [guardaQuantidadePomodoros, setGuardaQuantidadePomodoros] = useState(quantidadePomodoros);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -27,27 +37,17 @@ const telaNotificacoes = (props) => {
     const [intervalos, setIntervalos] = useState([
         {
             id: "0",
-            duracao: 10,
+            duracao: 2,
             sossego: false,
         },
         {
             id: "1",
-            duracao: 5,
+            duracao: 1,
             sossego: true,
         },
         {
             id: "2",
-            duracao: 10,
-            sossego: false,
-        },
-        {
-            id: "3",
-            duracao: 5,
-            sossego: true,
-        },
-        {
-            id: "4",
-            duracao: 10,
+            duracao: 2,
             sossego: false,
         },
     ]);
@@ -59,35 +59,79 @@ const telaNotificacoes = (props) => {
             console.debug("iterador: "+iterador);
             if(segundos == 0) {
                 setSegundos(59);
-                setIterador(iterador + 1);
-                if(minutos!=0){setMinutos(minutos => minutos - 1);}
-                if(minutos==0){
-                    if(iterador == intervalos.length - 1){
-                        alert("sem tempo irmão");
+                if(minutos!=0) {
+                    setMinutos(minutos => minutos - 1);
+                } else {
+                    if (iterador == (intervalos.length -1)) {
+                        alert("sem tempo");
+                        setRunning(false);
+                        setPausado(false);
+                        setTextoBotao("Iniciar");
                     } else {
-                        
-                        
+                        setMinutos(intervalos[(iterador+1)].duracao);
+                        setIterador(iterador + 1);
+                        console.debug("print3 iterador: "+iterador);
                         setSegundos(0);
-                        setMinutos(intervalos[iterador].duracao);
                     }
                 }
             }
-            setTextoContagem(minutos+":"+segundos);
+            let segundo2Digitos = "" + segundos;
+            if (segundo2Digitos.length == 1){
+                segundo2Digitos = "0" + segundos;
+            } else {
+                segundo2Digitos = "" + segundos;
+            }
+            setTextoContagem(minutos+":"+segundo2Digitos);
         } else {
             console.debug("parado")
         }
     }
 
     function toggleRelogio() {
-        setRunning(!running);
+        if(running == false){
+            if(pausado == true){
+                setRunning(true);
+                setTextoBotao("Pausar");
+            } else {
+                let segundo2Digitos = "" + segundos;
+                if (segundo2Digitos.length == 1){
+                    segundo2Digitos = "0" + segundos;
+                } else {
+                    segundo2Digitos = "" + segundos;
+                }
+                setTextoContagem(minutos+":"+segundo2Digitos);
+                setSegundos(0);
+                setMinutos(intervalos[0].duracao);
+                setRunning(true);
+                setTextoBotao("Pausar");
+            }
+        } else {
+            setRunning(false);
+            setPausado(true);
+            setTextoBotao("Continuar");
+        }
     }
 
     useEffect(() => {
-        const intervalo = window.setInterval(() => contagemRegressiva(), 300);
+        const intervalo = window.setInterval(() => contagemRegressiva(), 1000);
+
+        // pega os dados do banco de dados e coloca aí 
+        setDuracaoTrabalho();
+        setGuardaDuracaoTrabalho();
+        setDuracaoDescanso();
+        setGuardaDuracaoDescanso();
+        setQuantidadePomodoros();
+        setGuardaQuantidadePomodoros();
+        salvarPomodoro();
+
         return () => {
             window.clearInterval(intervalo);
         };
     });
+
+    function toggleModal() {
+        setModalVisivel(!modalVisivel);
+    }
 
     function estilizador(id) {
         let somaDuracoes = 0;
@@ -98,17 +142,97 @@ const telaNotificacoes = (props) => {
         if (intervalos[id].sossego) {
             return ({
                 width: (intervalos[id].duracao*unidadeTamanho),
-                backgroundColor: "#22b14c",
+                backgroundColor: "#70bf42",
                 justifyContent: "center",
                 alignItems: "center",
             })
         } else {
             return ({
                 width: (intervalos[id].duracao*unidadeTamanho),
-                backgroundColor: "#ed1c24",
+                backgroundColor: "#ed5e58",
                 justifyContent: "center",
                 alignItems: "center",
             })
+        }
+    }
+
+    function validaTrabalho(numero) {
+        // code to remove non-numeric characters from text
+        let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        if (removido){
+            setGuardaDuracaoTrabalho(Number.parseInt(removido));
+            if (removido < 1) {
+                setGuardaDuracaoTrabalho('');
+            }
+        } else {
+            setGuardaDuracaoTrabalho('');
+        }
+    }
+
+    function validaDescanso(numero) {
+        // code to remove non-numeric characters from text
+        let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        if (removido){
+            setGuardaDuracaoDescanso(Number.parseInt(removido));
+            if (removido < 1) {
+                setGuardaDuracaoDescanso('');
+            }
+        } else {
+            setGuardaDuracaoDescanso(removido);
+        }
+    }
+
+    function salvarPomodoro() {
+        let i, i2 = 0;
+        let novosIntervalos = [];
+        console.debug(intervalos);
+        for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
+            if (i == guardaQuantidadePomodoros - 1 || guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro
+                novosIntervalos.push(
+                    {
+                        id: i2,
+                        duracao: guardaDuracaoTrabalho,
+                        sossego: false,
+                    }
+                )
+            } else {
+                novosIntervalos.push(
+                    {
+                        id: i2,
+                        duracao: guardaDuracaoTrabalho,
+                        sossego: false,
+                    },
+                    {
+                        id: (i2+1),
+                        duracao: guardaDuracaoDescanso,
+                        sossego: true,
+                    }
+                )
+                i2 = i2 + 2;
+            }
+        }
+        setIntervalos(novosIntervalos);
+        setRunning(false);
+        setPausado(false);
+        setTextoBotao("Iniciar");
+        setSegundos(0);
+        setMinutos(guardaDuracaoTrabalho);
+        setIterador(0);
+        setTextoContagem("0:00");
+    }
+
+    function validaPomodoros(numero) {
+        // code to remove non-numeric characters from text
+        let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        if (removido){
+            if (removido < 1) {
+                setGuardaQuantidadePomodoros('');
+            } else if (removido > 10) {
+            } else {
+                setGuardaQuantidadePomodoros(Number.parseInt(removido));
+            }
+        } else {
+            setGuardaQuantidadePomodoros(removido);
         }
     }
 
@@ -117,20 +241,107 @@ const telaNotificacoes = (props) => {
     } else {
         return (
             <View style={styles.container}>
-                <View style={styles.visualizador}>
-                    <View style={{marginTop: "5%", borderRadius: 60, width: "90%", aspectRatio: 1, backgroundColor: "black", justifyContent: "center", alignItems: "center"}}>
-                        <View style={{borderRadius: 43, width: "83%", backgroundColor: "lime", aspectRatio: 1}}></View>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisivel}
+                    onRequestClose={() => {
+                        setModalVisivel(false);
+                    }}
+                >
+                    <TouchableWithoutFeedback onPress={() => { setModalVisivel(false) }}>
+                        <View style={styles.overlay} />
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.textoTituloModal}>Configurações</Text>
+                            <View style={styles.campoModal}>
+                                <Text style={styles.textoModal}>Trabalho:</Text>
+                                <View style={styles.selecao}>
+                                    <TouchableOpacity onPress={() => {if(guardaDuracaoTrabalho>1){setGuardaDuracaoTrabalho(Number.parseInt(guardaDuracaoTrabalho-1))}}} style={styles.quadradoMaisOuMenos}>
+                                        <AntDesign name="caretleft" size={24} color="black" />
+                                    </TouchableOpacity>
+                                    <TextInput
+                                        style={styles.input}
+                                        textContentType="number"
+                                        keyboardType="number-pad"
+                                        maxLength={2}
+                                        returnKeyType="done"
+                                        textAlign="center"
+                                        onChangeText={(numero) => validaTrabalho(numero)}
+                                        value={guardaDuracaoTrabalho.toString()}
+                                    />
+                                    <TouchableOpacity onPress={() => {setGuardaDuracaoTrabalho(Number.parseInt(guardaDuracaoTrabalho+1))}} style={styles.quadradoMaisOuMenos}>
+                                        <AntDesign name="caretright" size={24} color="black" />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.campoModal}>
+                                <Text style={styles.textoModal}>Descanso:</Text>
+                                <View style={styles.selecao}>
+                                    <TouchableOpacity onPress={() => {if(guardaDuracaoDescanso>1){setGuardaDuracaoDescanso(Number.parseInt(guardaDuracaoDescanso-1))}}} style={styles.quadradoMaisOuMenos}>
+                                        <AntDesign name="caretleft" size={24} color="black" />
+                                    </TouchableOpacity>
+                                    <TextInput
+                                        style={styles.input}
+                                        textContentType="number"
+                                        keyboardType="number-pad"
+                                        maxLength={2}
+                                        returnKeyType="done"
+                                        textAlign="center"
+                                        onChangeText={(numero) => validaDescanso(numero)}
+                                        value={guardaDuracaoDescanso.toString()}
+                                    />
+                                    <TouchableOpacity onPress={() => {setGuardaDuracaoDescanso(Number.parseInt(guardaDuracaoDescanso+1))}} style={styles.quadradoMaisOuMenos}>
+                                        <AntDesign name="caretright" size={24} color="black" />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.campoModal}>
+                                <Text style={styles.textoModal}>Pomodoros:</Text>
+                                <View style={styles.selecao}>
+                                    <TouchableOpacity onPress={() => {if(guardaQuantidadePomodoros>1){setGuardaQuantidadePomodoros(Number.parseInt(guardaQuantidadePomodoros-1))}}} style={styles.quadradoMaisOuMenos}>
+                                        <AntDesign name="caretleft" size={24} color="black" />
+                                    </TouchableOpacity>
+                                    <TextInput
+                                        style={styles.input}
+                                        textContentType="number"
+                                        keyboardType="number-pad"
+                                        maxLength={2}
+                                        returnKeyType="done"
+                                        textAlign="center"
+                                        onChangeText={(numero) => validaPomodoros(numero)}
+                                        value={guardaQuantidadePomodoros.toString()}
+                                    />
+                                    <TouchableOpacity onPress={() => {if(guardaQuantidadePomodoros<10){setGuardaQuantidadePomodoros(Number.parseInt(guardaQuantidadePomodoros+1))}}} style={styles.quadradoMaisOuMenos}>
+                                        <AntDesign name="caretright" size={24} color="black" />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <TouchableOpacity onPress={() => salvarPomodoro()}>
+                                <View style={styles.botaoModal}>
+                                    <Text style={styles.textoBotaoModal}>Salvar</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    {/* <Image source={require("./img/gatoestudando.png")} style={styles.imagem} /> */}
+                </Modal>
+
+                <View style={styles.visualizador}>
+                    {/* <View style={{marginTop: "5%", borderRadius: 60, width: "90%", aspectRatio: 1, backgroundColor: "black", justifyContent: "center", alignItems: "center"}}>
+                        <View style={{borderRadius: 43, width: "83%", backgroundColor: "lime", aspectRatio: 1}}></View>
+                    </View> */}
+                    <Image source={require("./img/gatoestudando.png")} style={styles.imagem} />
                     <Text style={styles.textoContador}>{textoContagem}</Text>
                 </View>
                 <TouchableNativeFeedback onPress={() => toggleRelogio()} style={styles.botao}>
                     <Text style={styles.textoBotao}>{textoBotao}</Text>
                 </TouchableNativeFeedback>
                 <View style={styles.caminhoIndicador}>
-                    <Image source={require("./img/menta.png")} style={styles.indicador} />
+                    <Image source={require("./img/gatoemoji.png")} style={styles.indicador} />
                 </View>
-                <View style={styles.flatlist}>
+                <TouchableOpacity onPress={() => toggleModal()} style={styles.flatlist}>
                     <FlatList
                         style={{borderRadius: 100, overflow: 'hidden'}}
                         contentContainerStyle={{borderRadius: 100, overflow: 'hidden'}}
@@ -143,7 +354,7 @@ const telaNotificacoes = (props) => {
                             </View>
                         }
                     />
-                </View>
+                </TouchableOpacity>
                 <StatusBar translucent backgroundColor={'#eae6da'}/>
             </View>
         );
@@ -160,12 +371,13 @@ const styles = StyleSheet.create({
         marginTop: "10%",
         marginBottom: "10%",
         width: "80%",
+        maxHeight: 0.55*altura,
         flex: 1,
-        justifyContent: "flex-end",
+        justifyContent: "space-evenly",
         alignItems: "center",
         paddingTop: "5%",
-        // backgroundColor: "#C4C4C4",
-        backgroundColor: "lime",
+        backgroundColor: "#C4C4C4",
+        // backgroundColor: "lime",
     },
     botao: {
         width: 0.8 * largura,
@@ -183,7 +395,7 @@ const styles = StyleSheet.create({
     flatlist: {
         marginBottom: 0.06*altura,
         width: 0.8*largura,
-        height: "5%",
+        height: "6%",
         overflow: 'hidden',
     },
     textoFlatlist: {
@@ -208,11 +420,97 @@ const styles = StyleSheet.create({
         marginBottom: "10%"
     },
     imagem: {
-        width: "70%",
+        width: "75%",
         height: null,
         aspectRatio: 1,
+        marginTop: "7%",
         marginBottom: "5%",
-    }
+    },
+    overlay: {
+        position: "absolute",
+        top: 0, // não faço ideia de como o top, right, bottom e left funcionam
+        right: 0, // mas eles fazem o view com absolute ocupar toda a tela
+        bottom: 0,
+        left: 0,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        width: "80%",
+        height: null,
+        backgroundColor: "#c4c4c4",
+        // borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        justifyContent: "flex-end",
+    },
+    botaoModal: {
+        marginTop: "7%",
+        marginBottom: "5%",
+        borderRadius: 40,
+        width: "82%",
+        height: null,
+        aspectRatio: 6.12,
+        backgroundColor: "#53A156",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    textoBotaoModal: {
+        fontFamily: 'Roboto-Light',
+        fontSize: 23,
+    },
+    divTituloModal: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        justifyContent: "flex-start",
+        alignItems: "center",
+    },
+    textoTituloModal: {
+        marginTop: "5%",
+        fontFamily: 'Roboto-Light',
+        fontSize: 23,
+    },
+    textoModal: {
+        fontFamily: 'Roboto-Light',
+        fontSize: 20,
+    },
+    campoModal: {
+        marginTop: "4%",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "77.5%",
+        alignItems: "center",
+    },
+    selecao: {
+        flexDirection: "row",
+        borderWidth: 1,
+        borderRadius: 3,
+        overflow: "hidden",
+        height: 0.05*altura,
+    },
+    quadradoMaisOuMenos: {
+        aspectRatio: 1,
+        backgroundColor: "#A4A4A4",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    input: {
+        aspectRatio: 1.2,
+        fontFamily: 'Roboto-Light',
+        fontSize: 23,
+    },
 });
 
 export default telaNotificacoes;
