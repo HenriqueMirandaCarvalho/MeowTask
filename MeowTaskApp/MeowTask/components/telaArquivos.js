@@ -4,6 +4,7 @@ import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import {Arquivo} from './arquivo.js';
+import * as DocumentPicker from 'expo-document-picker';
 
 
 const telaArquivos = (props) => {
@@ -18,10 +19,7 @@ const telaArquivos = (props) => {
             nomeArquivo: "Arquivo 2",
         },
     ]);
-    const [modalEditarVisivel, setModalEditarVisivel] = useState(false);
-    const [modalCriarVisivel, setModalCriarVisivel] = useState(false);
     const [guardaTexto, setGuardaTexto] = useState();
-    const [guardaNovoTexto, setGuardaNovoTexto] = useState();
     const [guardaId, setGuardaId] = useState();
 
     const [refrescando, setRefrescando] = useState(false);
@@ -40,7 +38,7 @@ const telaArquivos = (props) => {
     }
 
     function btnNovoItem() {
-        setModalCriarVisivel(true)
+        criarItem();
     }
 
     function baixar(id) {
@@ -70,7 +68,7 @@ const telaArquivos = (props) => {
     }
 
     function criarItem() {
-        alert("Não faço ideia do que colocar aqui");
+        DocumentPicker.getDocumentAsync();
     }
 
     let [fontsLoaded] = useFonts({
@@ -83,89 +81,6 @@ const telaArquivos = (props) => {
     } else {
     return (
         <View style={styles.container}>
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalEditarVisivel}
-                onRequestClose={() => {
-                    setModalEditarVisivel(false);
-                }}
-            >
-                <TouchableWithoutFeedback onPress={() => {setModalEditarVisivel(false)}}>
-                    <View style={styles.overlay}/>
-                </TouchableWithoutFeedback>
-
-                <View style={styles.centeredView}>
-                    <View style={styles.modalEditarView}>
-                        <View style={styles.overlay}>
-                            <TouchableOpacity onPress={() => setModalEditarVisivel(false)}>
-                                <AntDesign name="close" size={28} color="#5b5b58" style={styles.Xzinho}/>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={styles.overlayDelete}>
-                            <TouchableOpacity onPress={() => {deletarItem(guardaId), setModalEditarVisivel(false)}}>
-                                <FontAwesome5 name="trash-alt" size={24} color="#5b5b58" style={styles.delete}/>
-                            </TouchableOpacity>
-                        </View>
-                        
-                        <Text style={styles.textoTituloModal}>Editar</Text>
-
-                        <TextInput 
-                            style={styles.input}
-                            textContentType="none"
-                            returnKeyType="done"
-                            textAlign="center"
-                            defaultValue={guardaTexto}
-                            maxLength={30}
-                            onChangeText={(texto) => setGuardaTexto(texto)}
-                        />
-
-                        <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => {editarItem(guardaId), setModalEditarVisivel(false)}}>
-                            <Text style={styles.textoBotaoSalvarModalEditar}>Salvar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>     
-            </Modal>
-
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalCriarVisivel}
-                onRequestClose={() => {
-                    setModalCriarVisivel(false);
-                }}
-            >
-                <TouchableWithoutFeedback onPress={() => {setModalCriarVisivel(false)}}>
-                    <View style={styles.overlay}/>
-                </TouchableWithoutFeedback>
-
-                <View style={styles.centeredView}>
-                    <View style={styles.modalEditarView}>
-                        <View style={styles.overlay}>
-                            <TouchableOpacity onPress={() => setModalCriarVisivel(false)}>
-                                <AntDesign name="close" size={28} color="#5b5b58" style={styles.Xzinho}/>
-                            </TouchableOpacity>
-                        </View>
-                        
-                        <Text style={styles.textoTituloModal}>Criar</Text>
-
-                        <TextInput 
-                            style={styles.input}
-                            textContentType="none"
-                            returnKeyType="done"
-                            textAlign="center"
-                            maxLength={30}
-                            onChangeText={(texto) => setGuardaNovoTexto(texto)}
-                        />
-
-                        <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => {criarItem(), setModalCriarVisivel(false)}}>
-                            <Text style={styles.textoBotaoSalvarModalEditar}>Salvar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>     
-            </Modal>
-
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
                     <TouchableOpacity onPress={() => voltar()}>
@@ -194,7 +109,7 @@ const telaArquivos = (props) => {
                         function rodapeLista() {
                             return (
                                 <View style={styles.rodapeLista}>
-                                    <TouchableOpacity onPress={() => btnNovoItem()} style={styles.botoesRodapeLista}>
+                                    <TouchableOpacity onPress={() => criarItem()} style={styles.botoesRodapeLista}>
                                         <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
                                     </TouchableOpacity>
                                 </View>
