@@ -45,7 +45,7 @@ const telaHome = (props) => {
             case 3:
                 props.navigation.navigate("Notificacoes");
                 break;
-            case 5:
+            case 4:
                 props.navigation.navigate("Pomodoro");
                 break;
             case 5:
