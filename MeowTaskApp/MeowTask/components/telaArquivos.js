@@ -14,8 +14,6 @@ const telaArquivos = (props) => {
     const idTarefa = props.navigation.state.params.idTarefa;
 
     const [arquivos, setArquivos] = useState([]);
-    const [guardaTexto, setGuardaTexto] = useState();
-    const [guardaId, setGuardaId] = useState();
 
     const [refrescando, setRefrescando] = useState(false);
 
@@ -40,12 +38,6 @@ const telaArquivos = (props) => {
                 setRefrescando(false);
             }
         });
-    }
-
-    function toggleModalEditar(id, texto) {
-        setModalEditarVisivel(true);
-        setGuardaId(id);
-        setGuardaTexto(texto);
     }
 
     function deletarItem(_id) {

@@ -13,7 +13,7 @@ import {
     Alert
 } from "react-native";
 
-import { AntDesign, Octicons, Ionicons, FontAwesome, Entypo } from '@expo/vector-icons'; 
+import { AntDesign, Octicons, Ionicons, FontAwesome, Entypo } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { useState } from "react";
@@ -36,14 +36,17 @@ const telaHome = (props) => {
     imagensModulos.push(require("./img/LogoPaineis.png"));
     imagensModulos.push(require("./img/LogoNotificacoes.png"));
     imagensModulos.push(require("./img/LogoPomodoro.png"));
-    
+
     function trocarTela(id) {
-        switch(id) {
+        switch (id) {
             case 1:
                 props.navigation.navigate("ListaGrupos");
                 break;
             case 3:
                 props.navigation.navigate("Notificacoes");
+                break;
+            case 5:
+                props.navigation.navigate("Pomodoro");
                 break;
             case 5:
                 props.navigation.navigate("Amigos");
@@ -102,208 +105,208 @@ const telaHome = (props) => {
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
-    return (
-        <View style={styles.container}>
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalConfigVisivel}
-                onRequestClose={() => {
-                    setModalConfigVisivel(false);
-                }}
-            >
-                <View style={styles.containerConfig}>
-                    <View style={styles.cabecalhoConfig}>
-                        <View style={styles.divSetinhaConfig}>
-                            <TouchableOpacity onPress={() => toggleModalConfig()}>
-                                <Ionicons name="md-arrow-back" size={44} color="#5b5b58"/>
-                            </TouchableOpacity>
-                        </View>
-                        <Text style={styles.tituloConfig}>Configurações</Text>
-                    </View>
-                    <View style={styles.conteudoConfig1}>
-                        <View style={styles.botoesConfig}>
-                            <TouchableOpacity onPress={()=> btnConta()}>
-                                <FontAwesome name="circle" size={35} color="#00e6dc" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> btnConta()} style={styles.divTextoBotoesConfig}>
-                                <Text style={styles.textoBotoesConfig}>Conta</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.botoesConfig}>
-                            <TouchableOpacity onPress={()=> btnVisual()}>
-                                <FontAwesome name="circle" size={35} color="#00e6dc" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> btnVisual()} style={styles.divTextoBotoesConfig}>
-                                <Text style={styles.textoBotoesConfig}>Visual</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={styles.conteudoConfig2}>
-                        <View style={styles.botoesConfig}>
-                            <TouchableOpacity onPress={()=> btnNotificacoes()}>
-                                <FontAwesome name="circle" size={35} color="#00e6dc" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> btnNotificacoes()} style={styles.divTextoBotoesConfig}>
-                                <Text style={styles.textoBotoesConfig}>Notificações</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.botoesConfig}>
-                            <TouchableOpacity onPress={()=> btnIdiomaTexto()}>
-                                <FontAwesome name="circle" size={35} color="#00e6dc" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> btnIdiomaTexto()} style={styles.divTextoBotoesConfig}>
-                                <Text style={styles.textoBotoesConfig}>Idioma e Texto</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.botoesConfig}>
-                            <TouchableOpacity onPress={()=> btnDataHora()}>
-                                <FontAwesome name="circle" size={35} color="#00e6dc" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> btnDataHora()} style={styles.divTextoBotoesConfig}>
-                                <Text style={styles.textoBotoesConfig}>Data e Hora</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={styles.conteudoConfig3}>
-                        <View style={styles.botoesConfig}>
-                            <TouchableOpacity onPress={()=> btnAcessibilidade()}>
-                                <FontAwesome name="circle" size={35} color="#00e6dc" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> btnAcessibilidade()} style={styles.divTextoBotoesConfig}>
-                                <Text style={styles.textoBotoesConfig}>Acessibilidade</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.botoesConfig}>
-                            <TouchableOpacity onPress={()=> btnPrivacidadeTermos()}>
-                                <FontAwesome name="circle" size={35} color="#00e6dc" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> btnPrivacidadeTermos()} style={styles.divTextoBotoesConfig}>
-                                <Text style={styles.textoBotoesConfig}>Privacidade e Termos</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={styles.conteudoConfig4}>
-                        <View style={styles.botoesConfig}>
-                            <TouchableOpacity onPress={()=> btnSobre()}>
-                                <FontAwesome name="circle" size={35} color="#00e6dc" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={()=> btnSobre()} style={styles.divTextoBotoesConfig}>
-                                <Text style={styles.textoBotoesConfig}>Sobre o Meow Task</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={styles.rodapeConfig}>
-                        <TouchableNativeFeedback onPress={() => btnGatos()}>
-                            <View style={styles.botaoGatos}>
-                                <Entypo name="star" size={60} color={"yellow"} />
-                                <Text style={styles.textoBotaoEstrela}>Gatos Fofos!</Text>
+        return (
+            <View style={styles.container}>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalConfigVisivel}
+                    onRequestClose={() => {
+                        setModalConfigVisivel(false);
+                    }}
+                >
+                    <View style={styles.containerConfig}>
+                        <View style={styles.cabecalhoConfig}>
+                            <View style={styles.divSetinhaConfig}>
+                                <TouchableOpacity onPress={() => toggleModalConfig()}>
+                                    <Ionicons name="md-arrow-back" size={44} color="#5b5b58" />
+                                </TouchableOpacity>
                             </View>
-                        </TouchableNativeFeedback>
+                            <Text style={styles.tituloConfig}>Configurações</Text>
+                        </View>
+                        <View style={styles.conteudoConfig1}>
+                            <View style={styles.botoesConfig}>
+                                <TouchableOpacity onPress={() => btnConta()}>
+                                    <FontAwesome name="circle" size={35} color="#00e6dc" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => btnConta()} style={styles.divTextoBotoesConfig}>
+                                    <Text style={styles.textoBotoesConfig}>Conta</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.botoesConfig}>
+                                <TouchableOpacity onPress={() => btnVisual()}>
+                                    <FontAwesome name="circle" size={35} color="#00e6dc" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => btnVisual()} style={styles.divTextoBotoesConfig}>
+                                    <Text style={styles.textoBotoesConfig}>Visual</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={styles.conteudoConfig2}>
+                            <View style={styles.botoesConfig}>
+                                <TouchableOpacity onPress={() => btnNotificacoes()}>
+                                    <FontAwesome name="circle" size={35} color="#00e6dc" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => btnNotificacoes()} style={styles.divTextoBotoesConfig}>
+                                    <Text style={styles.textoBotoesConfig}>Notificações</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.botoesConfig}>
+                                <TouchableOpacity onPress={() => btnIdiomaTexto()}>
+                                    <FontAwesome name="circle" size={35} color="#00e6dc" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => btnIdiomaTexto()} style={styles.divTextoBotoesConfig}>
+                                    <Text style={styles.textoBotoesConfig}>Idioma e Texto</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.botoesConfig}>
+                                <TouchableOpacity onPress={() => btnDataHora()}>
+                                    <FontAwesome name="circle" size={35} color="#00e6dc" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => btnDataHora()} style={styles.divTextoBotoesConfig}>
+                                    <Text style={styles.textoBotoesConfig}>Data e Hora</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={styles.conteudoConfig3}>
+                            <View style={styles.botoesConfig}>
+                                <TouchableOpacity onPress={() => btnAcessibilidade()}>
+                                    <FontAwesome name="circle" size={35} color="#00e6dc" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => btnAcessibilidade()} style={styles.divTextoBotoesConfig}>
+                                    <Text style={styles.textoBotoesConfig}>Acessibilidade</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.botoesConfig}>
+                                <TouchableOpacity onPress={() => btnPrivacidadeTermos()}>
+                                    <FontAwesome name="circle" size={35} color="#00e6dc" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => btnPrivacidadeTermos()} style={styles.divTextoBotoesConfig}>
+                                    <Text style={styles.textoBotoesConfig}>Privacidade e Termos</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={styles.conteudoConfig4}>
+                            <View style={styles.botoesConfig}>
+                                <TouchableOpacity onPress={() => btnSobre()}>
+                                    <FontAwesome name="circle" size={35} color="#00e6dc" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => btnSobre()} style={styles.divTextoBotoesConfig}>
+                                    <Text style={styles.textoBotoesConfig}>Sobre o Meow Task</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={styles.rodapeConfig}>
+                            <TouchableNativeFeedback onPress={() => btnGatos()}>
+                                <View style={styles.botaoGatos}>
+                                    <Entypo name="star" size={60} color={"yellow"} />
+                                    <Text style={styles.textoBotaoEstrela}>Gatos Fofos!</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View>
                     </View>
-                </View>     
-            </Modal>
+                </Modal>
 
-            <Modal 
-                visible={loading}
-                animationType="fade"
-                transparent={true}
-            >
-                <View style={styles.centeredViewCarregar}>
-                    <View style={styles.modalCarregar}>
-                        <ActivityIndicator size={70} color="#53A156"/>
+                <Modal
+                    visible={loading}
+                    animationType="fade"
+                    transparent={true}
+                >
+                    <View style={styles.centeredViewCarregar}>
+                        <View style={styles.modalCarregar}>
+                            <ActivityIndicator size={70} color="#53A156" />
+                        </View>
                     </View>
-                </View>
-            </Modal>
+                </Modal>
 
-            <View style={styles.cabecalho}>
-                <View style={styles.divAvatar}>
-                    <TouchableOpacity onPress={() => trocarTela(1)}>
-                        <Image source={imagensUsuario[avatar]} style={styles.imagemAvatar}></Image>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => trocarTela(1)}>
-                        <Text style={styles.textoAvatar}>{username}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.divConfig}>
-                    <View style={styles.divConfigMargem}>
-                        <TouchableOpacity onPress={() =>  toggleModalConfig()}>
-                            <Octicons name="three-bars" size={34} color="#5b5b58" style={styles.iconeConfig} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-            <View style={styles.conteudo}>
-                <View style={styles.modulo}>
-                    <View style={styles.divImagemModulo}>
+                <View style={styles.cabecalho}>
+                    <View style={styles.divAvatar}>
                         <TouchableOpacity onPress={() => trocarTela(1)}>
-                            <Image source={imagensModulos[0]} style={styles.imagemModulo}></Image>
+                            <Image source={imagensUsuario[avatar]} style={styles.imagemAvatar}></Image>
                         </TouchableOpacity>
-                    </View>
-                    <View style={styles.divTextoModulo}>
                         <TouchableOpacity onPress={() => trocarTela(1)}>
-                            <Text style={styles.textoModulo}>Grupos</Text>
+                            <Text style={styles.textoAvatar}>{username}</Text>
                         </TouchableOpacity>
+                    </View>
+                    <View style={styles.divConfig}>
+                        <View style={styles.divConfigMargem}>
+                            <TouchableOpacity onPress={() => toggleModalConfig()}>
+                                <Octicons name="three-bars" size={34} color="#5b5b58" style={styles.iconeConfig} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-                <View style={styles.modulo}>
-                    <View style={styles.divImagemModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(2)}>
-                            <Image source={imagensModulos[1]} style={styles.imagemModulo}></Image>
-                        </TouchableOpacity>
+                <View style={styles.conteudo}>
+                    <View style={styles.modulo}>
+                        <View style={styles.divImagemModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(1)}>
+                                <Image source={imagensModulos[0]} style={styles.imagemModulo}></Image>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.divTextoModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(1)}>
+                                <Text style={styles.textoModulo}>Grupos</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={styles.divTextoModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(2)}>
-                            <Text style={styles.textoModulo}>Paineis</Text>
-                        </TouchableOpacity>
+                    <View style={styles.modulo}>
+                        <View style={styles.divImagemModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(2)}>
+                                <Image source={imagensModulos[1]} style={styles.imagemModulo}></Image>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.divTextoModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(2)}>
+                                <Text style={styles.textoModulo}>Paineis</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.modulo}>
+                        <View style={styles.divImagemModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(3)}>
+                                <Image source={imagensModulos[2]} style={styles.imagemModulo}></Image>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.divTextoModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(3)}>
+                                <Text style={styles.textoModulo}>Notificações</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.modulo}>
+                        <View style={styles.divImagemModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(4)}>
+                                <Image source={imagensModulos[3]} style={styles.imagemModulo}></Image>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.divTextoModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(4)}>
+                                <Text style={styles.textoModulo}>Pomodoro</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.modulo}>
+                        <View style={styles.divImagemModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(5)}>
+                                <Image source={imagensModulos[0]} style={styles.imagemModulo}></Image>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.divTextoModulo}>
+                            <TouchableOpacity onPress={() => trocarTela(5)}>
+                                <Text style={styles.textoModulo}>Amigos</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-                <View style={styles.modulo}>
-                    <View style={styles.divImagemModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(3)}>
-                            <Image source={imagensModulos[2]} style={styles.imagemModulo}></Image>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.divTextoModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(3)}>
-                            <Text style={styles.textoModulo}>Notificações</Text>
-                        </TouchableOpacity>
-                    </View>
+                <View style={styles.rodape}>
+                    <TouchableOpacity onPress={() => trocarTela(1)}>
+                        <AntDesign name="pluscircleo" size={110} color="#5b5b58" />
+                    </TouchableOpacity>
+                    <Text style={styles.textoRodape}>lorem ipsum dolor sit amet</Text>
                 </View>
-                <View style={styles.modulo}>
-                    <View style={styles.divImagemModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(4)}>
-                            <Image source={imagensModulos[3]} style={styles.imagemModulo}></Image>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.divTextoModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(4)}>
-                            <Text style={styles.textoModulo}>Pomodoro</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.modulo}>
-                    <View style={styles.divImagemModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(5)}>
-                            <Image source={imagensModulos[0]} style={styles.imagemModulo}></Image>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.divTextoModulo}>
-                        <TouchableOpacity onPress={() => trocarTela(5)}>
-                            <Text style={styles.textoModulo}>Amigos</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                <StatusBar translucent backgroundColor={'#eae6da'} />
             </View>
-            <View style={styles.rodape}>
-                <TouchableOpacity onPress={() => trocarTela(1)}>
-                    <AntDesign name="pluscircleo" size={110} color="#5b5b58" />
-                </TouchableOpacity>            
-                <Text style={styles.textoRodape}>lorem ipsum dolor sit amet</Text>
-            </View>
-            <StatusBar translucent backgroundColor={'#eae6da'}/>
-        </View>
-    );  
+        );
     }
 }
 
