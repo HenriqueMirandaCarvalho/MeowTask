@@ -4,11 +4,13 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
+import Animated from 'react-native-reanimated';
+
 
 const largura = Dimensions.get('window').width;
 const altura = Dimensions.get('window').height;
 
-const telaNotificacoes = (props) => {
+const telaPomodoro = (props) => {
 
     const [textoBotao, setTextoBotao] = useState("Iniciar");
 
@@ -28,6 +30,8 @@ const telaNotificacoes = (props) => {
     const [guardaDuracaoDescanso, setGuardaDuracaoDescanso] = useState(duracaoDescanso);
     const [guardaQuantidadePomodoros, setGuardaQuantidadePomodoros] = useState(quantidadePomodoros);
 
+    const [gato, setGato] = useState(require("./img/gatoestudando.png"));
+    
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
@@ -51,12 +55,10 @@ const telaNotificacoes = (props) => {
             sossego: false,
         },
     ]);
-
+    
     function contagemRegressiva() {
         if (running == true) {
             setSegundos(segundos => segundos - 1);
-            console.debug(segundos);
-            console.debug("iterador: "+iterador);
             if(segundos == 0) {
                 setSegundos(59);
                 if(minutos!=0) {
@@ -66,11 +68,12 @@ const telaNotificacoes = (props) => {
                         alert("sem tempo");
                         setRunning(false);
                         setPausado(false);
+                        setSegundos(0);
+                        setIterador(0);
                         setTextoBotao("Iniciar");
                     } else {
                         setMinutos(intervalos[(iterador+1)].duracao);
                         setIterador(iterador + 1);
-                        console.debug("print3 iterador: "+iterador);
                         setSegundos(0);
                     }
                 }
@@ -82,8 +85,6 @@ const telaNotificacoes = (props) => {
                 segundo2Digitos = "" + segundos;
             }
             setTextoContagem(minutos+":"+segundo2Digitos);
-        } else {
-            console.debug("parado")
         }
     }
 
@@ -113,22 +114,22 @@ const telaNotificacoes = (props) => {
     }
 
     useEffect(() => {
-        const intervalo = window.setInterval(() => contagemRegressiva(), 1000);
+        const intervalo = window.setInterval(() => contagemRegressiva(), 5);
 
         // pega os dados do banco de dados e coloca aí 
-        setDuracaoTrabalho();
-        setGuardaDuracaoTrabalho();
-        setDuracaoDescanso();
-        setGuardaDuracaoDescanso();
-        setQuantidadePomodoros();
-        setGuardaQuantidadePomodoros();
-        salvarPomodoro();
+        // setDuracaoTrabalho();
+        // setGuardaDuracaoTrabalho();
+        // setDuracaoDescanso();
+        // setGuardaDuracaoDescanso();
+        // setQuantidadePomodoros();
+        // setGuardaQuantidadePomodoros();
+        // salvarPomodoro();
 
         return () => {
             window.clearInterval(intervalo);
         };
     });
-
+    
     function toggleModal() {
         setModalVisivel(!modalVisivel);
     }
@@ -156,6 +157,59 @@ const telaNotificacoes = (props) => {
         }
     }
 
+    function posicionador() {
+        if (!running && !pausado) {return 0}
+        let somaDuracoes = 0;
+        intervalos.forEach(item => {
+            somaDuracoes += item.duracao;
+        });
+        let minutoTamanho = (0.8*largura)/somaDuracoes;
+        let segundoTamanho = minutoTamanho/60;
+        let minutosDecorridos = 0;
+        if (segundos > 0) {
+            minutosDecorridos = intervalos[iterador].duracao-(minutos+1);
+        } else {
+            minutosDecorridos = intervalos[iterador].duracao-minutos;
+        }
+        let segundosDecorridos = 0;
+        if (segundos != 0){
+            segundosDecorridos = 60-segundos;
+        }
+        intervalos.forEach(item => {
+            if (item.id < iterador){
+                minutosDecorridos += item.duracao
+            }
+        })
+        let margin = (minutosDecorridos*minutoTamanho)+(segundosDecorridos*segundoTamanho);
+        if(margin > 0) {
+            return margin;
+        } else {
+            return 0;
+        }
+    }
+
+    function trocaGato(estado) {
+        if (estado == "normal") {
+            setGato(require("./img/gatoestudando.png"));
+        } else if (estado == "descansando") {
+            setGato(require("./img/gatoestudando.png"));
+        } else if (estado == "trabalhando") {
+            setGato(require("./img/gatoestudando.png"));
+        }
+    }
+
+    function colorizador() {
+        if (running) {
+            if (intervalos[iterador].sossego) {
+                return "lightgreen";
+            } else {
+                return "lightpink";
+            }
+        } else {
+            return "#C4C4C4";
+        }
+    }
+
     function validaTrabalho(numero) {
         // code to remove non-numeric characters from text
         let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
@@ -168,7 +222,7 @@ const telaNotificacoes = (props) => {
             setGuardaDuracaoTrabalho('');
         }
     }
-
+    
     function validaDescanso(numero) {
         // code to remove non-numeric characters from text
         let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
@@ -181,11 +235,10 @@ const telaNotificacoes = (props) => {
             setGuardaDuracaoDescanso(removido);
         }
     }
-
+    
     function salvarPomodoro() {
         let i, i2 = 0;
         let novosIntervalos = [];
-        console.debug(intervalos);
         for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
             if (i == guardaQuantidadePomodoros - 1 || guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro
                 novosIntervalos.push(
@@ -194,7 +247,7 @@ const telaNotificacoes = (props) => {
                         duracao: guardaDuracaoTrabalho,
                         sossego: false,
                     }
-                )
+                    )
             } else {
                 novosIntervalos.push(
                     {
@@ -207,7 +260,7 @@ const telaNotificacoes = (props) => {
                         duracao: guardaDuracaoDescanso,
                         sossego: true,
                     }
-                )
+                    )
                 i2 = i2 + 2;
             }
         }
@@ -328,18 +381,32 @@ const telaNotificacoes = (props) => {
                     </View>
                 </Modal>
 
-                <View style={styles.visualizador}>
+                <Animated.View
+                    style={[
+                        styles.visualizador,
+                        {
+                            backgroundColor: colorizador(),
+                        }
+                    ]}>
                     {/* <View style={{marginTop: "5%", borderRadius: 60, width: "90%", aspectRatio: 1, backgroundColor: "black", justifyContent: "center", alignItems: "center"}}>
                         <View style={{borderRadius: 43, width: "83%", backgroundColor: "lime", aspectRatio: 1}}></View>
                     </View> */}
-                    <Image source={require("./img/gatoestudando.png")} style={styles.imagem} />
+                    <Image source={gato} style={styles.imagem} />
                     <Text style={styles.textoContador}>{textoContagem}</Text>
-                </View>
+                </Animated.View>
                 <TouchableNativeFeedback onPress={() => toggleRelogio()} style={styles.botao}>
                     <Text style={styles.textoBotao}>{textoBotao}</Text>
                 </TouchableNativeFeedback>
                 <View style={styles.caminhoIndicador}>
-                    <Image source={require("./img/gatoemoji.png")} style={styles.indicador} />
+                        <Animated.View
+                            style={[
+                                {
+                                    marginLeft: posicionador()
+                                }
+                            ]}
+                        >
+                            <Image source={require("./img/gatoemoji.png")} style={styles.indicador} />
+                        </Animated.View>
                 </View>
                 <TouchableOpacity onPress={() => toggleModal()} style={styles.flatlist}>
                     <FlatList
@@ -376,7 +443,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-evenly",
         alignItems: "center",
         paddingTop: "5%",
-        backgroundColor: "#C4C4C4",
         // backgroundColor: "lime",
     },
     botao: {
@@ -513,4 +579,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default telaNotificacoes;
+export default telaPomodoro;
