@@ -201,12 +201,12 @@ const telaPomodoro = (props) => {
     function colorizador() {
         if (running) {
             if (intervalos[iterador].sossego) {
-                return "lightgreen";
+                return "#eae6da";
             } else {
-                return "lightpink";
+                return "#eae6da";
             }
         } else {
-            return "#C4C4C4";
+            return "#eae6da";
         }
     }
 
@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
     },
     selecao: {
         flexDirection: "row",
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderRadius: 3,
         overflow: "hidden",
         height: 0.05*altura,

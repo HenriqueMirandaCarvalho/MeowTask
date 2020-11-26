@@ -25,9 +25,11 @@ let styles = StyleSheet.create({
         justifyContent: "center",
     },
     cabecalho: {
+        alignItems: "center",
         flexDirection: "row",
         width: "100%",
         paddingTop: "3%",
+        marginLeft: "-1%",
     },
     imagemPostador: {
         width: "7.5%",
@@ -38,7 +40,7 @@ let styles = StyleSheet.create({
     },
     nomePostador: {
         fontFamily: 'Roboto-Light',
-        fontSize: 18,
+        fontSize: 16,
         color: '#000000',
         marginLeft: "2%",
     },

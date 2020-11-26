@@ -13,6 +13,7 @@ import telaArquivos from './components/telaArquivos';
 import telaPostagens from './components/telaPostagens';
 import telaLista from './components/telaLista';
 import telaPomodoro from './components/telaPomodoro';
+import telaConfiguracoes from './components/telaConfiguracoes';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -123,7 +124,13 @@ const RootStack = createStackNavigator({
 			navigationOptions: {
 				headerShown: false,
 			}
-		}
-});
+		},
+		Configuracoes: {
+			screen: telaConfiguracoes,
+			navigationOptions: {
+				headerShown: false,
+			}
+		},
+}, {initialRouteName: 'Configuracoes',});
 
 export default createAppContainer(RootStack);
