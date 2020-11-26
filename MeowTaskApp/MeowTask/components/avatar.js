@@ -5,15 +5,13 @@ import {View, StyleSheet, Image, TouchableOpacity, Text} from "react-native";
 export const Avatar = (props) => {
     function selecionador() {
         if (props.selecionada) {
-            return {backgroundColor: "#00FF00"}
-        } else {
-            return {backgroundColor: "#0000FF"}
+            return {backgroundColor: "black"}
         }
     }
 
     return (
-        <TouchableOpacity onPress={() => props.onPress()}>
-            <View style={styles.conteudo, selecionador()}>
+        <TouchableOpacity onPressIn={() => props.onPressIn()}>
+            <View style={[selecionador(), styles.conteudo]}>
                 <Image source={props.imagem} style={styles.imagem}/>
             </View>
         </TouchableOpacity>
@@ -23,10 +21,13 @@ export const Avatar = (props) => {
 let styles = StyleSheet.create({
     conteudo: {
         height: "100%",
+        width: null,
         aspectRatio: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
     imagem: {
-        height: "100%",
+        height: "90%",
         aspectRatio: 1,
         width: null,
     },

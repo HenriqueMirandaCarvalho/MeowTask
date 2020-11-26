@@ -76,19 +76,19 @@ const telaNotificacoes = (props) => {
                     autoCorrect={false}
                     returnKeyType="done"
                 />
-                <SafeAreaView style={{ width: "80%", marginTop: "5%"}}>
+                <SafeAreaView style={{ width: "80%", marginTop: "5%", aspectRatio: 3}}>
                     <FlatList
                         data={avatares}
                         keyExtractor={item=>item.id}
                         horizontal={true}
                         renderItem={({item})=>
                             <Avatar 
-                                onPress={() => selecionarAvatar(item.id)}
+                                onPressIn={() => selecionarAvatar(item.id)}
                                 imagem={item.imagem}
                                 selecionada={item.selecionada}
                             />
                         }
-                        style={{height: 0.20*largura, width: "100%", backgroundColor: "#A4A4A4"}}
+                        style={{ backgroundColor: "#A4A4A4"}}
                     />
                 </SafeAreaView>
                 <TouchableOpacity style={styles.botaoTrocarEmail} onPress={() => setModalContaEstaNaSegundaPagina(true)}>
