@@ -5,7 +5,7 @@ import {View, StyleSheet, Image, TouchableOpacity, Text} from "react-native";
 export const Avatar = (props) => {
     function selecionador() {
         if (props.selecionada) {
-            return {backgroundColor: "black"}
+            return {backgroundColor: "#ebebeb"}
         }
     }
 

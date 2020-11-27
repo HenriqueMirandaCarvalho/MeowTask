@@ -94,7 +94,7 @@ const telaNotificacoes = (props) => {
                                 selecionada={item.selecionada}
                             />
                         }
-                        style={{ backgroundColor: "#A4A4A4"}}
+                        style={{ backgroundColor: "#69665E"}}
                     />
                 </SafeAreaView>
                 <TouchableOpacity style={styles.botaoTrocarEmail} onPress={() => setModalContaEstaNaSegundaPagina(true)}>
