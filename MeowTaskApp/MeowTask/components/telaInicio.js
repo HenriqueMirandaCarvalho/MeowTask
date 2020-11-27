@@ -8,7 +8,7 @@ import { NavigationActions, StackActions } from 'react-navigation';
 
 const telaInicio = (props) => {
     function btnComecar() {
-        if (!firebase.apps.length)
+        if (!firebase.auth().currentUser)
             props.navigation.navigate('Cadastro');
         else
             props.navigation.navigate('Home');

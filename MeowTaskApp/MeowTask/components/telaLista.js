@@ -78,15 +78,24 @@ const telaLista = (props) => {
     }
 
     function deletarItem(_id) {
+        setRefresco(true);
         const NewData = itens.filter(item => item.id !== _id);
         setItens(NewData);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(idTarefa)
+            .update({
+                lista: itens
+            }).then(() => setRefresco(false));
     }
 
     function criarItem() {
         setRefresco(true);
         itens.push(
             {
-                id: itens.length,
+                id: new Date().getTime(),
                 check: false,
                 texto: guardaNovoTexto,
             }
@@ -110,6 +119,7 @@ const telaLista = (props) => {
             .collection("Tarefas")
             .doc(idTarefa)
             .onSnapshot(snapshot => {
+                snapshot.data().lista.sort((a,b) => { if (a.id > b.id) return 1; if (b.id > a.id) return -1; return 0; });
                 setItens(snapshot.data().lista);
                 setRefresco(false);
             });
