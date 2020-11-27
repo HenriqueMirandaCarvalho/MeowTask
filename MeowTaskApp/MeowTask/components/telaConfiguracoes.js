@@ -10,8 +10,10 @@ const altura = Dimensions.get('window').height;
 
 const telaNotificacoes = (props) => {
 
-    const [modalContaVisivel, setModalContaVisivel] = useState(true);
+    const [modalContaVisivel, setModalContaVisivel] = useState(false);
     const [modalContaEstaNaSegundaPagina, setModalContaEstaNaSegundaPagina] = useState(false);
+
+    const [modalNotificacaoVisivel, setModalNotificacaoVisivel] = useState(false);
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -37,6 +39,10 @@ const telaNotificacoes = (props) => {
     function toggleModalConta() {
         setModalContaVisivel(!modalContaVisivel);
         setModalContaEstaNaSegundaPagina(false);
+    }
+
+    function toggleModalNotificacao() {
+        setModalNotificacaoVisivel(!modalNotificacaoVisivel);
     }
 
     function selecionarAvatar(_id) {
@@ -131,7 +137,7 @@ const telaNotificacoes = (props) => {
                     transparent={true}
                     visible={modalContaVisivel}
                     onRequestClose={() => {
-                        setModalContaVisivel(false);
+                        toggleModalConta();
                     }}
                 >
                     <TouchableWithoutFeedback onPress={() => toggleModalConta()}>
@@ -140,6 +146,39 @@ const telaNotificacoes = (props) => {
 
                     <View style={styles.centeredView}>
                         {modalContaEstaNaSegundaPagina ? modalContaPagina2 : modalContaPagina1}
+                    </View>
+                </Modal>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalNotificacaoVisivel}
+                    onRequestClose={() => {
+                        toggleModalNotificacao();
+                    }}
+                >
+                    <TouchableWithoutFeedback onPress={() => toggleModalNotificacao()}>
+                        <View style={styles.overlay} />
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView2}>
+                            <Text style={styles.textoTituloModal}>Trocar E-mail</Text>
+                            <TextInput
+                                style={styles.input}
+                                textContentType="username"
+                                textAlign="center"
+                                defaultValue={email}
+                                onChangeText={(email) => setEmail(email.trim())}
+                                maxLength={30}
+                                autoCorrect={false}
+                                returnKeyType="done"
+                            />
+                            <View style={styles.divBotaoSalvar}>
+                                <TouchableOpacity style={styles.botaoSalvar} onPress={() => salvarEmail()}>
+                                    <Text style={styles.textoBotaoSalvar}>Salvar</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
                 </Modal>
                 <View style={styles.cabecalho}>
@@ -162,10 +201,10 @@ const telaNotificacoes = (props) => {
                 </View>
                 <View style={styles.conteudoConfig1}>
                     <View style={styles.botoesConfig}>
-                        <TouchableOpacity onPress={() => btnVisual()}>
+                        <TouchableOpacity onPress={() => toggleModalNotificacao()}>
                             <Image source={require('./img/turquesa10.png')} style={styles.icones} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => btnVisual()} style={styles.divTextoBotoesConfig}>
+                        <TouchableOpacity onPress={() => toggleModalNotificacao()} style={styles.divTextoBotoesConfig}>
                             <Text style={styles.textoBotoesConfig}>Notificações</Text>
                         </TouchableOpacity>
                     </View>
