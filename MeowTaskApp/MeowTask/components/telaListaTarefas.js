@@ -33,7 +33,20 @@ const telaListaTarefas = (props) => {
     }
 
     function criarTarefa() {
-        alert("Criar " + nomeNovaTarefa);
+        setRefresco(true);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .add({
+                data: new Date().getTime(),
+                descricao: "Insira uma descrição aqui.",
+                lista: [],
+                nome: nomeNovaTarefa
+            }).then(() => {
+                setRefresco(false);
+                toggleModalCriar();
+            });
     }
 
     function btnExcluir() {

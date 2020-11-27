@@ -27,18 +27,13 @@ const telaAmigo = (props) => {
 
     function gerarCodigo() {
         setRefresco(true);
-        let novoCodigo = Math.random().toString(36).slice(-6);
         firebase.firestore()
             .collection("Codigos")
             .doc(firebase.auth().currentUser.uid)
-            .set({
-                nome: firebase.auth().currentUser.displayName,
-                imagem: firebase.auth().currentUser.photoURL,
-                codigo: novoCodigo
-            })
+            .get()
             .then((data) => {
-                setMeuCodigo(novoCodigo);
-                Clipboard.setString(novoCodigo);
+                setMeuCodigo(data.data().codigo);
+                Clipboard.setString(data.data().codigo);
                 Alert.alert("Aviso", "Código copiado com sucesso!");
                 setRefresco(false);
             });
