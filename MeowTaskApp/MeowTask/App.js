@@ -19,7 +19,6 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import * as firebase from 'firebase';
 require("firebase/firestore");
-import { Constants } from "expo";
 
 if (!firebase.apps.length) {
 	var firebaseConfig = {

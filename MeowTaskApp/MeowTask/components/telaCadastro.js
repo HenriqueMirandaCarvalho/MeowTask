@@ -19,6 +19,33 @@ const telaCadastro = (props) => {
                             photoURL: "1"
                         });
                         userData.user.sendEmailVerification();
+                        let novoCodigo = "0ehznd";
+                        let codigoUsado = true;
+                        while (codigoUsado) {
+                            novoCodigo = Math.random().toString(36).slice(-6);
+                            firebase.firestore()
+                                .collection("Codigos")
+                                .where("codigo", "==", novoCodigo)
+                                .get().then(snapshot => {
+                                    if (snapshot.empty) {
+                                        codigoUsado = false;
+                                        console.log("HO");
+                                    }
+                                    else {
+                                        codigoUsado = true;
+                                        console.log("HA");
+                                    }
+                                });
+                        }
+                        console.log("HI");
+                        firebase.firestore()
+                            .collection("Codigos")
+                            .doc(userData.user.uid)
+                            .set({
+                                nome: username,
+                                imagem: 1,
+                                codigo: novoCodigo
+                            });
                         Alert.alert("Aviso", "Confirme seu email!");
                         props.navigation.goBack();
                         setLoading(false);
