@@ -236,42 +236,50 @@ const telaPomodoro = (props) => {
         }
     }
     
-    function salvarPomodoro() {
-        let i, i2 = 0;
-        let novosIntervalos = [];
-        for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
-            if (i == guardaQuantidadePomodoros - 1 || guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro
-                novosIntervalos.push(
-                    {
-                        id: i2,
-                        duracao: guardaDuracaoTrabalho,
-                        sossego: false,
-                    }
-                    )
-            } else {
-                novosIntervalos.push(
-                    {
-                        id: i2,
-                        duracao: guardaDuracaoTrabalho,
-                        sossego: false,
-                    },
-                    {
-                        id: (i2+1),
-                        duracao: guardaDuracaoDescanso,
-                        sossego: true,
-                    }
-                    )
-                i2 = i2 + 2;
+    function salvarIntermediario() {
+        return new Promise ((resolve, reject) => {
+            let i, i2 = 0;
+            let novosIntervalos = [];
+            for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
+                if (i == guardaQuantidadePomodoros - 1 || guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro
+                    novosIntervalos.push(
+                        {
+                            id: i2,
+                            duracao: guardaDuracaoTrabalho,
+                            sossego: false,
+                        }
+                        )
+                } else {
+                    novosIntervalos.push(
+                        {
+                            id: i2,
+                            duracao: guardaDuracaoTrabalho,
+                            sossego: false,
+                        },
+                        {
+                            id: (i2+1),
+                            duracao: guardaDuracaoDescanso,
+                            sossego: true,
+                        }
+                        )
+                    i2 = i2 + 2;
+                }
             }
-        }
-        setIntervalos(novosIntervalos);
-        setRunning(false);
-        setPausado(false);
-        setTextoBotao("Iniciar");
-        setSegundos(0);
-        setMinutos(guardaDuracaoTrabalho);
-        setIterador(0);
-        setTextoContagem("0:00");
+            setIntervalos(novosIntervalos);
+            setRunning(false);
+            setPausado(false);
+            setTextoBotao("Iniciar");
+            setSegundos(0);
+            setMinutos(guardaDuracaoTrabalho);
+            setIterador(0);
+            setTextoContagem("0:00");
+        });
+    }
+
+    function salvarPomodoro() {
+        salvarIntermediario().then(() => {
+            console.log(intervalos);
+        });
     }
 
     function validaPomodoros(numero) {
