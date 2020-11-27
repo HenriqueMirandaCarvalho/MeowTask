@@ -77,6 +77,7 @@ const telaPostagens = (props) => {
                 .doc(idGrupo)
                 .collection("Postagens")
                 .add({
+                    idPostador: firebase.auth().currentUser.uid,
                     nomePostador: firebase.auth().currentUser.displayName,
                     avatarPostador: firebase.auth().currentUser.photoURL,
                     texto: guardaNovoTexto,
