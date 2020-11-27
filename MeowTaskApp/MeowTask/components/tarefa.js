@@ -3,70 +3,53 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
 
 export const Tarefa = props => 
     <View style={styles.container}>
-        <View style={styles.viewImagem}>
-            <Image source={props.imagem} style={styles.imagem}>
-
-            </Image>
-        </View>
-        <View style={styles.viewTexto}>
-            <View style={styles.divNome}>
-                <Text style={styles.nome}> {props.nome} </Text>
+        <TouchableOpacity onPress={() => props.onPress()} onLongPress={() => props.onLongPress()} style={styles.botao}>
+            <View style={styles.viewImagem}>
+                <Image source={props.imagem} style={styles.imagem}/>
             </View>
-            <TouchableOpacity onPress={props.onPress} style={styles.botao}>
-                <Image source={require('./img/turquesa10.png')} style={styles.iconeConcluir}/>
-                <Text style={styles.textoBotao}>Concluir</Text>
-            </TouchableOpacity>
-        </View>
+            <View style={styles.viewTexto}>
+                <View style={styles.divNome}>
+                    <Text style={styles.nome}> {props.nome} </Text>
+                </View>
+            </View>
+        </TouchableOpacity>
     </View>
 
 let styles = StyleSheet.create({
     container: {
-        flexDirection: "row",
         marginLeft: "12.5%",
         marginRight: "12.5%",
         marginTop: "3%",
         width: "75%",
         aspectRatio: 5,
+        
     },
-    botao: {
-        flexDirection: "row",
-        width: "50%",
-        flex: 50,
-        alignItems: "center",
+    divNome: {
+        height: "50%",
+        justifyContent: "center",
         paddingTop: "0.5%",
         paddingBottom: "0.5%",
     },
+    botao: {
+        flexDirection: "row",
+        height: "100%",
+    },
     imagem: {
         aspectRatio: 1,
-        width: "100%",
-        height: null,
-        borderRadius: 100,
+        width: null,
+        height: "100%",
+        // borderRadius: 100,
     },
     viewImagem: {
-        flex: 19,
+        width: "22%",
     },
     viewTexto: {
-        flex: 81,
-        marginLeft: "5%",
-        justifyContent: "flex-end",
-    },
-    divNome: {
-        flex: 50,
+        width: "78%",
+        justifyContent: "center",
     },
     nome: {
         fontFamily: 'Roboto-Light',
-        fontSize: 18,
+        fontSize: 20,
         color: '#000000',
     },
-    textoBotao: {
-        marginLeft: "12%",
-        fontFamily: 'Roboto-Light',
-        fontSize: 15,
-        color: '#000000',
-    },
-    iconeConcluir: {
-        height: '100%',
-        width: null,
-        aspectRatio: 1,
-    }
 });

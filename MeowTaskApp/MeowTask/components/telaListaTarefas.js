@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput, ActivityIndicator} from "react-native";
-import { Ionicons, AntDesign } from '@expo/vector-icons'; 
+import {View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar , FlatList, Modal, TouchableWithoutFeedback, TextInput, Dimensions} from "react-native";
+import { Ionicons, AntDesign, FontAwesome5 } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import {Tarefa} from './tarefa.js';
 import * as firebase from 'firebase';
+
+const largura = Dimensions.get('window').width;
+const altura = Dimensions.get('window').height;
 
 const telaListaTarefas = (props) => {
     const idGrupo = props.navigation.state.params.idGrupo;
@@ -14,6 +17,14 @@ const telaListaTarefas = (props) => {
 
     const [refresco, setRefresco] = useState(false);
 
+    const [modalCriarVisivel, setModalCriarVisivel] = useState(false);
+    const [modalEditarVisivel, setModalEditarVisivel] = useState(false);
+
+    const [nomeNovaTarefa, setNomeNovaTarefa] = useState("");
+
+    const [guardaTexto, setGuardaTexto] = useState("");
+    const [guardaId, setGuardaId] = useState();
+
     function trocarTela(id) {
         props.navigation.navigate("Tarefa", {
             idGrupo: idGrupo,
@@ -21,12 +32,47 @@ const telaListaTarefas = (props) => {
         });
     }
 
-    function btnCriar() {
-        alert("Criar");
+    function criarTarefa() {
+        alert("Criar " + nomeNovaTarefa);
     }
 
     function btnExcluir() {
         alert("Excluir");
+    }
+
+    function toggleModalCriar() {
+        setModalCriarVisivel(!modalCriarVisivel);
+    }
+
+    function toggleModalEditar(id, texto) {
+        setModalEditarVisivel(true);
+        setGuardaId(id);
+        setGuardaTexto(texto);
+    }
+
+    function editarItem(_id) {
+        setRefresco(true);
+        const NewData = itens.map( item => {
+            if(item.id === _id){
+                item.texto = guardaTexto;
+                return item;
+            }
+            return item;
+        })
+        setItens(NewData);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(idTarefa)
+            .update({
+                lista: itens
+            }).then(() => setRefresco(false));
+    }
+
+    function deletarItem(_id) {
+        const NewData = itens.filter(item => item.id !== _id);
+        setItens(NewData);
     }
 
     let [fontsLoaded] = useFonts({
@@ -62,6 +108,83 @@ const telaListaTarefas = (props) => {
     } else {
     return (
         <View style={styles.container}>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalCriarVisivel}
+                onRequestClose={() => {
+                    setModalCriarVisivel(false);
+                }}
+            >
+                <TouchableWithoutFeedback onPress={() => toggleModalCriar()}>
+                    <View style={styles.overlay} />
+                </TouchableWithoutFeedback>
+
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.textoTituloModal}>Nova Tarefa</Text>
+                        <TextInput
+                            style={styles.input}
+                            textContentType="username"
+                            textAlign="center"
+                            placeholder="Nome"
+                            onChangeText={(nomeNovaTarefa) => setNomeNovaTarefa(nomeNovaTarefa.trim())}
+                            maxLength={30}
+                            autoCorrect={false}
+                            returnKeyType="done"
+                        />
+                        <View style={styles.divBotaoSalvar}>
+                            <TouchableOpacity style={styles.botaoSalvar} onPress={() => criarTarefa()}>
+                                <Text style={styles.textoBotaoSalvar}>Salvar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalEditarVisivel}
+                onRequestClose={() => {
+                    setModalEditarVisivel(false);
+                }}
+            >
+                <TouchableWithoutFeedback onPress={() => {setModalEditarVisivel(false)}}>
+                    <View style={styles.overlay}/>
+                </TouchableWithoutFeedback>
+
+                <View style={styles.centeredView}>
+                    <View style={styles.modalEditarView}>
+                        <View style={styles.overlay}>
+                            <TouchableOpacity onPress={() => setModalEditarVisivel(false)}>
+                                <AntDesign name="close" size={28} color="#5b5b58" style={styles.Xzinho}/>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.overlayDelete}>
+                            <TouchableOpacity onPress={() => {deletarItem(guardaId), setModalEditarVisivel(false)}}>
+                                <FontAwesome5 name="trash-alt" size={24} color="#5b5b58" style={styles.delete}/>
+                            </TouchableOpacity>
+                        </View>
+                        
+                        <Text style={styles.textoTituloModal}>Editar</Text>
+
+                        <TextInput 
+                            style={styles.input}
+                            textContentType="none"
+                            returnKeyType="done"
+                            textAlign="center"
+                            defaultValue={guardaTexto}
+                            maxLength={30}
+                            onChangeText={(texto) => setGuardaTexto(texto)}
+                        />
+
+                        <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => {editarItem(guardaId), setModalEditarVisivel(false)}}>
+                            <Text style={styles.textoBotaoSalvarModalEditar}>Salvar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>     
+            </Modal>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
                     <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
@@ -83,12 +206,13 @@ const telaListaTarefas = (props) => {
                             imagem={logoTarefa[0]}
                             nome={item.nome} 
                             onPress={() => trocarTela(item.id)}
+                            onLongPress={() => toggleModalEditar(item.id, item.nome)}
                         />}
                     ListFooterComponent={
                         function rodapeLista() {
                             return (
                                 <View style={styles.rodapeLista}>
-                                    <TouchableOpacity onPress={() => toggleModal()} style={styles.botoesRodapeLista}>
+                                    <TouchableOpacity onPress={() => toggleModalCriar()} style={styles.botoesRodapeLista}>
                                         <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
                                         <Text style={styles.textoBotaoRodapeLista}>Criar nova tarefa</Text>
                                     </TouchableOpacity>
@@ -98,19 +222,6 @@ const telaListaTarefas = (props) => {
                     }
                 />
                 
-            </View>
-            <View style={styles.rodape}>
-                <TouchableNativeFeedback onPress={() => btnCriar()}>
-                    <View style={styles.botao}>
-                        <Text style={styles.textoBotao}>Criar</Text>
-                    </View>
-                </TouchableNativeFeedback>
-
-                <TouchableNativeFeedback onPress={() => btnExcluir()}>
-                    <View style={styles.botao}>
-                        <Text style={styles.textoBotao}>Excluir</Text>
-                    </View>
-                </TouchableNativeFeedback>
             </View>
         </View>
     );  
@@ -194,7 +305,115 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Light',
         color: '#5b5b58',
         marginLeft: "5%",
-    }
+    },
+    overlay: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalView: {
+        width: 0.80*largura,
+        height: 0.4*largura,
+        backgroundColor: "#c4c4c4",
+        // borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        paddingBottom: "5%",
+    },
+    textoTituloModal: {
+        marginTop: "2%",
+        fontFamily: 'Roboto-Light',
+        fontSize: 23,
+    },
+    divBotaoSalvar: {
+        position: "absolute",
+        width: 0.80*largura,
+        height: 0.4*largura,
+        alignItems: "center",
+        justifyContent: "flex-end",
+    },
+    botaoSalvar: {
+        width: "80%",
+        height: 0.10*largura,
+        marginBottom: "5%",
+        backgroundColor: "#53A156",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 40,
+    },
+    textoBotaoSalvar: {
+        fontFamily: 'Roboto-Light',
+        fontSize: 23,
+    },
+    input: {
+        marginTop: '5%',
+        width: '80%',
+        borderBottomWidth: 1,
+        borderColor: '#5b5b58',
+        fontSize: 18,
+    },
+    modalEditarView: {
+        width: "80%",
+        height: null,
+        aspectRatio: 2,
+        backgroundColor: "#c4c4c4",
+        // borderRadius: 20,
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    botaoSalvarModalEditar: {
+        marginTop: "3.5%",
+        borderRadius: 40,
+        width: "82%",
+        height: null,
+        aspectRatio: 6.12,
+        backgroundColor: "#53A156",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    textoBotaoSalvarModalEditar: {
+        fontFamily: 'Roboto-Light',
+        fontSize: 25,
+        color: '#000000',
+    },
+    Xzinho: {
+        marginLeft: "3%",
+        marginTop: "4%",
+    },
+    overlayDelete: {
+        position: "absolute",
+        alignItems: "flex-end",
+        top: 0, // não faço ideia de como o top, right, bottom e left funcionam
+        right: 0, // mas eles fazem o view com absolute ocupar toda a tela
+        bottom: 0,
+        left: 0,
+    },
+    delete: {
+        marginRight: "3.3%",
+        marginTop: "4%",
+    },
 });
 
 export default telaListaTarefas;

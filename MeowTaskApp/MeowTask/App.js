@@ -131,6 +131,6 @@ const RootStack = createStackNavigator({
 				headerShown: false,
 			}
 		},
-}, {initialRouteName: 'Configuracoes',});
+}, {initialRouteName: 'Inicio',});
 
 export default createAppContainer(RootStack);
