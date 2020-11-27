@@ -5,6 +5,7 @@ import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import Animated from 'react-native-reanimated';
+import * as firebase from 'firebase';
 
 
 const largura = Dimensions.get('window').width;
@@ -84,7 +85,7 @@ const telaPomodoro = (props) => {
             } else {
                 segundo2Digitos = "" + segundos;
             }
-            setTextoContagem(minutos+":"+segundo2Digitos);
+            setTextoContagem(minutos.toString()+":"+segundo2Digitos.toString());
         }
     }
 
@@ -100,7 +101,7 @@ const telaPomodoro = (props) => {
                 } else {
                     segundo2Digitos = "" + segundos;
                 }
-                setTextoContagem(minutos+":"+segundo2Digitos);
+                setTextoContagem(minutos.toString()+":"+segundo2Digitos.toString());
                 setSegundos(0);
                 setMinutos(intervalos[0].duracao);
                 setRunning(true);
@@ -114,7 +115,7 @@ const telaPomodoro = (props) => {
     }
 
     useEffect(() => {
-        const intervalo = window.setInterval(() => contagemRegressiva(), 5);
+        const intervalo = window.setInterval(() => contagemRegressiva(), 1000);
 
         // pega os dados do banco de dados e coloca aí 
         // setDuracaoTrabalho();
@@ -236,50 +237,43 @@ const telaPomodoro = (props) => {
         }
     }
     
-    function salvarIntermediario() {
-        return new Promise ((resolve, reject) => {
-            let i, i2 = 0;
-            let novosIntervalos = [];
-            for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
-                if (i == guardaQuantidadePomodoros - 1 || guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro
-                    novosIntervalos.push(
-                        {
-                            id: i2,
-                            duracao: guardaDuracaoTrabalho,
-                            sossego: false,
-                        }
-                        )
-                } else {
-                    novosIntervalos.push(
-                        {
-                            id: i2,
-                            duracao: guardaDuracaoTrabalho,
-                            sossego: false,
-                        },
-                        {
-                            id: (i2+1),
-                            duracao: guardaDuracaoDescanso,
-                            sossego: true,
-                        }
-                        )
-                    i2 = i2 + 2;
-                }
-            }
-            setIntervalos(novosIntervalos);
-            setRunning(false);
-            setPausado(false);
-            setTextoBotao("Iniciar");
-            setSegundos(0);
-            setMinutos(guardaDuracaoTrabalho);
-            setIterador(0);
-            setTextoContagem("0:00");
-        });
-    }
-
     function salvarPomodoro() {
-        salvarIntermediario().then(() => {
-            console.log(intervalos);
-        });
+        let i, i2 = 0;
+        let novosIntervalos = [];
+        for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
+            if (i == guardaQuantidadePomodoros - 1 || guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro
+                novosIntervalos.push(
+                    {
+                        id: i2,
+                        duracao: guardaDuracaoTrabalho,
+                        sossego: false,
+                    }
+                    )
+            } else {
+                novosIntervalos.push(
+                    {
+                        id: i2,
+                        duracao: guardaDuracaoTrabalho,
+                        sossego: false,
+                    },
+                    {
+                        id: (i2+1),
+                        duracao: guardaDuracaoDescanso,
+                        sossego: true,
+                    }
+                    )
+                i2 = i2 + 2;
+            }
+        }
+        setIntervalos(novosIntervalos);
+        setRunning(false);
+        setPausado(false);
+        setTextoBotao("Iniciar");
+        setSegundos(0);
+        setMinutos(guardaDuracaoTrabalho);
+        setIterador(0);
+        setTextoContagem("0:00");
+        toggleModal();
     }
 
     function validaPomodoros(numero) {
