@@ -21,25 +21,15 @@ const telaPostagens = (props) => {
 
     const [postagens, setPostagens] = useState([]);
     const [modalEditarVisivel, setModalEditarVisivel] = useState(false);
-    const [modalCriarVisivel, setModalCriarVisivel] = useState(false);
     const [guardaTexto, setGuardaTexto] = useState();
     const [guardaNovoTexto, setGuardaNovoTexto] = useState();
     const [guardaId, setGuardaId] = useState();
 
     function voltar() {
-        alert("voltar");
+        props.navigation.goBack();
     }
 
     const [refresco, setRefresco] = useState(false);
-
-    function refrescar() {
-        setRefrescando(true);
-        alert("olha o refresco!");
-    }
-
-    function btnNovoItem() {
-        setModalCriarVisivel(true)
-    }
 
     function toggleModalEditar(id, texto) {
         setModalEditarVisivel(true);

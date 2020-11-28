@@ -105,6 +105,15 @@ const telaAmigo = (props) => {
                                             toggleModal();
                                             Alert.alert("Aviso", "Pedido de amizade enviado!");
                                             setRefresco(false);
+                                            firebase.firestore()
+                                                .collection("Notificacoes")
+                                                .doc(amigo.id)
+                                                .add({
+                                                    tipo: "pedido-amizade",
+                                                    titulo: "Pedido de amizade",
+                                                    descricao: firebase.auth().currentUser.displayName + " quer ser seu amigo!",
+                                                    idAmizade: data.id
+                                                });
                                         });
                                 }
                                 else if (sender) {
@@ -251,8 +260,7 @@ const telaAmigo = (props) => {
 
                     <TouchableNativeFeedback onPress={() => gerarCodigo()}>
                         <View style={styles.botao}>
-                            <Text style={styles.textoBotao}>Copiar</Text>
-                            <Text style={styles.textoBotao}>Código</Text>
+                            <Text style={styles.textoBotao}>Meu Código</Text>
                         </View>
                     </TouchableNativeFeedback>
                 </View>
@@ -308,9 +316,9 @@ const styles = StyleSheet.create({
         color: '#5b5b58',
     },
     botao: {
-        width: '30%',
+        width: '40%',
         height: 40,
-        aspectRatio: 2.47,
+        aspectRatio: 3.47,
         borderRadius: 80,
         backgroundColor: 'lightgrey',
         justifyContent: 'center',

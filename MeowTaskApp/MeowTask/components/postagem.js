@@ -32,7 +32,8 @@ let styles = StyleSheet.create({
         paddingBottom: "2%",
         marginLeft: "-1%",
         backgroundColor: "#444444",
-        borderRadius: 10,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
     },
     imagemPostador: {
         width: "7.5%",
