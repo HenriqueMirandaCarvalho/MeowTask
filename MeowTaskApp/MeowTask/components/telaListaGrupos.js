@@ -13,6 +13,7 @@ const telaListaGrupos = (props) => {
     const [inputCodigo, setInputCodigo] = useState("");
     const [inputNomeGrupo, setInputNomeGrupo] = useState();
     const [inputImagem, setInputImagem] = useState(1);
+    const [pessoasAdicionar, setPessoasAdicionar] = useState([]);
 
     const imagensGrupos = [];
     imagensGrupos.push(require("./img/turquesa10.png"));
@@ -36,9 +37,29 @@ const telaListaGrupos = (props) => {
         });
     }
 
+    function adicionarPessoa(_id) {
+        setPessoasAdicionar(pessoasAdicionar.push(_id));
+        console.log(pessoasAdicionar);
+    }
+
     function toggleModalCriar() {
         setModalCriarVisivel(!modalCriarVisivel);
-
+        firebase.firestore()
+            .collection("Amigos")
+            .orderBy('data', 'desc')
+            .onSnapshot(snapshot => {
+                const amigos = snapshot.docs.map(doc => {
+                    const dados = doc.data();
+                    if (dados.confirmado) {
+                        const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid });
+                        return amigo;
+                    }
+                });
+                if (amigos[0] != undefined)
+                    setAmigos(amigos);
+                else
+                    setAmigos([]);
+            });
     }
 
     function criarGrupo() {
@@ -252,7 +273,7 @@ const telaListaGrupos = (props) => {
                                             <AmigoModal
                                                 imagem={item.imagem}
                                                 nome={item.nome}
-                                                onPress={() => trocarTela(item.id)}
+                                                onPress={() => adicionarPessoa(item.id)}
                                             />}
                                         ListEmptyComponent={() =>
                                             <Text style={styles.tituloListaAmigos}>Você não possuí amigos!</Text>

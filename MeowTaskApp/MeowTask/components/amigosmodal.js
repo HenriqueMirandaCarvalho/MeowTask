@@ -1,10 +1,16 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
 
+const imagensUsuario = [];
+imagensUsuario.push(require("./img/turquesa10.png"));
+imagensUsuario.push(require("./img/gato1.png"));
+imagensUsuario.push(require("./img/gato2.png"));
+imagensUsuario.push(require("./img/gato3.png"));
+
 export const AmigoModal = props => 
     <View style={styles.container}>
         <View style={styles.viewImagem}>
-            <Image source={props.imagem} style={styles.imagem}>
+            <Image source={imagensUsuario[props.imagem]} style={styles.imagem}>
 
             </Image>
         </View>
