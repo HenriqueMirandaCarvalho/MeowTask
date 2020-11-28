@@ -14,6 +14,7 @@ import telaPostagens from './components/telaPostagens';
 import telaLista from './components/telaLista';
 import telaPomodoro from './components/telaPomodoro';
 import telaConfiguracoes from './components/telaConfiguracoes';
+import telaNotificacoes from './components/telaNotificacoes';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -127,6 +128,12 @@ const RootStack = createStackNavigator({
 		},
 		Configuracoes: {
 			screen: telaConfiguracoes,
+			navigationOptions: {
+				headerShown: false,
+			}
+		},
+		Notificacoes: {
+			screen: telaNotificacoes,
 			navigationOptions: {
 				headerShown: false,
 			}

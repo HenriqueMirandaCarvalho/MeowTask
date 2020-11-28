@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, LayoutAnimation, Platform, UIManager } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Notificacao } from './notificacao.js';
 import SwipeRow from './swipe.js';
+import * as firebase from 'firebase';
 
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -59,6 +60,28 @@ const telaNotificacoes = (props) => {
             texto: "Notificação 2",
         },
     ]);
+
+    useEffect(() => {
+        setRefrescando(true);
+        const listener = firebase.firestore()
+            .collection("Codigos")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("Notificacoes")
+            .orderBy('data', 'desc')
+            .onSnapshot(snapshot => {
+                const notificacoes = snapshot.docs.map(doc => {
+                    const notificacao = doc.data();
+                    notificacao.id = doc.id;
+                    return notificacao;
+                });
+                if (notificacoes[0] != undefined)
+                    setNotificacoes(notificacoes);
+                else
+                    setNotificacoes([]);
+                setRefrescando(false);
+            });
+        return () => listener();
+    }, []);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),

@@ -106,13 +106,15 @@ const telaAmigo = (props) => {
                                             Alert.alert("Aviso", "Pedido de amizade enviado!");
                                             setRefresco(false);
                                             firebase.firestore()
-                                                .collection("Notificacoes")
+                                                .collection("Codigos")
                                                 .doc(amigo.id)
-                                                .set({
+                                                .collection("Notificacoes")
+                                                .add({
                                                     tipo: "pedido-amizade",
                                                     titulo: "Pedido de amizade",
                                                     descricao: firebase.auth().currentUser.displayName + " quer ser seu amigo!",
-                                                    idAmizade: data.id
+                                                    idAmizade: data.id,
+                                                    data: new Date().getTime(),
                                                 });
                                         });
                                 }
