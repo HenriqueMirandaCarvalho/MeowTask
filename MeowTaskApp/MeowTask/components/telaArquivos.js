@@ -77,7 +77,6 @@ const telaArquivos = (props) => {
         DocumentPicker.getDocumentAsync().then((result) => {
             if (result.type != "cancel") {
                 urlParaBlob(result.uri).then((obj) => {
-                    console.log("a");
                     firebase.storage().ref().child(idTarefa + "/" + result.name).put(obj).then(() => {
                         setRefrescando(true);
                     });
