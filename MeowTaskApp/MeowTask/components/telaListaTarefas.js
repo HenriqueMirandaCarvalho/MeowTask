@@ -49,10 +49,6 @@ const telaListaTarefas = (props) => {
             });
     }
 
-    function btnExcluir() {
-        alert("Excluir");
-    }
-
     function toggleModalCriar() {
         setModalCriarVisivel(!modalCriarVisivel);
     }
@@ -84,8 +80,13 @@ const telaListaTarefas = (props) => {
     }
 
     function deletarItem(_id) {
-        const NewData = itens.filter(item => item.id !== _id);
-        setItens(NewData);
+        setRefresco(true);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Tarefas")
+            .doc(_id)
+            .delete().then(() => setRefresco(false));
     }
 
     let [fontsLoaded] = useFonts({
@@ -255,6 +256,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
         paddingBottom: '1%',
+        marginBottom: '3%',
     },
     conteudo: {
         flex: 1
@@ -302,7 +304,7 @@ const styles = StyleSheet.create({
         color: '#5b5b58',
     },
     rodapeLista: {
-        marginTop: "8%",
+        marginTop: "7%",
         alignSelf:'stretch',
     },
     botoesRodapeLista: {
