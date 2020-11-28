@@ -61,21 +61,13 @@ const telaListaTarefas = (props) => {
 
     function editarItem(_id) {
         setRefresco(true);
-        const NewData = itens.map( item => {
-            if(item.id === _id){
-                item.texto = guardaTexto;
-                return item;
-            }
-            return item;
-        })
-        setItens(NewData);
         firebase.firestore()
             .collection("Grupos")
             .doc(idGrupo)
             .collection("Tarefas")
-            .doc(idTarefa)
+            .doc(_id)
             .update({
-                lista: itens
+                nome: guardaTexto
             }).then(() => setRefresco(false));
     }
 
