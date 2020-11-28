@@ -60,7 +60,7 @@ const telaPostagens = (props) => {
     }
 
     function postar() {
-        if (guardaNovoTexto != "") {
+        if (guardaNovoTexto.trim() != "") {
             setRefresco(true);
             firebase.firestore()
                 .collection("Grupos")
@@ -70,7 +70,7 @@ const telaPostagens = (props) => {
                     idPostador: firebase.auth().currentUser.uid,
                     nomePostador: firebase.auth().currentUser.displayName,
                     avatarPostador: firebase.auth().currentUser.photoURL,
-                    texto: guardaNovoTexto,
+                    texto: guardaNovoTexto.trim(),
                     data: new Date().getTime()
                 })
                 .then(() => {
