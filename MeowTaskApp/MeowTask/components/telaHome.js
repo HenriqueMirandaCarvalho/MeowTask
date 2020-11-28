@@ -56,7 +56,7 @@ const telaHome = (props) => {
     }
 
     function toggleModalConfig() {
-        alert("coloque a navegação pras configurações aqui");
+        props.navigation.navigate("Configuracoes");
     }
 
     let [fontsLoaded] = useFonts({

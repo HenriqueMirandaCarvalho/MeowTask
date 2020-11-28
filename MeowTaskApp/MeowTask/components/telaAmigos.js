@@ -108,7 +108,7 @@ const telaAmigo = (props) => {
                                             firebase.firestore()
                                                 .collection("Notificacoes")
                                                 .doc(amigo.id)
-                                                .add({
+                                                .set({
                                                     tipo: "pedido-amizade",
                                                     titulo: "Pedido de amizade",
                                                     descricao: firebase.auth().currentUser.displayName + " quer ser seu amigo!",
