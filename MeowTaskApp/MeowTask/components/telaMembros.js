@@ -222,34 +222,66 @@ const telaAmigo = (props) => {
                     </View>
                 </View>
                 <View style={styles.conteudo}>
-                    <FlatList
-                        data={amigos}
-                        keyExtractor={item => item.id}
-                        refreshing={refresco}
-                        onRefresh={() => { }}
-                        renderItem={({ item }) =>
-                            <Amigo
-                                imagem={imagensUsuario[item.imagem]}
-                                nome={item.nome}
-                                onPress={() => trocarTela(item.id)}
-                            />}
-                        ListFooterComponent={
-                            function rodapeLista() {
-                                return (
-                                    <View style={styles.rodapeLista}>
-                                        <TouchableOpacity onPress={() => toggleModal()} style={styles.botoesRodapeLista}>
-                                            <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
-                                            <Text style={styles.textoBotaoRodapeLista}>Adicionar amigo</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                )
+                    <View style={styles.divAdmin}>
+                        <Text style={styles.cargo}>Admin</Text>
+                        <FlatList
+                            data={amigos}
+                            keyExtractor={item => item.id}
+                            refreshing={refresco}
+                            onRefresh={() => { }}
+                            renderItem={({ item }) =>
+                                <Amigo
+                                    imagem={imagensUsuario[item.imagem]}
+                                    nome={item.nome}
+                                    onPress={() => trocarTela(item.id)}
+                                />}
+                            ListFooterComponent={
+                                function rodapeLista() {
+                                    return (
+                                        <View style={styles.rodapeLista}>
+                                            <TouchableOpacity onPress={() => toggleModal()} style={styles.botoesRodapeLista}>
+                                                <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
+                                                <Text style={styles.textoBotaoRodapeLista}>Adicionar amigo</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                }
                             }
-                        }
-                        ListEmptyComponent={() =>
-                            <Text style={{ alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20, marginTop: "6%" }}>Nenhum amigo!</Text>
-                        }
-                    />
-
+                            ListEmptyComponent={() =>
+                                <Text style={{ alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20, marginTop: "6%" }}>Nenhum amigo!</Text>
+                            }
+                        />
+                    </View>
+                    <View style={styles.divMembroComum}>
+                        <Text style={styles.cargo}>Membro Comum</Text>
+                        <FlatList
+                            data={amigos}
+                            keyExtractor={item => item.id}
+                            refreshing={refresco}
+                            onRefresh={() => { }}
+                            renderItem={({ item }) =>
+                                <Amigo
+                                    imagem={imagensUsuario[item.imagem]}
+                                    nome={item.nome}
+                                    onPress={() => trocarTela(item.id)}
+                                />}
+                            ListFooterComponent={
+                                function rodapeLista() {
+                                    return (
+                                        <View style={styles.rodapeLista}>
+                                            <TouchableOpacity onPress={() => toggleModal()} style={styles.botoesRodapeLista}>
+                                                <AntDesign name="pluscircleo" size={60} color="#5b5b58" />
+                                                <Text style={styles.textoBotaoRodapeLista}>Adicionar amigo</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                }
+                            }
+                            ListEmptyComponent={() =>
+                                <Text style={{ alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20, marginTop: "6%" }}>Nenhum amigo!</Text>
+                            }
+                        />
+                    </View>
                 </View>
                 <View style={styles.rodape}>
                     <TouchableNativeFeedback onPress={() => toggleModal()}>
