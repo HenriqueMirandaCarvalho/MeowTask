@@ -359,6 +359,9 @@ const styles = StyleSheet.create({
     },
     divTextoBotoesConfig: {
         marginLeft: "2.6%",
+        width: "100%",
+        height: 0.08*altura,
+        justifyContent: "center",
     },
     textoBotoesConfig: {
         fontFamily: 'Roboto-Light',
