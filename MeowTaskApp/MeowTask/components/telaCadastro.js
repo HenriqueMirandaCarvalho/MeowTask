@@ -177,7 +177,8 @@ const telaCadastro = (props) => {
                         placeholder={'Senha'}
                         textContentType="password"
                         secureTextEntry={senhaOculta}
-                        onChangeText={(senha) => setSenha(senha.trim())} />
+                        onChangeText={(senha) => setSenha(senha.trim())}
+                        maxLength={24} />
                     <View style={styles.olhinho}>
                         <TouchableOpacity onPress={togglePassword}>
                             <FontAwesome name={iconeSenha} size={24} color="#5B5B58" />
@@ -191,7 +192,8 @@ const telaCadastro = (props) => {
                         placeholder={'Confirmar senha'}
                         textContentType="password"
                         secureTextEntry={senhaOculta2}
-                        onChangeText={(confirmarSenha) => setConfirmarSenha(confirmarSenha.trim())} />
+                        onChangeText={(confirmarSenha) => setConfirmarSenha(confirmarSenha.trim())}
+                        maxLength={24} />
                     <View style={styles.olhinho}>
                         <TouchableOpacity onPress={togglePassword2}>
                             <FontAwesome name={iconeSenha2} size={24} color="#5B5B58" />
