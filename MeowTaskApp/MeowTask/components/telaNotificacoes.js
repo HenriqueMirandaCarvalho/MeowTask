@@ -28,38 +28,7 @@ const telaNotificacoes = (props) => {
         alert("olha o refresco!");
     }
 
-    const [notificacoes, setNotificacoes] = useState([
-        {
-            id: "0",
-            imagem: require("./img/turquesa10.png"),
-            texto: "Notificação 1",
-        },
-        {
-            id: "1",
-            imagem: require("./img/turquesa10.png"),
-            texto: "Notificação 2",
-        },
-        {
-            id: "2",
-            imagem: require("./img/turquesa10.png"),
-            texto: "Notificação 2",
-        },
-        {
-            id: "3",
-            imagem: require("./img/turquesa10.png"),
-            texto: "Notificação 2",
-        },
-        {
-            id: "4",
-            imagem: require("./img/turquesa10.png"),
-            texto: "Notificação 2",
-        },
-        {
-            id: "5",
-            imagem: require("./img/turquesa10.png"),
-            texto: "Notificação 2",
-        },
-    ]);
+    const [notificacoes, setNotificacoes] = useState([]);
 
     useEffect(() => {
         setRefrescando(true);
