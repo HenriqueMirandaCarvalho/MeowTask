@@ -118,6 +118,7 @@ const telaLogin = (props) => {
                 <Dialog.Container visible={esqueci}>
                     <Dialog.Title>Recuperar Senha</Dialog.Title>
                     <Dialog.Input label="Insira seu E-mail" wrapperStyle={styles.input} onChangeText={(email) => setEmailEsqueci(email)}></Dialog.Input>
+                    <Dialog.Button label="Fechar" onPress={() => setEsqueci(false)}></Dialog.Button>
                     <Dialog.Button label="Enviar" onPress={() => esqueciMinhaSenha(emailEsqueci)}></Dialog.Button>
                 </Dialog.Container>
                 <Modal

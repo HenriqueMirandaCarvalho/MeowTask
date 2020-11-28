@@ -11,15 +11,15 @@ const telaInicio = (props) => {
         if (!firebase.auth().currentUser)
             props.navigation.navigate('Login');
         else
-            props.navigation.navigate('Home');
+            props.navigation.navigate('Home', {
+                user: firebase.auth().currentUser
+            });
     }
     function btnLogar() {
         props.navigation.navigate('Login');
     }
     function btnContinuar() {
-        props.navigation.navigate('Home', {
-            naoLogado: true
-        });
+        props.navigation.navigate('Home');
     }
 
     let [fontsLoaded] = useFonts({
@@ -40,15 +40,15 @@ const telaInicio = (props) => {
         firebase.initializeApp(firebaseConfig);
     }
 
-    if (firebase.auth().currentUser) {
+    /*if (firebase.auth().currentUser != null) {
         props.navigation.navigate('Home');
         const resetAction = StackActions.reset({
             index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Home' })],
+            actions: [NavigationActions.navigate({ routeName: 'Inicio' })],
             key: null,
         });
         props.navigation.dispatch(resetAction);
-    }
+    }*/
 
     if (!fontsLoaded) {
         return <AppLoading />;

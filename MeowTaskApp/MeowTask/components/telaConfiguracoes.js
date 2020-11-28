@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, Image, Dimensions, Modal, TouchableWithoutFeedback, TextInput, SafeAreaView, Switch } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Avatar } from './avatar';
+import * as firebase from 'firebase';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 const largura = Dimensions.get('window').width;
 const altura = Dimensions.get('window').height;
@@ -106,6 +108,18 @@ const telaNotificacoes = (props) => {
         setModalNotificacaoVisivel(false);
     }
 
+    function sair() {
+        firebase.auth().signOut().then(() => {
+            props.navigation.navigate('Inicio');
+            const resetAction = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'Inicio' })],
+                key: null,
+            });
+            props.navigation.dispatch(resetAction);
+        });
+    }
+
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
@@ -144,7 +158,7 @@ const telaNotificacoes = (props) => {
                 <TouchableOpacity style={styles.botaoTrocarEmail} onPress={() => setModalContaEstaNaSegundaPagina(true)}>
                     <Text style={styles.textoModalConta}>Trocar E-mail</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.botaoDeslogar}>
+                <TouchableOpacity style={styles.botaoDeslogar} onPress={() => sair()}>
                     <Text style={styles.textoModalConta}>Deslogar</Text>
                 </TouchableOpacity>
             </View>
