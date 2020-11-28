@@ -38,24 +38,6 @@ const telaGrupo = (props) => {
         });
     }
 
-    function btnEstrela() {
-        if (statusEstrela)
-        {
-            setCorEstrela('#BBBBBB');
-            setStatusEstrela(false);
-            alert("A estrelinha quer q vc exploda! ÙwÚ");
-        }
-        else
-        {
-            setCorEstrela('#FFFF00');
-            setStatusEstrela(true);
-            alert("A estrelinha te desejou boa sorte! ^w^");
-        }
-    }
-
-    const [corEstrela, setCorEstrela] = useState('#BBBBBB');
-    const [statusEstrela, setStatusEstrela] = useState('false'); // true = ativado (amarela)
-
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
     });
@@ -89,32 +71,26 @@ const telaGrupo = (props) => {
             <Text style={styles.textoNomeGrupo}>{nomeGrupo}</Text>
             <TouchableNativeFeedback onPress={btnTarefas}>
                 <View style={styles.botao}>
-                    <AntDesign name="smileo" size={32} color="white"/>
+                    <Image source={require('./img/Logos/LogoTarefas.png')} style={styles.imagemIcone}/>
                     <Text style={styles.textoBotao}>Tarefas</Text>
                 </View>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback onPress={btnAgenda}>
                 <View style={styles.botao}>
-                    <AntDesign name="smileo" size={32} color="white"/>
-                    <Text style={styles.textoBotao}>Agenda</Text>
+                    <Image source={require('./img/Logos/LogoTarefas.png')} style={styles.imagemIcone}/>
+                    <Text style={styles.textoBotao}>Membros</Text>
                 </View>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback onPress={btnPostIts}>
                 <View style={styles.botao}>
-                    <AntDesign name="smileo" size={32} color="white"/>
+                    <Image source={require('./img/Logos/post-it.png')} style={styles.imagemIcone}/>
                     <Text style={styles.textoBotao}>Post-Its</Text>
                 </View>
             </TouchableNativeFeedback>
             <TouchableNativeFeedback onPress={btnPostagens}>
                 <View style={styles.botao}>
-                    <AntDesign name="smileo" size={32} color="white"/>
+                    <Image source={require('./img/Logos/Postagens.png')} style={styles.imagemIcone}/>
                     <Text style={styles.textoBotao}>Postagens</Text>
-                </View>
-            </TouchableNativeFeedback>
-            <TouchableNativeFeedback onPress={btnEstrela}>
-                <View style={styles.botaoEstrela}>
-                    <Entypo name="star" size={60} color={corEstrela} />
-                    <Text style={styles.textoBotaoEstrela}>Estrela da sorte</Text>
                 </View>
             </TouchableNativeFeedback>
         </View>
@@ -174,21 +150,12 @@ const styles = StyleSheet.create({
     textoBotao: {
         fontFamily: "Roboto-Light",
         fontSize: 28,
-        marginLeft: "6%",
+        marginLeft: "4%",
     },
-    botaoEstrela: {
-        width: "60%",
-        aspectRatio: 4,
-        justifyContent: "flex-start",
-        alignItems: "center",
-        flexDirection: "row",
-        marginTop: "1%",
-        paddingLeft: "2%",
-    },
-    textoBotaoEstrela: {
-        fontFamily: "Roboto-Light",
-        fontSize: 20,
-        marginLeft: "3%",
+    imagemIcone: {
+        height: "80%",
+        width: null,
+        aspectRatio: 1,
     }
 });
 
