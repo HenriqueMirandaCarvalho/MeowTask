@@ -149,6 +149,7 @@ const telaLogin = (props) => {
                         textContentType="password"
                         secureTextEntry={senhaOculta}
                         onChangeText={(inputSenha) => setInputSenha(inputSenha.trim())}
+                        maxLength={24}
                     />
                     <View style={styles.olhinho}>
                         <TouchableOpacity onPress={togglePassword}>

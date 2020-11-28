@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, Image, Dimensions, Modal, TouchableWithoutFeedback, TextInput, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, StatusBar, Image, Dimensions, Modal, TouchableWithoutFeedback, TextInput, SafeAreaView, Switch } from "react-native";
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
@@ -14,9 +14,14 @@ const telaNotificacoes = (props) => {
     const [modalContaEstaNaSegundaPagina, setModalContaEstaNaSegundaPagina] = useState(false);
 
     const [modalNotificacaoVisivel, setModalNotificacaoVisivel] = useState(false);
+    const [notificacoesTodas, setNotificacoesTodas] = useState(true);
+    const [notificacoesAmigos, setNotificacoesAmigos] = useState(true);
+    const [notificacoesPostagens, setNotificacoesPostagens] = useState(true);
+    const [notificacoesTarefas, setNotificacoesTarefas] = useState(true);
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
 
     const [avatares, setAvatares] = useState([
         {
@@ -45,6 +50,41 @@ const telaNotificacoes = (props) => {
         setModalNotificacaoVisivel(!modalNotificacaoVisivel);
     }
 
+    function switchNotificacoesTodas() {
+        if(notificacoesTodas == false) {
+            setNotificacoesTodas(true);
+        } else {
+            setNotificacoesTodas(false);
+            setNotificacoesTarefas(false);
+            setNotificacoesPostagens(false);
+            setNotificacoesAmigos(false);
+        }
+    }
+    function switchNotificacoesTarefas() {
+        if(notificacoesTodas == false) {
+            setNotificacoesTodas(true);
+            setNotificacoesTarefas(true);
+        } else {
+            setNotificacoesTarefas(!notificacoesTarefas);
+        }
+    }
+    function switchNotificacoesPostagens() {
+        if(notificacoesTodas == false) {
+            setNotificacoesTodas(true);
+            setNotificacoesPostagens(true);
+        } else {
+            setNotificacoesPostagens(!notificacoesPostagens);
+        }
+    }
+    function switchNotificacoesAmigos() {
+        if(notificacoesTodas == false) {
+            setNotificacoesTodas(true);
+            setNotificacoesAmigos(true);
+        } else {
+            setNotificacoesAmigos(!notificacoesAmigos);
+        }
+    }
+
     function selecionarAvatar(_id) {
         const NewData = avatares.map( item => {
             if(item.id === _id){
@@ -60,6 +100,10 @@ const telaNotificacoes = (props) => {
 
     function salvarEmail() {
         setModalContaVisivel(false);
+    }
+
+    function salvarNotificacao() {
+        setModalNotificacaoVisivel(false);
     }
 
     let [fontsLoaded] = useFonts({
@@ -111,13 +155,24 @@ const telaNotificacoes = (props) => {
                 <Text style={styles.textoTituloModal}>Trocar E-mail</Text>
                 <TextInput
                     style={styles.input}
-                    textContentType="username"
+                    textContentType="emailAddress"
                     textAlign="center"
                     defaultValue={email}
                     onChangeText={(email) => setEmail(email.trim())}
                     maxLength={30}
                     autoCorrect={false}
+                    returnKeyType="next"
+                    keyboardType="email-address"
+                />
+                <TextInput
+                    style={styles.input}
+                    textContentType="password"
+                    textAlign="center"
+                    placeholder="senha atual"
+                    onChangeText={(senha) => setSenha(senha.trim())}
                     returnKeyType="done"
+                    maxLength={24}
+                    secureTextEntry={true}
                 />
                 <View style={styles.divBotaoSalvar}>
                     <TouchableOpacity style={styles.botaoSalvar} onPress={() => salvarEmail()}>
@@ -161,20 +216,50 @@ const telaNotificacoes = (props) => {
                     </TouchableWithoutFeedback>
 
                     <View style={styles.centeredView}>
-                        <View style={styles.modalView2}>
-                            <Text style={styles.textoTituloModal}>Trocar E-mail</Text>
-                            <TextInput
-                                style={styles.input}
-                                textContentType="username"
-                                textAlign="center"
-                                defaultValue={email}
-                                onChangeText={(email) => setEmail(email.trim())}
-                                maxLength={30}
-                                autoCorrect={false}
-                                returnKeyType="done"
-                            />
-                            <View style={styles.divBotaoSalvar}>
-                                <TouchableOpacity style={styles.botaoSalvar} onPress={() => salvarEmail()}>
+                        <View style={styles.modalView3}>
+                            <Text style={styles.textoTituloModalNotificacoes}>Notificações</Text>
+                            <View style={styles.opcaoNotificacao}>
+                                <Text style={styles.textoModalNotificacoes}>Todas as Notificações:</Text>
+                                <Switch
+                                    trackColor={{ false: "#adadad", true: "#4cca61" }}
+                                    thumbColor={"#f4f3f4"}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={() => switchNotificacoesTodas()}
+                                    value={notificacoesTodas}
+                                />
+                            </View>
+                            <View style={styles.opcaoNotificacao}>
+                                <Text style={styles.textoModalNotificacoes}>Novas tarefas:</Text>
+                                <Switch
+                                    trackColor={{ false: "#adadad", true: "#4cca61" }}
+                                    thumbColor={"#f4f3f4"}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={() => switchNotificacoesTarefas()}
+                                    value={notificacoesTarefas}
+                                />
+                            </View>
+                            <View style={styles.opcaoNotificacao}>
+                                <Text style={styles.textoModalNotificacoes}>Postagens:</Text>
+                                <Switch
+                                    trackColor={{ false: "#adadad", true: "#4cca61" }}
+                                    thumbColor={"#f4f3f4"}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={() => switchNotificacoesPostagens()}
+                                    value={notificacoesPostagens}
+                                />
+                            </View>
+                            <View style={styles.opcaoNotificacao}>
+                                <Text style={styles.textoModalNotificacoes}>Pedidos de amizade:</Text>
+                                <Switch
+                                    trackColor={{ false: "#adadad", true: "#4cca61" }}
+                                    thumbColor={"#f4f3f4"}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={() => switchNotificacoesAmigos()}
+                                    value={notificacoesAmigos}
+                                />
+                            </View>
+                            <View style={styles.divBotaoSalvarNotificacao}>
+                                <TouchableOpacity style={styles.botaoSalvar} onPress={() => salvarNotificacao()}>
                                     <Text style={styles.textoBotaoSalvar}>Salvar</Text>
                                 </TouchableOpacity>
                             </View>
@@ -331,7 +416,7 @@ const styles = StyleSheet.create({
         fontSize: 23,
     },
     input: {
-        marginTop: '3%',
+        marginTop: '5%',
         width: '80%',
         borderBottomWidth: 1,
         borderColor: '#5b5b58',
@@ -361,7 +446,23 @@ const styles = StyleSheet.create({
     },
     modalView2: {
         width: 0.80*largura,
-        height: 0.4*largura,
+        height: 0.5*largura,
+        backgroundColor: "#c4c4c4",
+        // borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        paddingBottom: "5%",
+    },
+    modalView3: {
+        width: 0.80*largura,
+        height: 0.65*largura,
         backgroundColor: "#c4c4c4",
         // borderRadius: 20,
         alignItems: "center",
@@ -377,14 +478,21 @@ const styles = StyleSheet.create({
     },
     divBotaoSalvar: {
         position: "absolute",
+        width: 0.8*largura,
+        height: 0.5*largura,
+        alignItems: "center",
+        justifyContent: "flex-end",
+    },
+    divBotaoSalvarNotificacao: {
+        position: "absolute",
         width: 0.80*largura,
-        height: 0.4*largura,
+        height: 0.65*largura,
         alignItems: "center",
         justifyContent: "flex-end",
     },
     botaoSalvar: {
         width: "80%",
-        height: 0.10*largura,
+        height: 0.1*largura,
         marginBottom: "5%",
         backgroundColor: "#53A156",
         justifyContent: "center",
@@ -394,7 +502,26 @@ const styles = StyleSheet.create({
     textoBotaoSalvar: {
         fontFamily: 'Roboto-Light',
         fontSize: 23,
-    }
+    },
+    opcaoNotificacao: {
+        flexDirection: "row",
+        marginTop: "2%",
+        width: "75%",
+        justifyContent: "space-between",
+        alignContent: "center",
+        // backgroundColor: "red",
+    },
+    textoModalNotificacoes: {
+        fontFamily: 'Roboto-Light',
+        fontSize: 18,
+        paddingBottom: 3,
+    },
+    textoTituloModalNotificacoes: {
+        marginTop: "2%",
+        marginBottom: "4%",
+        fontFamily: 'Roboto-Light',
+        fontSize: 23,
+    },
 });
 
 export default telaNotificacoes;
