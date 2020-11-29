@@ -9,7 +9,7 @@ import Constants from 'expo-constants';
 
 const telaInicio = (props) => {
     function btnComecar() {
-        Constants.manifest.env.teste = "b";
+        Constants.manifest.extra.teste = "b";
         /*if (!firebase.auth().currentUser)
             props.navigation.navigate('Login');
         else
@@ -18,11 +18,11 @@ const telaInicio = (props) => {
             });*/
     }
     function btnLogar() {
-        Constants.manifest.env.teste = "a";
+        Constants.manifest.extra.teste = "a";
         //props.navigation.navigate('Login');
     }
     function btnContinuar() {
-        alert(Constants.manifest.env.teste);
+        alert(Constants.manifest.extra.teste);
         //props.navigation.navigate('Home');
     }
 
