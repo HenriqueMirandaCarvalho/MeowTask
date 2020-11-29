@@ -175,10 +175,13 @@ const telaPomodoro = (props) => {
         getData().then((obj) => {
             console.log(obj);
             if (obj != null) {
-                setDuracaoTrabalho(obj.duracaoTrabalho);
                 setMinutos(obj.duracaoTrabalho);
+                setDuracaoTrabalho(obj.duracaoTrabalho);
+                setGuardaDuracaoTrabalho(obj.duracaoTrabalho);
                 setDuracaoDescanso(obj.duracaoDescanso);
+                setGuardaDuracaoDescanso(obj.duracaoDescanso);
                 setQuantidadePomodoros(obj.quantidadePomodoros);
+                setGuardaQuantidadePomodoros(obj.quantidadePomodoros);
                 setadorIntervalos();
             }
         })
