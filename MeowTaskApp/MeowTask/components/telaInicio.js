@@ -8,8 +8,8 @@ import { NavigationActions, StackActions } from 'react-navigation';
 import Constants from 'expo-constants';
 
 const telaInicio = (props) => {
-    Constants.manifest.env.teste = "b";
     function btnComecar() {
+        Constants.manifest.env.teste = "b";
         /*if (!firebase.auth().currentUser)
             props.navigation.navigate('Login');
         else
