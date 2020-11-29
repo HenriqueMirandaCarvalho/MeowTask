@@ -76,28 +76,46 @@ const telaPomodoro = (props) => {
     ]);
     
     function contagemRegressiva() {
-        if (running == true) {
-            setSegundos(segundos => segundos - 1);
-            if(segundos == 0) {
-                setSegundos(59);
-                if(minutos!=0) {
-                    setMinutos(minutos => minutos - 1);
-                } else {
-                    if (iterador == (intervalos.length -1)) {
+        // o intervalo vai lançar uma chamada por segundo pra essa função
+        // se estiver parado a função só ignora
+        if (running == true) { // se o relogio estiver rodando ele desconta um segundo
+
+            if(segundos == 0) { // supondo que os segundos sejam 0
+                // eles normalmente teriam se transformado em -1, o que seria errado
+                setSegundos(59); // eles voltam pro 59, mas agora teremos que tirar um minuto
+
+                if(minutos!=0) { // se ainda houverem minutos para serem descontados
+                    setMinutos(minutos => minutos - 1); // menos um minuto
+
+                } else { // se acabarem os minutos desse intervalo
+
+                    if (iterador == (intervalos.length -1)) { // se a contagem TODA acabar e não tiver mais nenhum pomodoro
                         alert("sem tempo");
-                        setRunning(false);
-                        setPausado(false);
-                        setSegundos(0);
-                        setIterador(0);
+
+                        setRunning(false); // quando running e pausado são false ao mesmo tempo
+                        setPausado(false); // significa que a contagem não começou ou já acabou
+
+                        setSegundos(0); // o segundo sempre começa no 0 (ou 60)
+
+                        // o iterador marca em qual intervalo estamos, então ele vai pro 0 (começo do array)
+                        setIterador(0); 
+
                         setTextoBotao("Iniciar");
                     } else {
-                        setMinutos(intervalos[(iterador+1)].duracao);
-                        setIterador(iterador + 1);
-                        setSegundos(0);
+                        // se ainda tem mais intervalos para correr
+
+                        setMinutos(intervalos[(iterador+1)].duracao); // o minuto será a duração do próximo intervalo
+                        setIterador(iterador + 1); // o iterador vai marcar o próximo intervalo
+                        setSegundos(0); // segundo volta pro 60
                     }
                 }
+            } else {
+                setSegundos(segundos => segundos - 1); // ele só desconta um segundo.
             }
+
+            // isso serve pra atualizar o texto do contador
             let segundo2Digitos = "" + segundos;
+            // essa variável e o if else garantem que sempre terá 2 algarismos de segundo
             if (segundo2Digitos.length == 1){
                 segundo2Digitos = "0" + segundos;
             } else {
@@ -110,22 +128,21 @@ const telaPomodoro = (props) => {
     function toggleRelogio() {
         if(running == false){
             if(pausado == true){
+                // despausar
                 setRunning(true);
+                setPausado(false);
                 setTextoBotao("Pausar");
             } else {
-                let segundo2Digitos = "" + segundos;
-                if (segundo2Digitos.length == 1){
-                    segundo2Digitos = "0" + segundos;
-                } else {
-                    segundo2Digitos = "" + segundos;
-                }
-                setTextoContagem(minutos.toString()+":"+segundo2Digitos.toString());
-                setSegundos(0);
-                setMinutos(intervalos[0].duracao);
+                // começar
+
+                contagemRegressiva(); // chamar a contagem aqui ajuda a começar mais rápido
+
                 setRunning(true);
+                setPausado(false);
                 setTextoBotao("Pausar");
             }
         } else {
+            // pausar
             setRunning(false);
             setPausado(true);
             setTextoBotao("Continuar");
@@ -179,30 +196,44 @@ const telaPomodoro = (props) => {
         }
     }
 
-    function posicionador() {
-        if (!running && !pausado) {return 0}
+    function posicionador() { // função que faz o gatinho andar
+        if (!running && !pausado) {return 0} // se ainda não começou o gato não começa a andar ué
+
+        // aqui eu descubro o tamanho de 1 min e 1 seg em pixels (pra usar pra mover o gato)
         let somaDuracoes = 0;
         intervalos.forEach(item => {
             somaDuracoes += item.duracao;
         });
         let minutoTamanho = (0.8*largura)/somaDuracoes;
         let segundoTamanho = minutoTamanho/60;
+
+        // só iniciando a variavel
         let minutosDecorridos = 0;
+        let segundosDecorridos = 0;
+
+        // descubro os minutos decorridos
         if (segundos > 0) {
             minutosDecorridos = intervalos[iterador].duracao-(minutos+1);
         } else {
             minutosDecorridos = intervalos[iterador].duracao-minutos;
         }
-        let segundosDecorridos = 0;
+
+        // descubro os segundos decorridos
         if (segundos != 0){
             segundosDecorridos = 60-segundos;
         }
+
+        // somo os minutos decorridos com os dos intervalos passados
         intervalos.forEach(item => {
             if (item.id < iterador){
                 minutosDecorridos += item.duracao
             }
         })
+
+        // converto os segundos e minutos pra pixel e passo na margin
         let margin = (minutosDecorridos*minutoTamanho)+(segundosDecorridos*segundoTamanho);
+
+        // as vezes o gato fica locão e vai pra esquerda da tela, aqui eu verifico isso
         if(margin > 0) {
             return margin;
         } else {
@@ -258,50 +289,6 @@ const telaPomodoro = (props) => {
         }
     }
 
-    function setadorIntervalos() {
-        let i, i2 = 0;
-        let novosIntervalos = [];
-        for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
-            if (i == guardaQuantidadePomodoros - 1 || guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro
-                novosIntervalos.push(
-                    {
-                        id: i2,
-                        duracao: guardaDuracaoTrabalho,
-                        sossego: false,
-                    }
-                    )
-            } else {
-                novosIntervalos.push(
-                    {
-                        id: i2,
-                        duracao: guardaDuracaoTrabalho,
-                        sossego: false,
-                    },
-                    {
-                        id: (i2+1),
-                        duracao: guardaDuracaoDescanso,
-                        sossego: true,
-                    }
-                    )
-                i2 = i2 + 2;
-            }
-        }
-        setIntervalos(novosIntervalos);
-    }
-    
-    function salvarPomodoro() {
-        setadorIntervalos();
-        setRunning(false);
-        setPausado(false);
-        setTextoBotao("Iniciar");
-        setSegundos(0);
-        setMinutos(guardaDuracaoTrabalho);
-        setIterador(0);
-        setTextoContagem("0:00");
-        toggleModal();
-        setData({ "duracaoTrabalho": guardaDuracaoTrabalho, "duracaoDescanso": guardaDuracaoDescanso, "quantidadePomodoros": guardaQuantidadePomodoros });
-    }
-
     function validaPomodoros(numero) {
         // code to remove non-numeric characters from text
         let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
@@ -315,6 +302,58 @@ const telaPomodoro = (props) => {
         } else {
             setGuardaQuantidadePomodoros(removido);
         }
+    }
+
+    function setadorIntervalos() {
+        let i, i2 = 0;
+        // o i é uma forma de manter contagem com o guardaQuantidadePomodoros
+        // e o i2 é usado pra colocar IDs, 
+
+        let novosIntervalos = [];
+        for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
+            if (i == guardaQuantidadePomodoros - 1 || guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro,
+                // isso vai ocorrer caso só tenha um intervalo, ou na hora de gerar o último intervalo
+                // afinal de contas, não faz sentido a contagem terminar com um descanso
+                novosIntervalos.push(
+                    {
+                        id: i2,
+                        duracao: guardaDuracaoTrabalho,
+                        sossego: false,
+                    }
+                ) // só hávera trabalho
+            } else {
+                novosIntervalos.push(
+                    {
+                        id: i2,
+                        duracao: guardaDuracaoTrabalho,
+                        sossego: false,
+                    },
+                    {
+                        id: (i2+1),
+                        duracao: guardaDuracaoDescanso,
+                        sossego: true,
+                    }
+                )
+                // o i é uma forma de manter contagem com o guardaQuantidadePomodoros
+                // e o i2 é usado pra colocar IDs, 
+                i2 = i2 + 2;
+                // aqui eu aumento ele
+            }
+        }
+        setIntervalos(novosIntervalos);
+    }
+    
+    function salvarPomodoro() {
+        setadorIntervalos();
+        setRunning(false);
+        setPausado(false);
+        setTextoBotao("Iniciar");
+        setSegundos(0);
+        setIterador(0);
+        setMinutos(guardaDuracaoTrabalho);
+        setTextoContagem("0:00");
+        setModalVisivel(false);
+        setData({ "duracaoTrabalho": guardaDuracaoTrabalho, "duracaoDescanso": guardaDuracaoDescanso, "quantidadePomodoros": guardaQuantidadePomodoros });
     }
 
     if (!fontsLoaded) {
