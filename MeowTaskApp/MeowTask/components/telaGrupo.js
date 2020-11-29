@@ -23,7 +23,7 @@ const telaGrupo = (props) => {
     }
 
     function btnMembros() {
-        props.navigation.navigate("PostIts", {
+        props.navigation.navigate("Membros", {
             idGrupo: idGrupo
         });
     }
