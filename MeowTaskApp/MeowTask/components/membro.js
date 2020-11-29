@@ -8,7 +8,7 @@ export const Membro = props =>
                 <Image source={props.imagem} style={styles.imagem}/>
             </View>
             <View style={styles.viewTexto}>
-                <Text style={styles.nome}> {props.nome} </Text>
+                <Text style={[styles.nome, props.estiloExtra]}> {props.nome} </Text>
             </View>
         </View>
     </TouchableOpacity>
@@ -37,7 +37,7 @@ let styles = StyleSheet.create({
         alignItems: "flex-start",
     },
     nome: {
-        fontFamily: 'Roboto-Regular',
+        fontFamily: 'Roboto-Light',
         fontSize: 22,
         color: '#5b5b58',
         marginTop: "1%",

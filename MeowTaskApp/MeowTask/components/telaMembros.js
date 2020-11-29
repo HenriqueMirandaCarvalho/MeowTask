@@ -193,13 +193,14 @@ const telaAmigo = (props) => {
                 <Membro
                     imagem={imagensUsuario[item.imagem]}
                     nome={item.nome}
+                    estiloExtra={{color: '#DC4C46',}}
                     onLongPress={() => abrirModalMembroBanido(item.id, imagensUsuario[item.imagem], item.nome)}
                 />
             );
         });
         return (
             <View style={{borderTopWidth: 1, borderTopColor: "#5b5b58",}}>
-                <Text style={styles.cargo}>Membros Banidos</Text>
+                <Text style={[styles.cargo, {color: "#DC4C46"}]}>Banimentos</Text>
                 {membrosBanidos}
             </View>
         );
@@ -430,6 +431,7 @@ const telaAmigo = (props) => {
                         </View>
                     </TouchableNativeFeedback>
                 </View>
+                <StatusBar translucent backgroundColor={'#eae6da'}/>
             </View>
         );
     }
@@ -442,12 +444,12 @@ const styles = StyleSheet.create({
         marginTop: StatusBar.currentHeight || 0,
     },
     cabecalho: {
-        height: '8%', // 8% se tiver margintop e 11% se não tiver
+        height: '9%', // 8% se tiver margintop e 11% se não tiver
         borderBottomWidth: 1.6,
         borderColor: '#5b5b58',
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        alignItems: 'flex-end',
+        alignItems: 'center',
     },
     conteudo: {
         flex: 1
@@ -464,7 +466,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: '100%',
         height: '100%',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         alignItems: 'flex-start',
     },
     divCabecalho: {
@@ -473,7 +475,7 @@ const styles = StyleSheet.create({
     },
     setinha: {
         marginLeft: '5%',
-        marginBottom: '1%',
+        marginTop: '0.5%',
     },
     titulo: {
         fontFamily: 'Roboto-Light',
@@ -495,7 +497,8 @@ const styles = StyleSheet.create({
         color: '#5b5b58',
     },
     rodapeLista: {
-        marginTop: "6%",
+        marginTop: "2%",
+        marginBottom: "2%",
         alignSelf: 'stretch',
     },
     botoesRodapeLista: {
@@ -581,7 +584,8 @@ const styles = StyleSheet.create({
     },
     cargo: {
         marginTop: "3%",
-        fontFamily: 'Roboto-Light',
+        fontFamily: 'Roboto-Regular',
+        color: '#5b5b58',
         fontSize: 23,
         alignSelf: "center",
     },
