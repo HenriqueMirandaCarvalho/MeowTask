@@ -75,53 +75,57 @@ const telaPomodoro = (props) => {
         },
     ]);
     
-    function contagemRegressiva() {
+    function contagemRegressiva(_minutos, _segundos, _iterador) {
         // o intervalo vai lançar uma chamada por segundo pra essa função
         // se estiver parado a função só ignora
         if (running == true) { // se o relogio estiver rodando ele desconta um segundo
 
-            if(segundos == 0) { // supondo que os segundos sejam 0
+            if(_segundos == 0) { // supondo que os segundos sejam 0
                 // eles normalmente teriam se transformado em -1, o que seria errado
-                setSegundos(59); // eles voltam pro 59, mas agora teremos que tirar um minuto
+                _segundos = 59; // eles voltam pro 59, mas agora teremos que tirar um minuto
 
-                if(minutos!=0) { // se ainda houverem minutos para serem descontados
-                    setMinutos(minutos => minutos - 1); // menos um minuto
+                if(_minutos!=0) { // se ainda houverem minutos para serem descontados
+                    _minutos = _minutos - 1; // menos um minuto
 
                 } else { // se acabarem os minutos desse intervalo
 
-                    if (iterador == (intervalos.length -1)) { // se a contagem TODA acabar e não tiver mais nenhum pomodoro
+                    if (_iterador == (intervalos.length -1)) { // se a contagem TODA acabar e não tiver mais nenhum pomodoro
                         alert("sem tempo");
 
                         setRunning(false); // quando running e pausado são false ao mesmo tempo
                         setPausado(false); // significa que a contagem não começou ou já acabou
 
-                        setSegundos(0); // o segundo sempre começa no 0 (ou 60)
+                        _segundos = 0; // o segundo sempre começa no 0 (ou 60)
 
                         // o iterador marca em qual intervalo estamos, então ele vai pro 0 (começo do array)
-                        setIterador(0); 
+                        _iterador = 0; 
 
                         setTextoBotao("Iniciar");
                     } else {
                         // se ainda tem mais intervalos para correr
 
-                        setMinutos(intervalos[(iterador+1)].duracao); // o minuto será a duração do próximo intervalo
-                        setIterador(iterador + 1); // o iterador vai marcar o próximo intervalo
-                        setSegundos(0); // segundo volta pro 60
+                        _minutos = intervalos[(iterador+1)].duracao // o minuto será a duração do próximo intervalo
+                        _iterador = _iterador + 1 // o iterador vai marcar o próximo intervalo
+                        _segundos = 0 // segundo volta pro 60
                     }
                 }
             } else {
-                setSegundos(segundos => segundos - 1); // ele só desconta um segundo.
+                _segundos = _segundos - 1 // ele só desconta um segundo.
             }
 
             // isso serve pra atualizar o texto do contador
-            let segundo2Digitos = "" + segundos;
+            let segundo2Digitos = "" + _segundos;
             // essa variável e o if else garantem que sempre terá 2 algarismos de segundo
             if (segundo2Digitos.length == 1){
-                segundo2Digitos = "0" + segundos;
+                segundo2Digitos = "0" + _segundos;
             } else {
-                segundo2Digitos = "" + segundos;
+                segundo2Digitos = "" + _segundos;
             }
-            setTextoContagem(minutos.toString()+":"+segundo2Digitos.toString());
+            setTextoContagem(_minutos.toString()+":"+segundo2Digitos.toString());
+
+            setSegundos(_segundos);
+            setMinutos(_minutos);
+            setIterador(_iterador);
         }
     }
 
@@ -135,7 +139,7 @@ const telaPomodoro = (props) => {
             } else {
                 // começar
 
-                contagemRegressiva(); // chamar a contagem aqui ajuda a começar mais rápido
+                contagemRegressiva(minutos, segundos, iterador); // chamar a contagem aqui ajuda a começar mais rápido
 
                 setRunning(true);
                 setPausado(false);
@@ -150,7 +154,7 @@ const telaPomodoro = (props) => {
     }
 
     useEffect(() => {
-        const intervalo = window.setInterval(() => contagemRegressiva(), 1000);
+        const intervalo = window.setInterval(() => contagemRegressiva(minutos, segundos, iterador), 1000);
 
         return () => {
             window.clearInterval(intervalo);
