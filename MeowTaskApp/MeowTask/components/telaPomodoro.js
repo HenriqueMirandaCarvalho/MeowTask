@@ -377,7 +377,6 @@ const telaPomodoro = (props) => {
         }
         setIntervalos(novosIntervalos);
     }
-
     
     function salvarPomodoro() {
         if (!verSeEstaVazio()) {
