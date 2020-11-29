@@ -22,8 +22,10 @@ const telaGrupo = (props) => {
         });
     }
 
-    function btnAgenda() {
-        alert("Agenda");
+    function btnMembros() {
+        props.navigation.navigate("PostIts", {
+            idGrupo: idGrupo
+        });
     }
 
     function btnPostIts() {
@@ -80,7 +82,7 @@ const telaGrupo = (props) => {
                     <Text style={styles.textoBotao}>Tarefas</Text>
                 </View>
             </TouchableNativeFeedback>
-            <TouchableNativeFeedback onPress={btnAgenda}>
+            <TouchableNativeFeedback onPress={btnMembros}>
                 <View style={styles.botao}>
                     <Image source={require('./img/Logos/LogoTarefas.png')} style={styles.imagemIcone}/>
                     <Text style={styles.textoBotao}>Membros</Text>

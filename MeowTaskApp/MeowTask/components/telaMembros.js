@@ -8,10 +8,10 @@ import { AmigoModal } from './amigosmodal';
 import * as firebase from 'firebase';
 
 const telaAmigo = (props) => {
-    const [meuCodigo, setMeuCodigo] = useState();
+    const idGrupo = props.navigation.state.params.idGrupo;
     const [modalAdicionarVisivel, setModalAdicionarVisivel] = useState(false);
-    const [inputCodigo, setInputCodigo] = useState("");
-    const [amigos, setAmigos] = useState([]);
+    const [idAdm, setIdAdm] = useState("");
+    const [membros, setMembros] = useState([]);
     const [refresco, setRefresco] = useState(false);
     const imagensUsuario = [];
     imagensUsuario.push(require("./img/turquesa10.png"));
@@ -39,128 +39,12 @@ const telaAmigo = (props) => {
         }
     ]);
 
-    function validaNumero(numero) {
-        // code to remove non-numeric characters from text
-        setInputCodigo(numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, ''));
-        // (validação roubada do stack overflow)
-    }
-
     function gerarCodigo() {
-        setRefresco(true);
-        firebase.firestore()
-            .collection("Codigos")
-            .doc(firebase.auth().currentUser.uid)
-            .get()
-            .then((data) => {
-                setMeuCodigo(data.data().codigo);
-                Clipboard.setString(data.data().codigo);
-                Alert.alert("Aviso", "Código copiado com sucesso!");
-                setRefresco(false);
-            });
-    }
-
-    function trocarTela(id) {
-        alert("insira uma troca de tela aqui, id do amigo: " + id);
+        return idGrupo;
     }
 
     function toggleModalAdicionar() {
         setModalAdicionarVisivel(!modalAdicionarVisivel);
-    }
-
-    function adicionarAmigo() {
-        setRefresco(true);
-        let amigo = {};
-        firebase.firestore()
-            .collection("Codigos")
-            .where("codigo", "==", inputCodigo)
-            .get().then((snapshot) => {
-                if (snapshot.empty) {
-                    Alert.alert("Erro", "Usuário não encontrado!");
-                }
-                snapshot.forEach(doc => {
-                    amigo.id = doc.id;
-                    amigo.nome = doc.data().nome;
-                    amigo.imagem = doc.data().imagem;
-                    if (amigo.id != firebase.auth().currentUser.uid) {
-                        firebase.firestore()
-                            .collection("Amigos")
-                            .where("usuarios", "array-contains", {
-                                id: firebase.auth().currentUser.uid,
-                                nome: firebase.auth().currentUser.displayName,
-                                imagem: firebase.auth().currentUser.photoURL
-                            })
-                            .get().then((snap) => {
-                                let cont = true;
-                                let sender = false;
-                                let idAmg = "";
-                                if (!snap.empty) {
-                                    snap.forEach(duc => {
-                                        if (duc.data().usuarios[0].id == amigo.id || duc.data().usuarios[1].id == amigo.id) {
-                                            cont = false;
-                                            if (duc.data().sender == firebase.auth().currentUser.uid) {
-                                                sender = true;
-                                            }
-                                            else {
-                                                idAmg = duc.id;
-                                            }
-                                        }
-                                    });
-                                }
-                                if (cont) {
-                                    firebase.firestore()
-                                        .collection("Amigos")
-                                        .add({
-                                            confirmado: false,
-                                            sender: firebase.auth().currentUser.uid,
-                                            data: new Date().getTime(),
-                                            usuarios: [
-                                                {
-                                                    id: firebase.auth().currentUser.uid,
-                                                    nome: firebase.auth().currentUser.displayName,
-                                                    imagem: firebase.auth().currentUser.photoURL
-                                                }, amigo
-                                            ]
-                                        })
-                                        .then((data) => {
-                                            toggleModal();
-                                            Alert.alert("Aviso", "Pedido de amizade enviado!");
-                                            setRefresco(false);
-                                            firebase.firestore()
-                                                .collection("Notificacoes")
-                                                .doc(amigo.id)
-                                                .add({
-                                                    tipo: "pedido-amizade",
-                                                    titulo: "Pedido de amizade",
-                                                    descricao: firebase.auth().currentUser.displayName + " quer ser seu amigo!",
-                                                    idAmizade: data.id
-                                                });
-                                        });
-                                }
-                                else if (sender) {
-                                    toggleModal();
-                                    Alert.alert("Aviso", "Você já enviou um convite para este usuário!");
-                                    setRefresco(false);
-                                }
-                                else {
-                                    firebase.firestore()
-                                        .collection("Amigos")
-                                        .doc(idAmg)
-                                        .update({
-                                            confirmado: true
-                                        })
-                                        .then((data) => {
-                                            toggleModal();
-                                            Alert.alert("Aviso", "Vocês são amigos agora!");
-                                            setRefresco(false);
-                                        });
-                                }
-                            });
-                    }
-                    else {
-                        Alert.alert("Erro", "Você não pode adicionar você mesmo como amigo!");
-                    }
-                });
-            });
     }
 
     function adicionarPessoa(_id) {
@@ -172,8 +56,7 @@ const telaAmigo = (props) => {
     }
 
     function acharAdmin(id, imagem, nome) {
-        let idadmin = "bGLRrVZMJLYagThFd2vk2ho883g2";
-        if (id == idadmin) {
+        if (id == idAdm) {
             return ( 
                 <View style={styles.divAdmin}> 
                     <Text style={styles.cargo}>Administrador</Text>
@@ -241,20 +124,30 @@ const telaAmigo = (props) => {
     useEffect(() => {
         setRefresco(true);
         const listener = firebase.firestore()
-            .collection("Amigos")
-            .orderBy('data', 'desc')
+            .collection("Grupos")
+            .doc(idGrupo)
             .onSnapshot(snapshot => {
-                const amigos = snapshot.docs.map(doc => {
-                    const dados = doc.data();
-                    if (dados.confirmado) {
-                        const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid });
-                        return amigo;
-                    }
+                let usuarios = [];
+                snapshot.data().membros.forEach((_id) => {
+                    firebase.firebase().collection("Codigos").doc(_id).get().then((snapshot) => {
+                        let membro = snapshot.data();
+                        membro.id = _id;
+                        usuarios.push(membro);
+                    });
                 });
-                if (amigos[0] != undefined)
-                    setAmigos(amigos);
-                else
-                    setAmigos([]);
+                setMembros(membro);
+                setRefresco(false);
+            });
+        return () => listener();
+    }, []);
+
+    useEffect(() => {
+        setRefresco(true);
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .onSnapshot(snapshot => {
+                setIdAdm(snapshot.data().dono);
                 setRefresco(false);
             });
         return () => listener();
@@ -284,7 +177,7 @@ const telaAmigo = (props) => {
                             <View style={styles.divListaAmigos}>
                                 <SafeAreaView style={{ flex: 1 }}>
                                     <FlatList
-                                        data={amigos}
+                                        data={membros}
                                         keyExtractor={item => item.id}
                                         ListHeaderComponent={
                                             function rodapeLista() {
@@ -381,7 +274,7 @@ const telaAmigo = (props) => {
                 </View>
                 <View style={styles.conteudo}>
                         <FlatList
-                            data={amigos}
+                            data={membros}
                             keyExtractor={item => item.id}
                             refreshing={refresco}
                             onRefresh={() => { }}
