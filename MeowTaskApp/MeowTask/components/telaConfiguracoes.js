@@ -6,9 +6,26 @@ import { useFonts } from 'expo-font';
 import { Avatar } from './avatar';
 import * as firebase from 'firebase';
 import { NavigationActions, StackActions } from 'react-navigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const largura = Dimensions.get('window').width;
 const altura = Dimensions.get('window').height;
+
+const getData = async () => {
+    try {
+        const jsonValue = await AsyncStorage.getItem('notificacoes');
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+    }
+}
+
+const setData = async (value) => {
+    try {
+        const jsonValue = JSON.stringify(value);
+        await AsyncStorage.setItem('notificacoes', jsonValue);
+    } catch (e) {
+    }
+}
 
 const telaNotificacoes = (props) => {
 
@@ -16,10 +33,10 @@ const telaNotificacoes = (props) => {
     const [modalContaEstaNaSegundaPagina, setModalContaEstaNaSegundaPagina] = useState(false);
 
     const [modalNotificacaoVisivel, setModalNotificacaoVisivel] = useState(false);
-    const [notificacoesTodas, setNotificacoesTodas] = useState(true);
-    const [notificacoesAmigos, setNotificacoesAmigos] = useState(true);
-    const [notificacoesPostagens, setNotificacoesPostagens] = useState(true);
-    const [notificacoesTarefas, setNotificacoesTarefas] = useState(true);
+    const [notificacoesTodas, setNotificacoesTodas] = useState(false);
+    const [notificacoesAmigos, setNotificacoesAmigos] = useState(false);
+    const [notificacoesPostagens, setNotificacoesPostagens] = useState(false);
+    const [notificacoesTarefas, setNotificacoesTarefas] = useState(false);
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -48,12 +65,12 @@ const telaNotificacoes = (props) => {
         setModalContaEstaNaSegundaPagina(false);
     }
 
-    function toggleModalNotificacao() {
+    async function toggleModalNotificacao() {
         setModalNotificacaoVisivel(!modalNotificacaoVisivel);
     }
 
     function switchNotificacoesTodas() {
-        if(notificacoesTodas == false) {
+        if (notificacoesTodas == false) {
             setNotificacoesTodas(true);
         } else {
             setNotificacoesTodas(false);
@@ -63,7 +80,7 @@ const telaNotificacoes = (props) => {
         }
     }
     function switchNotificacoesTarefas() {
-        if(notificacoesTodas == false) {
+        if (notificacoesTodas == false) {
             setNotificacoesTodas(true);
             setNotificacoesTarefas(true);
         } else {
@@ -71,7 +88,7 @@ const telaNotificacoes = (props) => {
         }
     }
     function switchNotificacoesPostagens() {
-        if(notificacoesTodas == false) {
+        if (notificacoesTodas == false) {
             setNotificacoesTodas(true);
             setNotificacoesPostagens(true);
         } else {
@@ -79,7 +96,7 @@ const telaNotificacoes = (props) => {
         }
     }
     function switchNotificacoesAmigos() {
-        if(notificacoesTodas == false) {
+        if (notificacoesTodas == false) {
             setNotificacoesTodas(true);
             setNotificacoesAmigos(true);
         } else {
@@ -88,11 +105,11 @@ const telaNotificacoes = (props) => {
     }
 
     function selecionarAvatar(_id) {
-        const NewData = avatares.map( item => {
-            if(item.id === _id){
+        const NewData = avatares.map(item => {
+            if (item.id === _id) {
                 item.selecionada = true;
                 return item;
-            }else{
+            } else {
                 item.selecionada = false;
                 return item;
             }
@@ -104,8 +121,9 @@ const telaNotificacoes = (props) => {
         setModalContaVisivel(false);
     }
 
-    function salvarNotificacao() {
+    async function salvarNotificacao() {
         setModalNotificacaoVisivel(false);
+        setData({ "amigos": notificacoesAmigos, "postagens": notificacoesPostagens, "tarefas": notificacoesTarefas });
     }
 
     function sair() {
@@ -119,6 +137,15 @@ const telaNotificacoes = (props) => {
             props.navigation.dispatch(resetAction);
         });
     }
+    useEffect(() => {
+        getData().then((obj) => {
+            if (obj != null) {
+                setNotificacoesAmigos(obj.amigos);
+                setNotificacoesPostagens(obj.postagens);
+                setNotificacoesTarefas(obj.tarefas);
+            }
+        });
+    }, []);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -126,7 +153,7 @@ const telaNotificacoes = (props) => {
         'Merienda-Regular': require('./font/Merienda-Regular.ttf'),
     });
 
-    const modalContaPagina1 = 
+    const modalContaPagina1 =
         <View>
             <View style={styles.modalView}>
                 <Text style={styles.textoTituloModal}>Conta</Text>
@@ -140,19 +167,19 @@ const telaNotificacoes = (props) => {
                     autoCorrect={false}
                     returnKeyType="done"
                 />
-                <SafeAreaView style={{ width: "80%", marginTop: "5%", aspectRatio: 3}}>
+                <SafeAreaView style={{ width: "80%", marginTop: "5%", aspectRatio: 3 }}>
                     <FlatList
                         data={avatares}
-                        keyExtractor={item=>item.id}
+                        keyExtractor={item => item.id}
                         horizontal={true}
-                        renderItem={({item})=>
-                            <Avatar 
+                        renderItem={({ item }) =>
+                            <Avatar
                                 onPressIn={() => selecionarAvatar(item.id)}
                                 imagem={item.imagem}
                                 selecionada={item.selecionada}
                             />
                         }
-                        style={{ backgroundColor: "#69665E"}}
+                        style={{ backgroundColor: "#69665E" }}
                     />
                 </SafeAreaView>
                 <TouchableOpacity style={styles.botaoTrocarEmail} onPress={() => setModalContaEstaNaSegundaPagina(true)}>
@@ -283,7 +310,7 @@ const telaNotificacoes = (props) => {
                 <View style={styles.cabecalho}>
                     <View style={styles.divSetinha}>
                         <TouchableOpacity onPress={() => toggleModalConfig()}>
-                            <Ionicons name="md-arrow-back" size={44} color="#5b5b58"/>
+                            <Ionicons name="md-arrow-back" size={44} color="#5b5b58" />
                         </TouchableOpacity>
                     </View>
                     <Text style={styles.titulo}>Configurações</Text>
@@ -326,7 +353,7 @@ const telaNotificacoes = (props) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <StatusBar translucent backgroundColor={'#eae6da'}/>
+                <StatusBar translucent backgroundColor={'#eae6da'} />
             </View>
         );
     }
@@ -374,7 +401,7 @@ const styles = StyleSheet.create({
     divTextoBotoesConfig: {
         marginLeft: "2.6%",
         width: "100%",
-        height: 0.08*altura,
+        height: 0.08 * altura,
         justifyContent: "center",
     },
     textoBotoesConfig: {
@@ -384,7 +411,7 @@ const styles = StyleSheet.create({
     },
     icones: {
         height: null,
-        width: 0.13*largura,
+        width: 0.13 * largura,
         aspectRatio: 1,
         borderRadius: 100,
     },
@@ -413,7 +440,7 @@ const styles = StyleSheet.create({
         left: 0,
     },
     modalView: {
-        width: 0.80*largura,
+        width: 0.80 * largura,
         backgroundColor: "#c4c4c4",
         // borderRadius: 20,
         alignItems: "center",
@@ -445,7 +472,7 @@ const styles = StyleSheet.create({
     },
     botaoTrocarEmail: {
         width: "80%",
-        height: 0.10*largura,
+        height: 0.10 * largura,
         backgroundColor: "#A4A4A4",
         marginTop: "5%",
         justifyContent: "center",
@@ -454,7 +481,7 @@ const styles = StyleSheet.create({
     },
     botaoDeslogar: {
         width: "80%",
-        height: 0.10*largura,
+        height: 0.10 * largura,
         backgroundColor: "#A4A4A4",
         marginTop: "5%",
         justifyContent: "center",
@@ -462,8 +489,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     modalView2: {
-        width: 0.80*largura,
-        height: 0.5*largura,
+        width: 0.80 * largura,
+        height: 0.5 * largura,
         backgroundColor: "#c4c4c4",
         // borderRadius: 20,
         alignItems: "center",
@@ -478,8 +505,8 @@ const styles = StyleSheet.create({
         paddingBottom: "5%",
     },
     modalView3: {
-        width: 0.80*largura,
-        height: 0.65*largura,
+        width: 0.80 * largura,
+        height: 0.65 * largura,
         backgroundColor: "#c4c4c4",
         // borderRadius: 20,
         alignItems: "center",
@@ -495,21 +522,21 @@ const styles = StyleSheet.create({
     },
     divBotaoSalvar: {
         position: "absolute",
-        width: 0.8*largura,
-        height: 0.5*largura,
+        width: 0.8 * largura,
+        height: 0.5 * largura,
         alignItems: "center",
         justifyContent: "flex-end",
     },
     divBotaoSalvarNotificacao: {
         position: "absolute",
-        width: 0.80*largura,
-        height: 0.65*largura,
+        width: 0.80 * largura,
+        height: 0.65 * largura,
         alignItems: "center",
         justifyContent: "flex-end",
     },
     botaoSalvar: {
         width: "80%",
-        height: 0.1*largura,
+        height: 0.1 * largura,
         marginBottom: "5%",
         backgroundColor: "#53A156",
         justifyContent: "center",

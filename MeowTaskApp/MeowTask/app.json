@@ -10,9 +10,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "extra": {
-      "teste": "a"
-    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },

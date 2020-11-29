@@ -6,7 +6,25 @@ import { useFonts } from 'expo-font';
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import Animated from 'react-native-reanimated';
 import * as firebase from 'firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const getData = async () => {
+    try {
+        const jsonValue = await AsyncStorage.getItem('pomodoro');
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+        console.log("AA");
+    }
+}
+
+const setData = async (value) => {
+    try {
+        const jsonValue = JSON.stringify(value);
+        await AsyncStorage.setItem('pomodoro', jsonValue);
+    } catch (e) {
+        console.log("BB");
+    }
+}
 
 const largura = Dimensions.get('window').width;
 const altura = Dimensions.get('window').height;
@@ -90,6 +108,7 @@ const telaPomodoro = (props) => {
     }
 
     function toggleRelogio() {
+        console.log(duracaoTrabalho);
         if(running == false){
             if(pausado == true){
                 setRunning(true);
@@ -117,19 +136,20 @@ const telaPomodoro = (props) => {
     useEffect(() => {
         const intervalo = window.setInterval(() => contagemRegressiva(), 1000);
 
-        // pega os dados do banco de dados e coloca aí 
-        // setDuracaoTrabalho();
-        // setGuardaDuracaoTrabalho();
-        // setDuracaoDescanso();
-        // setGuardaDuracaoDescanso();
-        // setQuantidadePomodoros();
-        // setGuardaQuantidadePomodoros();
-        // salvarPomodoro();
-
         return () => {
             window.clearInterval(intervalo);
         };
     });
+
+    useEffect(() => {
+        getData().then((obj) => {
+            if (obj != null) {
+                setDuracaoTrabalho(obj.duracaoTrabalho);
+                setDuracaoDescanso(obj.duracaoDescanso);
+                setQuantidadePomodoros(obj.quantidadePomodoros);
+            }
+        })
+    }, []);
     
     function toggleModal() {
         setModalVisivel(!modalVisivel);
@@ -274,6 +294,7 @@ const telaPomodoro = (props) => {
         setIterador(0);
         setTextoContagem("0:00");
         toggleModal();
+        setData({ "duracaoTrabalho": duracaoTrabalho, "duracaoDescanso": duracaoDescanso, "quantidadePomodoros": quantidadePomodoros });
     }
 
     function validaPomodoros(numero) {
