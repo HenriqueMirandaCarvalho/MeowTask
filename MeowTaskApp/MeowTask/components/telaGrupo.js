@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableNativeFeedback } from "react-native";
-import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons'; 
+import { View, Text, StyleSheet, Image, TouchableOpacity, TouchableNativeFeedback } from "react-native";
+import { Ionicons, AntDesign, Entypo, Feather } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import * as firebase from 'firebase';
@@ -60,9 +60,14 @@ const telaGrupo = (props) => {
         <View style={styles.container}>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
-                    <TouchableNativeFeedback style={{padding: "2%"}} onPress={() => props.navigation.goBack()}>
-                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={styles.setinha}/>
-                    </TouchableNativeFeedback>
+                    <TouchableOpacity style={[styles.setinha, {padding: "2%", backgroundColor: "green"}]} onPress={() => props.navigation.goBack()}>
+                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={{backgroundColor: "blue"}}/>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.divEngrenagem}>
+                    <TouchableOpacity style={[styles.engrenagem, {padding: "2%", backgroundColor: "red"}]} onPress={() => props.navigation.goBack()}>
+                        <Feather name="settings" size={33} color="#5b5b58" style={{backgroundColor: "green"}}/>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.divImagem}> 
                     <Image source={imagensGrupos[imagem]} style={styles.imagem}/>
@@ -113,6 +118,8 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
         position: "absolute",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
     },
     divImagem: {
         width: "100%",
@@ -156,6 +163,17 @@ const styles = StyleSheet.create({
         height: "80%",
         width: null,
         aspectRatio: 1,
+    },
+    divEngrenagem: {
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        justifyContent: "flex-start",
+        alignItems: "flex-end",
+    },
+    engrenagem: {
+        marginRight: '5%',
+        marginTop: '10%',
     }
 });
 
