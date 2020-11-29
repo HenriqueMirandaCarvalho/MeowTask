@@ -147,6 +147,7 @@ const telaPomodoro = (props) => {
                 setDuracaoTrabalho(obj.duracaoTrabalho);
                 setDuracaoDescanso(obj.duracaoDescanso);
                 setQuantidadePomodoros(obj.quantidadePomodoros);
+                setadorIntervalos();
             }
         })
     }, []);
@@ -289,6 +290,7 @@ const telaPomodoro = (props) => {
     }
     
     function salvarPomodoro() {
+        setadorIntervalos();
         setRunning(false);
         setPausado(false);
         setTextoBotao("Iniciar");
