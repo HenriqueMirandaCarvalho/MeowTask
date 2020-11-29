@@ -84,6 +84,7 @@ const telaPomodoro = (props) => {
                 // eles normalmente teriam se transformado em -1, o que seria errado
                 _segundos = 59; // eles voltam pro 59, mas agora teremos que tirar um minuto
 
+                console.debug("abacate: "+_minutos);
                 if(_minutos!=0) { // se ainda houverem minutos para serem descontados
                     _minutos = _minutos - 1; // menos um minuto
 
@@ -141,6 +142,15 @@ const telaPomodoro = (props) => {
 
                 contagemRegressiva(minutos, segundos, iterador); // chamar a contagem aqui ajuda a começar mais rápido
 
+                let segundo2Digitos = "" +segundos;
+                // essa variável e o if else garantem que sempre terá 2 algarismos de segundo
+                if (segundo2Digitos.length == 1){
+                    segundo2Digitos = "0" + segundos;
+                } else {
+                    segundo2Digitos = "" + segundos;
+                }
+                setTextoContagem(minutos.toString()+":"+segundo2Digitos.toString());
+
                 setRunning(true);
                 setPausado(false);
                 setTextoBotao("Pausar");
@@ -166,6 +176,7 @@ const telaPomodoro = (props) => {
             console.log(obj);
             if (obj != null) {
                 setDuracaoTrabalho(obj.duracaoTrabalho);
+                setMinutos(obj.duracaoTrabalho);
                 setDuracaoDescanso(obj.duracaoDescanso);
                 setQuantidadePomodoros(obj.quantidadePomodoros);
                 setadorIntervalos();
@@ -308,6 +319,23 @@ const telaPomodoro = (props) => {
         }
     }
 
+    function verSeEstaVazio() {
+        console.debug("a"+guardaDuracaoTrabalho);
+        if (guardaDuracaoTrabalho.length == 0) {
+            setGuardaDuracaoTrabalho(1);
+            return false;
+        }
+        if (guardaDuracaoDescanso.length == 0) {
+            setGuardaDuracaoDescanso(1);
+            return false;
+        }
+        if (guardaQuantidadePomodoros.length == 0) {
+            setGuardaQuantidadePomodoros(1);
+            return false;
+        }
+        return true;
+    }
+
     function setadorIntervalos() {
         let i, i2 = 0;
         // o i é uma forma de manter contagem com o guardaQuantidadePomodoros
@@ -346,18 +374,23 @@ const telaPomodoro = (props) => {
         }
         setIntervalos(novosIntervalos);
     }
+
     
     function salvarPomodoro() {
-        setadorIntervalos();
-        setRunning(false);
-        setPausado(false);
-        setTextoBotao("Iniciar");
-        setSegundos(0);
-        setIterador(0);
-        setMinutos(guardaDuracaoTrabalho);
-        setTextoContagem("0:00");
-        setModalVisivel(false);
-        setData({ "duracaoTrabalho": guardaDuracaoTrabalho, "duracaoDescanso": guardaDuracaoDescanso, "quantidadePomodoros": guardaQuantidadePomodoros });
+        if (!verSeEstaVazio()) {
+            
+        } else {
+            setadorIntervalos();
+            setRunning(false);
+            setPausado(false);
+            setTextoBotao("Iniciar");
+            setSegundos(0);
+            setIterador(0);
+            setMinutos(guardaDuracaoTrabalho);
+            setTextoContagem("0:00");
+            setModalVisivel(false);
+            setData({ "duracaoTrabalho": guardaDuracaoTrabalho, "duracaoDescanso": guardaDuracaoDescanso, "quantidadePomodoros": guardaQuantidadePomodoros });
+        }
     }
 
     if (!fontsLoaded) {
@@ -393,10 +426,11 @@ const telaPomodoro = (props) => {
                                         maxLength={2}
                                         returnKeyType="done"
                                         textAlign="center"
+                                        onBlur={() => verSeEstaVazio()}
                                         onChangeText={(numero) => validaTrabalho(numero)}
                                         value={guardaDuracaoTrabalho.toString()}
                                     />
-                                    <TouchableOpacity onPress={() => {setGuardaDuracaoTrabalho(Number.parseInt(guardaDuracaoTrabalho+1))}} style={styles.quadradoMaisOuMenos}>
+                                    <TouchableOpacity onPress={() => {if(guardaDuracaoTrabalho<99){setGuardaDuracaoTrabalho(Number.parseInt(guardaDuracaoTrabalho+1))}}} style={styles.quadradoMaisOuMenos}>
                                         <AntDesign name="caretright" size={24} color="black" />
                                     </TouchableOpacity>
                                 </View>
@@ -414,10 +448,11 @@ const telaPomodoro = (props) => {
                                         maxLength={2}
                                         returnKeyType="done"
                                         textAlign="center"
+                                        onBlur={() => verSeEstaVazio()}
                                         onChangeText={(numero) => validaDescanso(numero)}
                                         value={guardaDuracaoDescanso.toString()}
                                     />
-                                    <TouchableOpacity onPress={() => {setGuardaDuracaoDescanso(Number.parseInt(guardaDuracaoDescanso+1))}} style={styles.quadradoMaisOuMenos}>
+                                    <TouchableOpacity onPress={() => {if(guardaDuracaoDescanso<99){setGuardaDuracaoDescanso(Number.parseInt(guardaDuracaoDescanso+1))}}} style={styles.quadradoMaisOuMenos}>
                                         <AntDesign name="caretright" size={24} color="black" />
                                     </TouchableOpacity>
                                 </View>
@@ -435,6 +470,7 @@ const telaPomodoro = (props) => {
                                         maxLength={2}
                                         returnKeyType="done"
                                         textAlign="center"
+                                        onBlur={() => verSeEstaVazio()}
                                         onChangeText={(numero) => validaPomodoros(numero)}
                                         value={guardaQuantidadePomodoros.toString()}
                                     />
