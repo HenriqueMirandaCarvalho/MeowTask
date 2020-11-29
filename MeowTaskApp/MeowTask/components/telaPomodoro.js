@@ -108,7 +108,6 @@ const telaPomodoro = (props) => {
     }
 
     function toggleRelogio() {
-        console.log(duracaoTrabalho);
         if(running == false){
             if(pausado == true){
                 setRunning(true);
@@ -143,6 +142,7 @@ const telaPomodoro = (props) => {
 
     useEffect(() => {
         getData().then((obj) => {
+            console.log(obj);
             if (obj != null) {
                 setDuracaoTrabalho(obj.duracaoTrabalho);
                 setDuracaoDescanso(obj.duracaoDescanso);
@@ -294,7 +294,7 @@ const telaPomodoro = (props) => {
         setIterador(0);
         setTextoContagem("0:00");
         toggleModal();
-        setData({ "duracaoTrabalho": duracaoTrabalho, "duracaoDescanso": duracaoDescanso, "quantidadePomodoros": quantidadePomodoros });
+        setData({ "duracaoTrabalho": guardaDuracaoTrabalho, "duracaoDescanso": guardaDuracaoDescanso, "quantidadePomodoros": guardaQuantidadePomodoros });
     }
 
     function validaPomodoros(numero) {
