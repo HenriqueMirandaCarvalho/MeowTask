@@ -5,21 +5,25 @@ import { useFonts } from 'expo-font';
 import icone from './img/icone.png';
 import * as firebase from 'firebase';
 import { NavigationActions, StackActions } from 'react-navigation';
+import Constants from 'expo-constants';
 
 const telaInicio = (props) => {
+    Constants.manifest.env.teste = "b";
     function btnComecar() {
-        if (!firebase.auth().currentUser)
+        /*if (!firebase.auth().currentUser)
             props.navigation.navigate('Login');
         else
             props.navigation.navigate('Home', {
                 user: firebase.auth().currentUser
-            });
+            });*/
     }
     function btnLogar() {
-        props.navigation.navigate('Login');
+        Constants.manifest.env.teste = "a";
+        //props.navigation.navigate('Login');
     }
     function btnContinuar() {
-        props.navigation.navigate('Home');
+        alert(Constants.manifest.env.teste);
+        //props.navigation.navigate('Home');
     }
 
     let [fontsLoaded] = useFonts({
