@@ -48,7 +48,7 @@ const telaAmigo = (props) => {
     }
 
     function adicionarPessoa(_id) {
-        alert("id: "+id);
+        alert("id: " + id);
     }
 
     function salvarAdicaoDePessoas() {
@@ -57,8 +57,8 @@ const telaAmigo = (props) => {
 
     function acharAdmin(id, imagem, nome) {
         if (id == idAdm) {
-            return ( 
-                <View style={styles.divAdmin}> 
+            return (
+                <View style={styles.divAdmin}>
                     <Text style={styles.cargo}>Administrador</Text>
                     <Membro
                         imagem={imagensUsuario[imagem]}
@@ -76,14 +76,14 @@ const telaAmigo = (props) => {
                 <Membro
                     imagem={imagensUsuario[item.imagem]}
                     nome={item.nome}
-                    estiloExtra={{color: '#DC4C46',}}
+                    estiloExtra={{ color: '#DC4C46', }}
                     onLongPress={() => abrirModalMembroBanido(item.id, imagensUsuario[item.imagem], item.nome)}
                 />
             );
         });
         return (
-            <View style={{borderTopWidth: 1, borderTopColor: "#5b5b58",}}>
-                <Text style={[styles.cargo, {color: "#DC4C46"}]}>Banimentos</Text>
+            <View style={{ borderTopWidth: 1, borderTopColor: "#5b5b58", }}>
+                <Text style={[styles.cargo, { color: "#DC4C46" }]}>Banimentos</Text>
                 {membrosBanidos}
             </View>
         );
@@ -129,13 +129,13 @@ const telaAmigo = (props) => {
             .onSnapshot(snapshot => {
                 let usuarios = [];
                 snapshot.data().membros.forEach((_id) => {
-                    firebase.firebase().collection("Codigos").doc(_id).get().then((snapshot) => {
+                    firebase.firestore().collection("Codigos").doc(_id).get().then((snapshot) => {
                         let membro = snapshot.data();
                         membro.id = _id;
                         usuarios.push(membro);
                     });
                 });
-                setMembros(membro);
+                setMembros(usuarios);
                 setRefresco(false);
             });
         return () => listener();
@@ -219,7 +219,7 @@ const telaAmigo = (props) => {
 
                     <View style={styles.centeredView}>
                         <View style={styles.modalViewMembro}>
-                            <View style={{width: "100%", marginTop: "4%", marginBottom: "3%"}}>
+                            <View style={{ width: "100%", marginTop: "4%", marginBottom: "3%" }}>
                                 <Membro
                                     imagem={guardaImagemMembro}
                                     nome={guardaNomeMembro}
@@ -250,13 +250,13 @@ const telaAmigo = (props) => {
 
                     <View style={styles.centeredView}>
                         <View style={styles.modalViewMembro}>
-                            <View style={{width: "100%", marginTop: "4%", marginBottom: "3%"}}>
+                            <View style={{ width: "100%", marginTop: "4%", marginBottom: "3%" }}>
                                 <Membro
                                     imagem={guardaImagemMembro}
                                     nome={guardaNomeMembro}
                                 />
                             </View>
-                            <TouchableOpacity style={[styles.botaoAdicionarModal, {marginTop: "2%"}]} onPress={() => desbanir()}>
+                            <TouchableOpacity style={[styles.botaoAdicionarModal, { marginTop: "2%" }]} onPress={() => desbanir()}>
                                 <Text style={styles.textoBotaoAdicionarModal}>Desbanir</Text>
                             </TouchableOpacity>
                         </View>
@@ -273,44 +273,44 @@ const telaAmigo = (props) => {
                     </View>
                 </View>
                 <View style={styles.conteudo}>
-                        <FlatList
-                            data={membros}
-                            keyExtractor={item => item.id}
-                            refreshing={refresco}
-                            onRefresh={() => { }}
-                            renderItem={({ item }) =>
-                                <View>
-                                    {acharAdmin(item.id, item.imagem, item.nome)}
-                                    <View style={styles.divMembroComum}>
-                                        <Text style={styles.cargo}>Membros</Text>
-                                    </View>
-                                    <Membro
-                                        imagem={imagensUsuario[item.imagem]}
-                                        nome={item.nome}
-                                        onLongPress={() => abrirModalMembro(item.id, imagensUsuario[item.imagem], item.nome)}
-                                    />
-                                </View>}
-                            style={{width: "100%"}}
-                            ListFooterComponent={
-                                function rodapeLista() {
-                                    return (
-                                        <View style={{paddingBottom: "10%"}}>
-                                            <View style={styles.rodapeLista}>
-                                                <TouchableOpacity onPress={() => toggleModalAdicionar()} style={styles.botoesRodapeLista}>
-                                                    <AntDesign name="pluscircleo" size={50} color="#5b5b58" />
-                                                    <Text style={styles.textoBotaoRodapeLista}>Adicionar membros</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                            {listaBanidos(banidos)}
+                    <FlatList
+                        data={membros}
+                        keyExtractor={item => item.id}
+                        refreshing={refresco}
+                        onRefresh={() => { }}
+                        renderItem={({ item }) =>
+                            <View>
+                                {acharAdmin(item.id, item.imagem, item.nome)}
+                                <View style={styles.divMembroComum}>
+                                    <Text style={styles.cargo}>Membros</Text>
+                                </View>
+                                <Membro
+                                    imagem={imagensUsuario[item.imagem]}
+                                    nome={item.nome}
+                                    onLongPress={() => abrirModalMembro(item.id, imagensUsuario[item.imagem], item.nome)}
+                                />
+                            </View>}
+                        style={{ width: "100%" }}
+                        ListFooterComponent={
+                            function rodapeLista() {
+                                return (
+                                    <View style={{ paddingBottom: "10%" }}>
+                                        <View style={styles.rodapeLista}>
+                                            <TouchableOpacity onPress={() => toggleModalAdicionar()} style={styles.botoesRodapeLista}>
+                                                <AntDesign name="pluscircleo" size={50} color="#5b5b58" />
+                                                <Text style={styles.textoBotaoRodapeLista}>Adicionar membros</Text>
+                                            </TouchableOpacity>
                                         </View>
-                                    )
-                                }
+                                        {listaBanidos(banidos)}
+                                    </View>
+                                )
                             }
-                            ListEmptyComponent={() =>
-                                <Text style={{ alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20, marginTop: "6%" }}>Nenhum membro!</Text>
-                            }
-                        />
-                    </View>
+                        }
+                        ListEmptyComponent={() =>
+                            <Text style={{ alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20, marginTop: "6%" }}>Nenhum membro!</Text>
+                        }
+                    />
+                </View>
                 <View style={styles.rodape}>
                     <TouchableNativeFeedback onPress={() => toggleModalAdicionar()}>
                         <View style={styles.botao}>
@@ -320,11 +320,11 @@ const telaAmigo = (props) => {
 
                     <TouchableNativeFeedback onPress={() => gerarCodigo()}>
                         <View style={styles.botao}>
-                            <Text style={[styles.textoBotao,{fontSize: 18}]}>Código do grupo</Text>
+                            <Text style={[styles.textoBotao, { fontSize: 18 }]}>Código do grupo</Text>
                         </View>
                     </TouchableNativeFeedback>
                 </View>
-                <StatusBar translucent backgroundColor={'#eae6da'}/>
+                <StatusBar translucent backgroundColor={'#eae6da'} />
             </View>
         );
     }
