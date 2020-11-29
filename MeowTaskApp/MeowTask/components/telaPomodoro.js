@@ -256,8 +256,8 @@ const telaPomodoro = (props) => {
             setGuardaDuracaoDescanso(removido);
         }
     }
-    
-    function salvarPomodoro() {
+
+    function setadorIntervalos() {
         let i, i2 = 0;
         let novosIntervalos = [];
         for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
@@ -286,6 +286,9 @@ const telaPomodoro = (props) => {
             }
         }
         setIntervalos(novosIntervalos);
+    }
+    
+    function salvarPomodoro() {
         setRunning(false);
         setPausado(false);
         setTextoBotao("Iniciar");
