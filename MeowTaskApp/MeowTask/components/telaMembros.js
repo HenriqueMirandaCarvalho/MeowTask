@@ -119,9 +119,7 @@ const telaAmigo = (props) => {
     }
 
     function listaBanidos(_banidos) {
-        console.debug("banidos: "+_banidos);
         if (_banidos.length == 0) {
-            console.debug("aoba");
             return (
                 <View style={{ borderTopWidth: 1, borderTopColor: "#5b5b58", }}>
                     <Text style={[styles.cargo, { color: "#DC4C46" }]}>Banimentos</Text>
@@ -129,7 +127,6 @@ const telaAmigo = (props) => {
                 </View>
             )
         } else {
-            console.debug("aoba2");
             const membrosBanidos = _banidos.map((item) => {
                 return (
                     <Membro
@@ -241,17 +238,19 @@ const telaAmigo = (props) => {
             .collection("Grupos")
             .doc(idGrupo)
             .onSnapshot(snapshot => {
-                let banidos = [];
+                let newBanidos = [];
                 if (snapshot.data().banidos) {
                     snapshot.data().banidos.forEach((_id) => {
                         firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
                             let membroB = snap.data();
                             membroB.id = _id;
-                            banidos.push(membroB);
+                            newBanidos.push(membroB);
+                            if (snapshot.data().banidos.length == newBanidos.length) {
+                                console.log(newBanidos);
+                                setBanidos(newBanidos);
+                            }
                         });
                     });
-                    if (banidos != [])
-                        setBanidos(banidos);
                 }
             });
         return () => listener();
@@ -286,7 +285,7 @@ const telaAmigo = (props) => {
 
                     <View style={styles.centeredView}>
                         <View style={styles.modalViewAdicionar}>
-                            <Text style={styles.textoTituloModal}>Adicionar Membros</Text>
+                            <Text style={styles.textoTituloModal}>Adicionar Membro</Text>
 
                             <View style={styles.divListaAmigos}>
                                 <SafeAreaView style={{ flex: 1 }}>
