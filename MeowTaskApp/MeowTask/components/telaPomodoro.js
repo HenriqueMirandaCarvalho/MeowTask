@@ -164,6 +164,18 @@ const telaPomodoro = (props) => {
     }
 
     useEffect(() => {
+        if (!running) {
+            trocaGato("normal");
+        } else {
+            if (intervalos[iterador].sossego) {
+                trocaGato("descansando");
+            } else {
+                trocaGato("trabalhando");
+            }
+        }
+    }, [iterador, running]); // o useEffect presta atenção nessas variáveis
+
+    useEffect(() => {
         const intervalo = window.setInterval(() => contagemRegressiva(minutos, segundos, iterador), 1000);
 
         return () => {
@@ -203,6 +215,7 @@ const telaPomodoro = (props) => {
                 backgroundColor: "#70bf42",
                 justifyContent: "center",
                 alignItems: "center",
+                overflow: "hidden",
             })
         } else {
             return ({
@@ -210,6 +223,7 @@ const telaPomodoro = (props) => {
                 backgroundColor: "#ed5e58",
                 justifyContent: "center",
                 alignItems: "center",
+                overflow: "hidden",
             })
         }
     }
@@ -263,9 +277,9 @@ const telaPomodoro = (props) => {
         if (estado == "normal") {
             setGato(require("./img/gatoestudando.png"));
         } else if (estado == "descansando") {
-            setGato(require("./img/gatoestudando.png"));
+            setGato(require("./img/menta.png"));
         } else if (estado == "trabalhando") {
-            setGato(require("./img/gatoestudando.png"));
+            setGato(require("./img/turquesa10.png"));
         }
     }
 
@@ -575,7 +589,8 @@ const styles = StyleSheet.create({
     },
     textoFlatlist: {
         fontFamily: 'Roboto-Light',
-        fontSize: 20,
+        fontSize: 12,
+        maxHeight: "70%"
     },
     caminhoIndicador: {
         marginTop: "5%",
