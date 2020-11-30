@@ -79,7 +79,6 @@ const telaListaGrupos = (props) => {
                 .then((data) => {
                     toggleModalCriar();
                     setLoading(false);
-                    Alert.alert("Aviso", "Grupo criado com sucesso!");
                 });
         }
         else {
@@ -162,13 +161,15 @@ const telaListaGrupos = (props) => {
             .collection("Grupos")
             .orderBy('data', 'desc')
             .onSnapshot(snapshot => {
-                const grupos = snapshot.docs.map(doc => {
+                let grupos = [];
+                snapshot.docs.forEach(doc => {
                     const grupo = doc.data();
                     if (grupo.membros.includes(firebase.auth().currentUser.uid)) {
                         grupo.id = doc.id;
-                        return grupo;
+                        grupos.push(grupo);
                     }
                 });
+                console.log(grupos);
                 if (grupos[0] != undefined)
                     setGrupos(grupos);
                 else

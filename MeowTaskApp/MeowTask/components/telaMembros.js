@@ -12,7 +12,7 @@ const telaAmigo = (props) => {
     const [modalAdicionarVisivel, setModalAdicionarVisivel] = useState(false);
     const [idAdm, setIdAdm] = useState("");
     const [membros, setMembros] = useState([]);
-    const [refresco, setRefresco] = useState(false);
+    const [refresco, setRefresco] = useState(true);
     const imagensUsuario = [];
     imagensUsuario.push(require("./img/turquesa10.png"));
     imagensUsuario.push(require("./img/gato1.png"));
@@ -61,11 +61,21 @@ const telaAmigo = (props) => {
     }
 
     function adicionarPessoa(_id) {
-        alert("id: " + id);
-    }
-
-    function salvarAdicaoDePessoas() {
-        alert("blz, já salvo");
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .get()
+            .then(snapshot => {
+                let novoMembros = snapshot.data().membros;
+                novoMembros.push(_id);
+                firebase.firestore()
+                    .collection("Grupos")
+                    .doc(idGrupo)
+                    .update({
+                        membros: novoMembros
+                    });
+                toggleModalAdicionar();
+            });
     }
 
     function acharAdmin(id, imagem, nome) {
@@ -126,7 +136,20 @@ const telaAmigo = (props) => {
     }
 
     function expulsar() {
-        alert("expulsar");
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .get()
+            .then(snapshot => {
+                let novoMembros = snapshot.data().membros;
+                novoMembros = novoMembros.filter((value, index, arr) => { return value.toString() != guardaIdMembro.toString(); });
+                firebase.firestore()
+                    .collection("Grupos")
+                    .doc(idGrupo)
+                    .update({
+                        membros: novoMembros
+                    }).then(() => setModalMembroVisivel(false));
+            });
     }
 
     function desbanir() {
@@ -151,10 +174,12 @@ const telaAmigo = (props) => {
                         let membro = snap.data();
                         membro.id = _id;
                         usuarios.push(membro);
-                        setMembros(usuarios);
+                        if (usuarios.length == snapshot.data().membros.length) {
+                            setMembros(usuarios);
+                            setRefresco(false);
+                        }
                     });
                 });
-                setRefresco(false);
             });
         return () => listener();
     }, []);
@@ -230,19 +255,15 @@ const telaAmigo = (props) => {
                                                 onPress={() => adicionarPessoa(item.id)}
                                             />}
                                         ListEmptyComponent={() =>
-                                            <View style={{marginTop: "12%"}}>
-                                            <Text style={styles.tituloListaAmigos}>Você não possuí amigos,</Text>
-                                            <Text style={styles.tituloListaAmigos}>ou eles já estão neste</Text>
-                                            <Text style={styles.tituloListaAmigos}>grupo!</Text>
+                                            <View style={{ marginTop: "12%" }}>
+                                                <Text style={styles.tituloListaAmigos}>Você não possuí amigos,</Text>
+                                                <Text style={styles.tituloListaAmigos}>ou eles já estão neste</Text>
+                                                <Text style={styles.tituloListaAmigos}>grupo!</Text>
                                             </View>
                                         }
                                     />
                                 </SafeAreaView>
                             </View>
-
-                            <TouchableOpacity style={styles.botaoAdicionarModal} onPress={() => salvarAdicaoDePessoas()}>
-                                <Text style={styles.textoBotaoAdicionarModal}>Adicionar</Text>
-                            </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
