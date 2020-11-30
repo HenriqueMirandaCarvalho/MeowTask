@@ -11,6 +11,9 @@ const telaGrupo = (props) => {
     const [nomeGrupo, setNomeGrupo] = useState("...");
     const [imagem, setImagem] = useState(0);
 
+    const [idAdm, setIdAdm] = useState("WU9BAMd86xgbR1FFrjamgvakkQ82");
+    const [meuId, setMeuId] = useState(firebase.auth().currentUser.uid);
+
     const [modalOpcoesVisivel, setModalOpcoesVisivel] = useState(false);
 
     const imagensGrupos = [];
@@ -55,6 +58,23 @@ const telaGrupo = (props) => {
         alert("sair");
     }
 
+    function ehAdmin() {
+        if (meuId == idAdm) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    const botaoDeletar = 
+        <TouchableOpacity style={[styles.botaoModalOpcoes, { backgroundColor: "#DC4C46" }]} onPress={() => deletarGrupo()}>
+            <Text style={styles.textoBotaoModalOpcoes}>Deletar</Text>
+        </TouchableOpacity>
+    const botaoSair =
+        <TouchableOpacity style={[styles.botaoModalOpcoes, { backgroundColor: "#DC4C46" }]} onPress={() => sair()}>
+            <Text style={styles.textoBotaoModalOpcoes}>Sair</Text>
+        </TouchableOpacity>
+
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
     });
@@ -93,16 +113,10 @@ const telaGrupo = (props) => {
                             <MembroInclickavel
                                 imagem={imagensGrupos[imagem]}
                                 nome={nomeGrupo}
+                                estiloExtra={{color: "black"}}
                             />
                         </View>
-                        <View style={styles.divBotoesModalOpcoes}>
-                            <TouchableOpacity style={[styles.botaoModalOpcoes, { marginTop: "2%" }]} onPress={() => deletarGrupo()}>
-                                <Text style={styles.textoBotaoModalOpcoes}>Deletar</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.botaoModalOpcoes, { marginTop: "2%" }]} onPress={() => sair()}>
-                                <Text style={styles.textoBotaoModalOpcoes}>Sair</Text>
-                            </TouchableOpacity>
-                        </View>
+                        {ehAdmin()?botaoDeletar:botaoSair}
                     </View>
                 </View>
             </Modal>
@@ -255,22 +269,17 @@ const styles = StyleSheet.create({
     botaoModalOpcoes: {
         marginTop: "2%",
         borderRadius: 40,
-        width: "40%",
+        width: "82%",
         height: null,
-        aspectRatio: 3.5,
+        aspectRatio: 6.12,
         backgroundColor: "#53A156",
         alignItems: "center",
         justifyContent: "center",
     },
     textoBotaoModalOpcoes: {
-        fontFamily: 'Roboto-Light',
-        fontSize: 20,
-        color: '#000000',
-    },
-    divBotoesModalOpcoes: {
-        width: "100%",
-        flexDirection: "row",
-        justifyContent: "space-evenly",
+        fontFamily: 'Roboto-Regular',
+        fontSize: 25,
+        color: 'white',
     },
 });
 
