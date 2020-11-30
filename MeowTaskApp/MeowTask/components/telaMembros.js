@@ -58,13 +58,18 @@ const telaAmigo = (props) => {
     function acharAdmin(id, imagem, nome) {
         if (id == idAdm) {
             return (
-                <View style={styles.divAdmin}>
-                    <Text style={styles.cargo}>Administrador</Text>
-                    <Membro
-                        imagem={imagensUsuario[imagem]}
-                        nome={nome}
-                        onLongPress={() => abrirModalMembro(id, imagensUsuario[imagem], nome)}
-                    />
+                <View>
+                    <View style={styles.divAdmin}>
+                        <Text style={styles.cargo}>Administrador</Text>
+                        <Membro
+                            imagem={imagensUsuario[imagem]}
+                            nome={nome}
+                            onLongPress={() => abrirModalMembro(id, imagensUsuario[imagem], nome)}
+                        />
+                    </View>
+                    <View style={styles.divMembroComum}>
+                        <Text style={styles.cargo}>Membros</Text>
+                    </View>
                 </View>
             );
         }
@@ -278,12 +283,11 @@ const telaAmigo = (props) => {
                         keyExtractor={item => item.id}
                         refreshing={refresco}
                         onRefresh={() => { }}
+                        ListHeaderComponent={({item}) =>
+                            acharAdmin(item.id, item.imagem, item.nome)
+                        }
                         renderItem={({ item }) =>
                             <View>
-                                {acharAdmin(item.id, item.imagem, item.nome)}
-                                <View style={styles.divMembroComum}>
-                                    <Text style={styles.cargo}>Membros</Text>
-                                </View>
                                 <Membro
                                     imagem={imagensUsuario[item.imagem]}
                                     nome={item.nome}
