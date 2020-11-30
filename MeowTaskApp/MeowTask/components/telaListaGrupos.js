@@ -13,7 +13,7 @@ const telaListaGrupos = (props) => {
     const [inputCodigo, setInputCodigo] = useState("");
     const [inputNomeGrupo, setInputNomeGrupo] = useState();
     const [inputImagem, setInputImagem] = useState(1);
-    const [pessoasAdicionar, setPessoasAdicionar] = useState([]);
+    const [pessoasAdicionar, setPessoasAdicionar] = useState([firebase.auth().currentUser.uid]);
 
     const imagensGrupos = [];
     imagensGrupos.push(require("./img/turquesa10.png"));
@@ -38,8 +38,9 @@ const telaListaGrupos = (props) => {
     }
 
     function adicionarPessoa(_id) {
-        setPessoasAdicionar(pessoasAdicionar.push(_id));
-        console.log(pessoasAdicionar);
+        let novo = pessoasAdicionar;
+        novo.push(_id);
+        setPessoasAdicionar(novo);
     }
 
     function toggleModalCriar() {
@@ -64,6 +65,7 @@ const telaListaGrupos = (props) => {
 
     function criarGrupo() {
         setLoading(true);
+        console.log(pessoasAdicionar);
         if (inputNomeGrupo.length >= 5 && inputNomeGrupo.length <= 20) {
             firebase.firestore()
                 .collection('Grupos')
@@ -71,7 +73,7 @@ const telaListaGrupos = (props) => {
                     nome: inputNomeGrupo,
                     imagem: inputImagem,
                     dono: firebase.auth().currentUser.uid,
-                    membros: [firebase.auth().currentUser.uid],
+                    membros: pessoasAdicionar,
                     data: new Date().getTime()
                 })
                 .then((data) => {

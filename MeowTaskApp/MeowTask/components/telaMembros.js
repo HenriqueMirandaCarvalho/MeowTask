@@ -26,25 +26,38 @@ const telaAmigo = (props) => {
     const [modalMembroVisivel, setModalMembroVisivel] = useState(false);
     const [modalMembroBanidoVisivel, setModalMembroBanidoVisivel] = useState(false);
 
-    const [banidos, setBanidos] = useState([
-        {
-            id: 1,
-            imagem: 1,
-            nome: "kaio mulek"
-        },
-        {
-            id: 2,
-            imagem: 1,
-            nome: "luis"
-        }
-    ]);
+    const [banidos, setBanidos] = useState([]);
+    const [amigos, setAmigos] = useState([]);
 
     function gerarCodigo() {
-        return idGrupo;
+        Clipboard.setString(idGrupo);
+        Alert.alert("Aviso", "Código copiado com sucesso!");
     }
 
     function toggleModalAdicionar() {
         setModalAdicionarVisivel(!modalAdicionarVisivel);
+        firebase.firestore()
+            .collection("Amigos")
+            .orderBy('data', 'desc')
+            .onSnapshot(snapshot => {
+                const amigos = snapshot.docs.map(doc => {
+                    const dados = doc.data();
+                    if (dados.confirmado) {
+                        const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid });
+                        let alreadyMembro = false;
+                        membros.forEach((doc) => {
+                            if (doc.id == amigo.id)
+                                alreadyMembro = true;
+                        });
+                        if (!alreadyMembro)
+                            return amigo;
+                    }
+                });
+                if (amigos[0] != undefined)
+                    setAmigos(amigos);
+                else
+                    setAmigos([]);
+            });
     }
 
     function adicionarPessoa(_id) {
@@ -134,13 +147,36 @@ const telaAmigo = (props) => {
             .onSnapshot(snapshot => {
                 let usuarios = [];
                 snapshot.data().membros.forEach((_id) => {
-                    firebase.firestore().collection("Codigos").doc(_id).get().then((snapshot) => {
-                        let membro = snapshot.data();
+                    firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
+                        let membro = snap.data();
                         membro.id = _id;
                         usuarios.push(membro);
+                        setMembros(usuarios);
                     });
                 });
-                setMembros(usuarios);
+                setRefresco(false);
+            });
+        return () => listener();
+    }, []);
+
+    useEffect(() => {
+        setRefresco(true);
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .onSnapshot(snapshot => {
+                let banidos = [];
+                if (snapshot.data().banidos) {
+                    snapshot.data().banidos.forEach((_id) => {
+                        firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
+                            let membroB = snap.data();
+                            membroB.id = _id;
+                            banidos.push(membroB);
+                        });
+                    });
+                    if (banidos != [])
+                        setBanidos(banidos);
+                }
                 setRefresco(false);
             });
         return () => listener();
@@ -182,7 +218,7 @@ const telaAmigo = (props) => {
                             <View style={styles.divListaAmigos}>
                                 <SafeAreaView style={{ flex: 1 }}>
                                     <FlatList
-                                        data={membros}
+                                        data={amigos}
                                         keyExtractor={item => item.id}
                                         ListHeaderComponent={
                                             function rodapeLista() {
@@ -198,7 +234,11 @@ const telaAmigo = (props) => {
                                                 onPress={() => adicionarPessoa(item.id)}
                                             />}
                                         ListEmptyComponent={() =>
-                                            <Text style={styles.tituloListaAmigos}>Você não possuí amigos!</Text>
+                                            <View style={{marginTop: "12%"}}>
+                                            <Text style={styles.tituloListaAmigos}>Você não possuí amigos,</Text>
+                                            <Text style={styles.tituloListaAmigos}>ou eles já estão neste</Text>
+                                            <Text style={styles.tituloListaAmigos}>grupo!</Text>
+                                            </View>
                                         }
                                     />
                                 </SafeAreaView>
