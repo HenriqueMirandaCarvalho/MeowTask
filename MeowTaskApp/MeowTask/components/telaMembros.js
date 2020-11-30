@@ -12,7 +12,7 @@ const telaAmigo = (props) => {
     const idGrupo = props.navigation.state.params.idGrupo;
     const [modalAdicionarVisivel, setModalAdicionarVisivel] = useState(false);
     const [idAdm, setIdAdm] = useState("");
-    const [meuId, setMeuId] = useState("");
+    const [meuId, setMeuId] = useState(firebase.auth().currentUser.uid);
     const [membros, setMembros] = useState([]);
     const [refresco, setRefresco] = useState(true);
     const imagensUsuario = [];
@@ -52,6 +52,10 @@ const telaAmigo = (props) => {
                                 if (doc.id == amigo.id)
                                     alreadyMembro = true;
                             });
+                            banidos.forEach((doc) => {
+                                if (doc.id == amigo.id)
+                                    alreadyMembro = true;
+                            })
                             if (!alreadyMembro)
                                 return amigo;
                         }
@@ -164,7 +168,23 @@ const telaAmigo = (props) => {
     }
 
     function banir() {
-        alert("B A N I D O");
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .get()
+            .then(snapshot => {
+                let novoMembros = snapshot.data().membros;
+                novoMembros = novoMembros.filter((value, index, arr) => { return value.toString() != guardaIdMembro.toString(); });
+                let banidos = snapshot.data().banidos;
+                banidos.push(guardaIdMembro);
+                firebase.firestore()
+                    .collection("Grupos")
+                    .doc(idGrupo)
+                    .update({
+                        membros: novoMembros,
+                        banidos: banidos
+                    }).then(() => setModalMembroVisivel(false));
+            });
     }
 
     function expulsar() {

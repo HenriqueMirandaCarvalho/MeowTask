@@ -105,6 +105,10 @@ const telaListaGrupos = (props) => {
                         setLoading(false);
                         Alert.alert("Erro", "Você já está nesse grupo!");
                     }
+                    else if (grupo.banidos.includes(firebase.auth().currentUser.uid)) {
+                        setLoading(false);
+                        Alert.alert("Erro", "Você está banido deste grupo!");
+                    }
                     else {
                         grupo.membros.push(firebase.auth().currentUser.uid);
                         firebase.firestore()
