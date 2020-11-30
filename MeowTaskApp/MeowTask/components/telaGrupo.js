@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, TouchableNativeFeedback, Modal, TouchableWithoutFeedback } from "react-native";
-import { Ionicons, AntDesign, Entypo, Feather } from '@expo/vector-icons'; 
+import { Ionicons, AntDesign, Entypo, Feather } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import * as firebase from 'firebase';
@@ -51,14 +51,17 @@ const telaGrupo = (props) => {
     }
 
     function deletarGrupo() {
+        props.navigation.goBack();
+        toggleModalOpcoes();
         firebase.firestore()
             .collection("Grupos")
             .doc(idGrupo)
-            .delete()
-            .then(() => {toggleModalOpcoes(); props.navigation.goBack();});
+            .delete();
     }
 
     function sair() {
+        props.navigation.goBack();
+        toggleModalOpcoes();
         firebase.firestore()
             .collection("Grupos")
             .doc(idGrupo)
@@ -71,7 +74,7 @@ const telaGrupo = (props) => {
                     .doc(idGrupo)
                     .update({
                         membros: novoMembros
-                    }).then(() => {toggleModalOpcoes(); props.navigation.goBack();});
+                    });
             });
     }
 
@@ -83,7 +86,7 @@ const telaGrupo = (props) => {
         }
     }
 
-    const botaoDeletar = 
+    const botaoDeletar =
         <TouchableOpacity style={[styles.botaoModalOpcoes, { backgroundColor: "#DC4C46" }]} onPress={() => deletarGrupo()}>
             <Text style={styles.textoBotaoModalOpcoes}>Deletar</Text>
         </TouchableOpacity>
@@ -97,106 +100,112 @@ const telaGrupo = (props) => {
     });
 
     useEffect(() => {
-        const listener = firebase.firestore()
-            .collection("Grupos")
-            .doc(idGrupo)
-            .onSnapshot(snapshot => {
-                setNomeGrupo(snapshot.data().nome);
-                setImagem(snapshot.data().imagem);
-            });
-        return () => listener();
+        try {
+            const listener = firebase.firestore()
+                .collection("Grupos")
+                .doc(idGrupo)
+                .onSnapshot(snapshot => {
+                    setNomeGrupo(snapshot.data().nome);
+                    setImagem(snapshot.data().imagem);
+                });
+            return () => listener();
+        }
+        catch (e) { }
     }, []);
 
     useEffect(() => {
-        const listener = firebase.firestore()
-            .collection("Grupos")
-            .doc(idGrupo)
-            .onSnapshot(snapshot => {
-                setIdAdm(snapshot.data().dono);
-            });
-        return () => listener();
+        try {
+            const listener = firebase.firestore()
+                .collection("Grupos")
+                .doc(idGrupo)
+                .onSnapshot(snapshot => {
+                    setIdAdm(snapshot.data().dono);
+                });
+            return () => listener();
+        }
+        catch (e) { }
     }, []);
-        
+
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {
-    return (
-        <View style={styles.container}>
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalOpcoesVisivel}
-                onRequestClose={() => {
-                    setModalOpcoesVisivel(false);
-                }}
-            >
-                <TouchableWithoutFeedback onPress={() => { setModalOpcoesVisivel(false); }}>
-                    <View style={styles.overlay} />
-                </TouchableWithoutFeedback>
+        return (
+            <View style={styles.container}>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalOpcoesVisivel}
+                    onRequestClose={() => {
+                        setModalOpcoesVisivel(false);
+                    }}
+                >
+                    <TouchableWithoutFeedback onPress={() => { setModalOpcoesVisivel(false); }}>
+                        <View style={styles.overlay} />
+                    </TouchableWithoutFeedback>
 
-                <View style={styles.centeredView}>
-                    <View style={styles.modalViewMembro}>
-                        <View style={{ width: "100%", marginTop: "4%", marginBottom: "3%" }}>
-                            <MembroInclickavel
-                                imagem={imagensGrupos[imagem]}
-                                nome={nomeGrupo}
-                                estiloExtra={{color: "black"}}
-                            />
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalViewMembro}>
+                            <View style={{ width: "100%", marginTop: "4%", marginBottom: "3%" }}>
+                                <MembroInclickavel
+                                    imagem={imagensGrupos[imagem]}
+                                    nome={nomeGrupo}
+                                    estiloExtra={{ color: "black" }}
+                                />
+                            </View>
+                            {ehAdmin() ? botaoDeletar : botaoSair}
                         </View>
-                        {ehAdmin()?botaoDeletar:botaoSair}
+                    </View>
+                </Modal>
+                <View style={styles.cabecalho}>
+                    <View style={styles.divSetinha}>
+                        <TouchableOpacity style={[styles.setinha, { padding: "2%" }]} onPress={() => props.navigation.goBack()}>
+                            <Ionicons name="md-arrow-back" size={40} color="#5b5b58" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.divEngrenagem}>
+                        <TouchableOpacity style={[styles.engrenagem, { padding: "2%" }]} onPress={() => toggleModalOpcoes()}>
+                            <Feather name="settings" size={33} color="#5b5b58" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.divImagem}>
+                        <Image source={imagensGrupos[imagem]} style={styles.imagem} />
                     </View>
                 </View>
-            </Modal>
-            <View style={styles.cabecalho}>
-                <View style={styles.divSetinha}>
-                    <TouchableOpacity style={[styles.setinha, {padding: "2%"}]} onPress={() => props.navigation.goBack()}>
-                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58"/>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.divEngrenagem}>
-                    <TouchableOpacity style={[styles.engrenagem, {padding: "2%"}]} onPress={() => toggleModalOpcoes()}>
-                        <Feather name="settings" size={33} color="#5b5b58"/>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.divImagem}> 
-                    <Image source={imagensGrupos[imagem]} style={styles.imagem}/>
-                </View>
+                <Text style={styles.textoNomeGrupo}>{nomeGrupo}</Text>
+                <TouchableNativeFeedback onPress={btnTarefas}>
+                    <View style={styles.botao}>
+                        <Image source={require('./img/Logos/LogoTarefas.png')} style={styles.imagemIcone} />
+                        <Text style={styles.textoBotao}>Tarefas</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <TouchableNativeFeedback onPress={btnMembros}>
+                    <View style={styles.botao}>
+                        <Image source={require('./img/Logos/LogoTarefas.png')} style={styles.imagemIcone} />
+                        <Text style={styles.textoBotao}>Membros</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <TouchableNativeFeedback onPress={btnPostIts}>
+                    <View style={styles.botao}>
+                        <Image source={require('./img/Logos/post-it.png')} style={styles.imagemIcone} />
+                        <Text style={styles.textoBotao}>Post-Its</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <TouchableNativeFeedback onPress={btnPostagens}>
+                    <View style={styles.botao}>
+                        <Image source={require('./img/Logos/Postagens.png')} style={styles.imagemIcone} />
+                        <Text style={styles.textoBotao}>Postagens</Text>
+                    </View>
+                </TouchableNativeFeedback>
             </View>
-            <Text style={styles.textoNomeGrupo}>{nomeGrupo}</Text>
-            <TouchableNativeFeedback onPress={btnTarefas}>
-                <View style={styles.botao}>
-                    <Image source={require('./img/Logos/LogoTarefas.png')} style={styles.imagemIcone}/>
-                    <Text style={styles.textoBotao}>Tarefas</Text>
-                </View>
-            </TouchableNativeFeedback>
-            <TouchableNativeFeedback onPress={btnMembros}>
-                <View style={styles.botao}>
-                    <Image source={require('./img/Logos/LogoTarefas.png')} style={styles.imagemIcone}/>
-                    <Text style={styles.textoBotao}>Membros</Text>
-                </View>
-            </TouchableNativeFeedback>
-            <TouchableNativeFeedback onPress={btnPostIts}>
-                <View style={styles.botao}>
-                    <Image source={require('./img/Logos/post-it.png')} style={styles.imagemIcone}/>
-                    <Text style={styles.textoBotao}>Post-Its</Text>
-                </View>
-            </TouchableNativeFeedback>
-            <TouchableNativeFeedback onPress={btnPostagens}>
-                <View style={styles.botao}>
-                    <Image source={require('./img/Logos/Postagens.png')} style={styles.imagemIcone}/>
-                    <Text style={styles.textoBotao}>Postagens</Text>
-                </View>
-            </TouchableNativeFeedback>
-        </View>
-    );  
-    }  
+        );
+    }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-		flexDirection: 'column',
-		backgroundColor: '#EAE6DA',
+        flexDirection: 'column',
+        backgroundColor: '#EAE6DA',
         alignItems: 'center',
     },
     cabecalho: {

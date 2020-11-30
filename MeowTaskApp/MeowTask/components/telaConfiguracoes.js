@@ -333,7 +333,7 @@ const telaNotificacoes = (props) => {
                 </Modal>
                 <View style={styles.cabecalho}>
                     <View style={styles.divSetinha}>
-                        <TouchableOpacity onPress={() => toggleModalConfig()}>
+                        <TouchableOpacity onPress={() => props.navigation.goBack()}>
                             <Ionicons name="md-arrow-back" size={44} color="#5b5b58" />
                         </TouchableOpacity>
                     </View>
