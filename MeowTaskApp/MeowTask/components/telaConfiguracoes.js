@@ -28,7 +28,6 @@ const setData = async (value) => {
 }
 
 const telaNotificacoes = (props) => {
-
     const [modalContaVisivel, setModalContaVisivel] = useState(false);
     const [modalContaEstaNaSegundaPagina, setModalContaEstaNaSegundaPagina] = useState(false);
 
@@ -38,31 +37,26 @@ const telaNotificacoes = (props) => {
     const [notificacoesPostagens, setNotificacoesPostagens] = useState(false);
     const [notificacoesTarefas, setNotificacoesTarefas] = useState(false);
 
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState(firebase.auth().currentUser.displayName);
+    const [avatar, setAvatar] = useState(1);
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
 
-    const [avatares, setAvatares] = useState([
-        {
-            id: "0",
-            imagem: require('./img/gato1.png'),
-            selecionada: false,
-        },
-        {
-            id: "1",
-            imagem: require('./img/gato2.png'),
-            selecionada: false,
-        },
-        {
-            id: "2",
-            imagem: require('./img/gato3.png'),
-            selecionada: false,
-        },
-    ]);
+    const avatares = [require('./img/gato1.png'), require('./img/gato2.png'), require('./img/gato3.png')];
 
     function toggleModalConta() {
-        setModalContaVisivel(!modalContaVisivel);
-        setModalContaEstaNaSegundaPagina(false);
+        if (!modalContaVisivel) {
+            setModalContaVisivel(true);
+            setModalContaEstaNaSegundaPagina(false);
+        }
+        else {
+            setModalContaVisivel(false);
+            setModalContaEstaNaSegundaPagina(false);
+            firebase.auth().currentUser.updateProfile({
+                displayName: username,
+                photoURL: "1"
+            });
+        }
     }
 
     async function toggleModalNotificacao() {
@@ -118,7 +112,35 @@ const telaNotificacoes = (props) => {
     }
 
     function salvarEmail() {
-        setModalContaVisivel(false);
+        firebase.auth()
+            .signInWithEmailAndPassword(firebase.auth().currentUser.email, senha)
+            .then(function (userData) {
+                userData.user.updateEmail(email);
+                setModalContaVisivel(false);
+            })
+            .catch(error => {
+                setLoading(false);
+                switch (error.code) {
+                    case "auth/invalid-email":
+                        Alert.alert("Erro", "Email inválido!");
+                        break;
+                    case "auth/user-disabled":
+                        Alert.alert("Erro", "Usuário desabilitado!");
+                        break;
+                    case "auth/user-not-found":
+                        Alert.alert("Erro", "Usuário não encontrado!");
+                        break;
+                    case "auth/wrong-password":
+                        Alert.alert("Erro", "Senha incorreta!");
+                        break;
+                    case "auth/too-many-requests":
+                        Alert.alert("Erro", "Muitas tentativas!");
+                        break;
+                    default:
+                        Alert.alert("Erro", "Erro desconhecido! (código do erro: " + error.code + ")");
+                        break;
+                }
+            });
     }
 
     async function salvarNotificacao() {
@@ -186,7 +208,7 @@ const telaNotificacoes = (props) => {
                     <Text style={styles.textoModalConta}>Trocar E-mail</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.botaoDeslogar} onPress={() => sair()}>
-                    <Text style={[styles.textoModalConta, {color: "white"}]}>Deslogar</Text>
+                    <Text style={[styles.textoModalConta, { color: "white" }]}>Deslogar</Text>
                 </TouchableOpacity>
             </View>
         </View>

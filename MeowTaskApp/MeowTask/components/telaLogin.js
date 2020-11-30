@@ -50,15 +50,8 @@ const telaLogin = (props) => {
         setLoading(true);
         firebase.auth().signInWithEmailAndPassword(inputEmail, inputSenha)
             .then(() => {
-                if (firebase.auth().currentUser.emailVerified) {
-                    setLoading(false);
-                    props.navigation.navigate("Home");
-                }
-                else {
-                    setLoading(false);
-                    firebase.auth().signOut();
-                    Alert.alert("Aviso", "Seu email não está verificado!");
-                }
+                setLoading(false);
+                props.navigation.navigate("Home");
             })
             .catch(error => {
                 setLoading(false);
