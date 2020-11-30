@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     botaoModalOpcoes: {
-        marginTop: "3.5%",
+        marginTop: "2%",
         borderRadius: 40,
         width: "40%",
         height: null,
