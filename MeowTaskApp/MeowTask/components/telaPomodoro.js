@@ -182,7 +182,7 @@ const telaPomodoro = (props) => {
                 setGuardaDuracaoDescanso(obj.duracaoDescanso);
                 setQuantidadePomodoros(obj.quantidadePomodoros);
                 setGuardaQuantidadePomodoros(obj.quantidadePomodoros);
-                setadorIntervalos();
+                setadorIntervalos(obj.quantidadePomodoros, obj.duracaoTrabalho, obj.duracaoDescanso);
             }
         })
     }, []);
@@ -339,20 +339,20 @@ const telaPomodoro = (props) => {
         return true;
     }
 
-    function setadorIntervalos() {
+    function setadorIntervalos(_guardaQuantidadePomodoros, _guardaDuracaoTrabalho, _guardaDuracaoDescanso ) {
         let i, i2 = 0;
         // o i é uma forma de manter contagem com o guardaQuantidadePomodoros
         // e o i2 é usado pra colocar IDs, 
 
         let novosIntervalos = [];
-        for (i = 0; i <= (guardaQuantidadePomodoros-1); i++) {
-            if (i == guardaQuantidadePomodoros - 1 || guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro,
+        for (i = 0; i <= (_guardaQuantidadePomodoros-1); i++) {
+            if (i == _guardaQuantidadePomodoros - 1 || _guardaQuantidadePomodoros == 1) { // caso não tenha descanso nesse pomodoro,
                 // isso vai ocorrer caso só tenha um intervalo, ou na hora de gerar o último intervalo
                 // afinal de contas, não faz sentido a contagem terminar com um descanso
                 novosIntervalos.push(
                     {
                         id: i2,
-                        duracao: guardaDuracaoTrabalho,
+                        duracao: _guardaDuracaoTrabalho,
                         sossego: false,
                     }
                 ) // só hávera trabalho
@@ -360,12 +360,12 @@ const telaPomodoro = (props) => {
                 novosIntervalos.push(
                     {
                         id: i2,
-                        duracao: guardaDuracaoTrabalho,
+                        duracao: _guardaDuracaoTrabalho,
                         sossego: false,
                     },
                     {
                         id: (i2+1),
-                        duracao: guardaDuracaoDescanso,
+                        duracao: _guardaDuracaoDescanso,
                         sossego: true,
                     }
                 )
@@ -382,7 +382,7 @@ const telaPomodoro = (props) => {
         if (!verSeEstaVazio()) {
             
         } else {
-            setadorIntervalos();
+            setadorIntervalos(guardaQuantidadePomodoros, guardaDuracaoTrabalho, guardaDuracaoDescanso);
             setRunning(false);
             setPausado(false);
             setTextoBotao("Iniciar");
