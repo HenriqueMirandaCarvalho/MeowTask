@@ -95,7 +95,7 @@ const telaAmigo = (props) => {
                         <Membro
                             imagem={imagensUsuario[imagem]}
                             nome={nome}
-                            onLongPress={() => {}}
+                            onLongPress={() => { }}
                         />
                     </View>
                     <View style={styles.divMembroComum}>
@@ -218,25 +218,25 @@ const telaAmigo = (props) => {
                         setModalMembroBanidoVisivel(false);
                         setRefresco(true);
                         firebase.firestore()
-            .collection("Grupos")
-            .doc(idGrupo)
-            .onSnapshot(snapshot => {
-                let newBanidos = [];
-                if (snapshot.data().banidos) {
-                    snapshot.data().banidos.forEach((_id) => {
-                        firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
-                            let membroB = snap.data();
-                            membroB.id = _id;
-                            newBanidos.push(membroB);
-                            if (snapshot.data().banidos.length == newBanidos.length) {
-                                console.log(newBanidos);
-                                setBanidos(newBanidos);
-                                setRefresco(false);
-                            }
-                        });
-                    });
-                }
-            });
+                            .collection("Grupos")
+                            .doc(idGrupo)
+                            .onSnapshot(snapshot => {
+                                let newBanidos = [];
+                                if (snapshot.data().banidos) {
+                                    snapshot.data().banidos.forEach((_id) => {
+                                        firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
+                                            let membroB = snap.data();
+                                            membroB.id = _id;
+                                            newBanidos.push(membroB);
+                                            if (snapshot.data().banidos.length == newBanidos.length) {
+                                                console.log(newBanidos);
+                                                setBanidos(newBanidos);
+                                                setRefresco(false);
+                                            }
+                                        });
+                                    });
+                                }
+                            });
                     });
             });
     }
