@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
     View,
@@ -21,8 +21,8 @@ import * as firebase from 'firebase';
 
 const telaHome = (props) => {
     const user = firebase.auth().currentUser;
-    const [username, setUsername] = useState(user.displayName);
-    const [avatar, setAvatar] = useState(user.photoURL);
+    const [username, setUsername] = useState(firebase.auth().currentUser.displayName);
+    const [avatar, setAvatar] = useState(firebase.auth().currentUser.photoURL);
     const [loading, setLoading] = useState(false);
 
     const imagensUsuario = [];
@@ -58,6 +58,17 @@ const telaHome = (props) => {
     function toggleModalConfig() {
         props.navigation.navigate("Configuracoes");
     }
+    
+    useEffect(() => {
+        const listener = firebase.firestore()
+            .collection("Codigos")
+            .doc(firebase.auth().currentUser.uid)
+            .onSnapshot(snapshot => {
+                setUsername(snapshot.data().nome);
+                setAvatar(snapshot.data().imagem);
+            });
+        return () => listener();
+    }, []);
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),

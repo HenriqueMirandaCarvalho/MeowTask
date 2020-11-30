@@ -38,7 +38,7 @@ const telaNotificacoes = (props) => {
     const [notificacoesTarefas, setNotificacoesTarefas] = useState(false);
 
     const [username, setUsername] = useState(firebase.auth().currentUser.displayName);
-    const [avatar, setAvatar] = useState(1);
+    const [avatar, setAvatar] = useState(firebase.auth().currentUser.photoURL);
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
 
@@ -54,8 +54,15 @@ const telaNotificacoes = (props) => {
             setModalContaEstaNaSegundaPagina(false);
             firebase.auth().currentUser.updateProfile({
                 displayName: username,
-                photoURL: "1"
+                photoURL: avatar
             });
+            firebase.firestore()
+                .collection("Codigos")
+                .doc(firebase.auth().currentUser.uid)
+                .update({
+                    nome: username,
+                    imagem: avatar
+                });
         }
     }
 
@@ -99,7 +106,7 @@ const telaNotificacoes = (props) => {
     }
 
     function selecionarAvatar(_index) {
-        if (_index == avatar) {
+        if (_index == (avatar-1)) {
             return true;
         } else {
             return false;
@@ -191,7 +198,7 @@ const telaNotificacoes = (props) => {
                         horizontal={true}
                         renderItem={({ item, index }) =>
                             <Avatar
-                                onPressIn={() => setAvatar(index)}
+                                onPressIn={() => setAvatar(index+1)}
                                 imagem={item}
                                 selecionada={selecionarAvatar(index)}
                             />
