@@ -11,7 +11,7 @@ const telaGrupo = (props) => {
     const [nomeGrupo, setNomeGrupo] = useState("...");
     const [imagem, setImagem] = useState(0);
 
-    const [idAdm, setIdAdm] = useState("WU9BAMd86xgbR1FFrjamgvakkQ82");
+    const [idAdm, setIdAdm] = useState("");
     const [meuId, setMeuId] = useState(firebase.auth().currentUser.uid);
 
     const [modalOpcoesVisivel, setModalOpcoesVisivel] = useState(false);
@@ -51,11 +51,30 @@ const telaGrupo = (props) => {
     }
 
     function deletarGrupo() {
-        alert("tá maluco mermão?");
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .delete()
+            .then(snapshot => {
+                props.navigation.goBack();
+            });
     }
 
     function sair() {
-        alert("sair");
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .get()
+            .then(snapshot => {
+                let novoMembros = snapshot.data().membros;
+                novoMembros = novoMembros.filter((value, index, arr) => { return value.toString() != meuId.toString(); });
+                firebase.firestore()
+                    .collection("Grupos")
+                    .doc(idGrupo)
+                    .update({
+                        membros: novoMembros
+                    }).then(() => setModalMembroVisivel(false));
+            });
     }
 
     function ehAdmin() {
@@ -86,6 +105,16 @@ const telaGrupo = (props) => {
             .onSnapshot(snapshot => {
                 setNomeGrupo(snapshot.data().nome);
                 setImagem(snapshot.data().imagem);
+            });
+        return () => listener();
+    }, []);
+
+    useEffect(() => {
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .onSnapshot(snapshot => {
+                setIdAdm(snapshot.data().dono);
             });
         return () => listener();
     }, []);
