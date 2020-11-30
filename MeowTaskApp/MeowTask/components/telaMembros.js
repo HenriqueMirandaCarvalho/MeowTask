@@ -283,11 +283,9 @@ const telaAmigo = (props) => {
                         keyExtractor={item => item.id}
                         refreshing={refresco}
                         onRefresh={() => { }}
-                        ListHeaderComponent={({item}) =>
-                            acharAdmin(item.id, item.imagem, item.nome)
-                        }
                         renderItem={({ item }) =>
                             <View>
+                                {acharAdmin(item.id, item.imagem, item.nome)}
                                 <Membro
                                     imagem={imagensUsuario[item.imagem]}
                                     nome={item.nome}
