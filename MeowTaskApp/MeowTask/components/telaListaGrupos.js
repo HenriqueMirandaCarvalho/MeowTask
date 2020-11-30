@@ -65,7 +65,6 @@ const telaListaGrupos = (props) => {
 
     function criarGrupo() {
         setLoading(true);
-        console.log(pessoasAdicionar);
         if (inputNomeGrupo.length >= 5 && inputNomeGrupo.length <= 20) {
             firebase.firestore()
                 .collection('Grupos')
@@ -173,7 +172,6 @@ const telaListaGrupos = (props) => {
                         grupos.push(grupo);
                     }
                 });
-                console.log(grupos);
                 if (grupos[0] != undefined)
                     setGrupos(grupos);
                 else

@@ -172,14 +172,14 @@ const telaAmigo = (props) => {
             .then(snapshot => {
                 let novoMembros = snapshot.data().membros;
                 novoMembros = novoMembros.filter((value, index, arr) => { return value.toString() != guardaIdMembro.toString(); });
-                let banidos = snapshot.data().banidos;
-                banidos.push(guardaIdMembro);
+                let newBanidos = snapshot.data().banidos;
+                newBanidos.push(guardaIdMembro);
                 firebase.firestore()
                     .collection("Grupos")
                     .doc(idGrupo)
                     .update({
                         membros: novoMembros,
-                        banidos: banidos
+                        banidos: newBanidos
                     }).then(() => setModalMembroVisivel(false));
             });
     }
@@ -202,7 +202,43 @@ const telaAmigo = (props) => {
     }
 
     function desbanir() {
-        alert("desbanido!");
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .get()
+            .then(snapshot => {
+                let newBanidos = snapshot.data().banidos;
+                newBanidos = newBanidos.filter((value, index, arr) => { return value.toString() != guardaIdMembro.toString(); });
+                firebase.firestore()
+                    .collection("Grupos")
+                    .doc(idGrupo)
+                    .update({
+                        banidos: newBanidos
+                    }).then(() => {
+                        setModalMembroBanidoVisivel(false);
+                        setRefresco(true);
+                        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .onSnapshot(snapshot => {
+                let newBanidos = [];
+                if (snapshot.data().banidos) {
+                    snapshot.data().banidos.forEach((_id) => {
+                        firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
+                            let membroB = snap.data();
+                            membroB.id = _id;
+                            newBanidos.push(membroB);
+                            if (snapshot.data().banidos.length == newBanidos.length) {
+                                console.log(newBanidos);
+                                setBanidos(newBanidos);
+                                setRefresco(false);
+                            }
+                        });
+                    });
+                }
+            });
+                    });
+            });
     }
 
     let [fontsLoaded] = useFonts({
