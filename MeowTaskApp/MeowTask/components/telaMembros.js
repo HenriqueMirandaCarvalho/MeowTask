@@ -160,7 +160,6 @@ const telaAmigo = (props) => {
     }, []);
 
     useEffect(() => {
-        setRefresco(true);
         const listener = firebase.firestore()
             .collection("Grupos")
             .doc(idGrupo)
@@ -177,19 +176,16 @@ const telaAmigo = (props) => {
                     if (banidos != [])
                         setBanidos(banidos);
                 }
-                setRefresco(false);
             });
         return () => listener();
     }, []);
 
     useEffect(() => {
-        setRefresco(true);
         const listener = firebase.firestore()
             .collection("Grupos")
             .doc(idGrupo)
             .onSnapshot(snapshot => {
                 setIdAdm(snapshot.data().dono);
-                setRefresco(false);
             });
         return () => listener();
     }, []);
