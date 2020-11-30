@@ -231,6 +231,8 @@ const telaAmigo = (props) => {
     }
 
     function desbanir() {
+        setModalMembroBanidoVisivel(false);
+        setRefresco(true);
         firebase.firestore()
             .collection("Grupos")
             .doc(idGrupo)
@@ -244,13 +246,15 @@ const telaAmigo = (props) => {
                     .update({
                         banidos: newBanidos
                     }).then(() => {
-                        setModalMembroBanidoVisivel(false);
-                        setRefresco(true);
                         firebase.firestore()
                             .collection("Grupos")
                             .doc(idGrupo)
                             .onSnapshot(snapshot => {
                                 let newBanidos = [];
+                                if (snapshot.data().banidos.length == 0) {
+                                    setRefresco(false);
+                                    setBanidos([]);
+                                }
                                 if (snapshot.data().banidos) {
                                     snapshot.data().banidos.forEach((_id) => {
                                         firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {

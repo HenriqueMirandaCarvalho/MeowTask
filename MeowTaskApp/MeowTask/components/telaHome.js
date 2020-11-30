@@ -85,17 +85,15 @@ const telaHome = (props) => {
         else {
             setModalAvatarVisivel(false);
 
-            // firebase.auth().currentUser.updateProfile({
-            //     displayName: username,
-            //     photoURL: avatar
-            // });
-            // firebase.firestore()
-            //     .collection("Codigos")
-            //     .doc(firebase.auth().currentUser.uid)
-            //     .update({
-            //         nome: username,
-            //         imagem: avatar
-            //     });
+            firebase.auth().currentUser.updateProfile({
+                photoURL: avatar
+            });
+            firebase.firestore()
+                .collection("Codigos")
+                .doc(firebase.auth().currentUser.uid)
+                .update({
+                    imagem: avatar
+                });
         }
     }
     
