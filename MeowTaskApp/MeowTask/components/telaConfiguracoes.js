@@ -98,17 +98,12 @@ const telaNotificacoes = (props) => {
         }
     }
 
-    function selecionarAvatar(_id) {
-        const NewData = avatares.map(item => {
-            if (item.id === _id) {
-                item.selecionada = true;
-                return item;
-            } else {
-                item.selecionada = false;
-                return item;
-            }
-        })
-        setAvatares(NewData);
+    function selecionarAvatar(_index) {
+        if (_index == avatar) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function salvarEmail() {
@@ -192,13 +187,13 @@ const telaNotificacoes = (props) => {
                 <SafeAreaView style={{ width: "80%", marginTop: "5%", aspectRatio: 3 }}>
                     <FlatList
                         data={avatares}
-                        keyExtractor={item => item.id}
+                        keyExtractor={(index) => index.toString()}
                         horizontal={true}
-                        renderItem={({ item }) =>
+                        renderItem={({ item, index }) =>
                             <Avatar
-                                onPressIn={() => selecionarAvatar(item.id)}
-                                imagem={item.imagem}
-                                selecionada={item.selecionada}
+                                onPressIn={() => setAvatar(index)}
+                                imagem={item}
+                                selecionada={selecionarAvatar(index)}
                             />
                         }
                         style={{ backgroundColor: "#69665E" }}
