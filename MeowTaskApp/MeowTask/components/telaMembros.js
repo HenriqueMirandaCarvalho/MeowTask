@@ -4,6 +4,7 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Membro } from './membro.js';
+import { MembroInclickavel } from './membroinclickavel.js';
 import { AmigoModal } from './amigosmodal';
 import * as firebase from 'firebase';
 
@@ -11,6 +12,7 @@ const telaAmigo = (props) => {
     const idGrupo = props.navigation.state.params.idGrupo;
     const [modalAdicionarVisivel, setModalAdicionarVisivel] = useState(false);
     const [idAdm, setIdAdm] = useState("");
+    const [meuId, setMeuId] = useState("");
     const [membros, setMembros] = useState([]);
     const [refresco, setRefresco] = useState(true);
     const imagensUsuario = [];
@@ -35,29 +37,31 @@ const telaAmigo = (props) => {
     }
 
     function toggleModalAdicionar() {
-        setModalAdicionarVisivel(!modalAdicionarVisivel);
-        firebase.firestore()
-            .collection("Amigos")
-            .orderBy('data', 'desc')
-            .onSnapshot(snapshot => {
-                const amigos = snapshot.docs.map(doc => {
-                    const dados = doc.data();
-                    if (dados.confirmado) {
-                        const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid });
-                        let alreadyMembro = false;
-                        membros.forEach((doc) => {
-                            if (doc.id == amigo.id)
-                                alreadyMembro = true;
-                        });
-                        if (!alreadyMembro)
-                            return amigo;
-                    }
+        if (meuId == idAdm) {
+            setModalAdicionarVisivel(!modalAdicionarVisivel);
+            firebase.firestore()
+                .collection("Amigos")
+                .orderBy('data', 'desc')
+                .onSnapshot(snapshot => {
+                    const amigos = snapshot.docs.map(doc => {
+                        const dados = doc.data();
+                        if (dados.confirmado) {
+                            const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid });
+                            let alreadyMembro = false;
+                            membros.forEach((doc) => {
+                                if (doc.id == amigo.id)
+                                    alreadyMembro = true;
+                            });
+                            if (!alreadyMembro)
+                                return amigo;
+                        }
+                    });
+                    if (amigos[0] != undefined)
+                        setAmigos(amigos);
+                    else
+                        setAmigos([]);
                 });
-                if (amigos[0] != undefined)
-                    setAmigos(amigos);
-                else
-                    setAmigos([]);
-            });
+        }
     }
 
     function adicionarPessoa(_id) {
@@ -87,7 +91,7 @@ const telaAmigo = (props) => {
                         <Membro
                             imagem={imagensUsuario[imagem]}
                             nome={nome}
-                            onLongPress={() => abrirModalMembro(id, imagensUsuario[imagem], nome)}
+                            onLongPress={() => {}}
                         />
                     </View>
                     <View style={styles.divMembroComum}>
@@ -98,37 +102,65 @@ const telaAmigo = (props) => {
         }
     }
 
-    function listaBanidos(_banidos) {
-        const membrosBanidos = _banidos.map((item) => {
+    function acharMembro(id, imagem, nome) {
+        if (id != idAdm) {
             return (
                 <Membro
-                    imagem={imagensUsuario[item.imagem]}
-                    nome={item.nome}
-                    estiloExtra={{ color: '#DC4C46', }}
-                    onLongPress={() => abrirModalMembroBanido(item.id, imagensUsuario[item.imagem], item.nome)}
+                    imagem={imagensUsuario[imagem]}
+                    nome={nome}
+                    onLongPress={() => abrirModalMembro(id, imagensUsuario[imagem], nome)}
                 />
             );
-        });
-        return (
-            <View style={{ borderTopWidth: 1, borderTopColor: "#5b5b58", }}>
-                <Text style={[styles.cargo, { color: "#DC4C46" }]}>Banimentos</Text>
-                {membrosBanidos}
-            </View>
-        );
+        }
+    }
+
+    function listaBanidos(_banidos) {
+        console.debug("banidos: "+_banidos);
+        if (_banidos.length == 0) {
+            console.debug("aoba");
+            return (
+                <View style={{ borderTopWidth: 1, borderTopColor: "#5b5b58", }}>
+                    <Text style={[styles.cargo, { color: "#DC4C46" }]}>Banimentos</Text>
+                    <Text style={styles.semBanidos}>Não há banimentos</Text>
+                </View>
+            )
+        } else {
+            console.debug("aoba2");
+            const membrosBanidos = _banidos.map((item) => {
+                return (
+                    <Membro
+                        imagem={imagensUsuario[item.imagem]}
+                        nome={item.nome}
+                        estiloExtra={{ color: '#DC4C46', }}
+                        onLongPress={() => abrirModalMembroBanido(item.id, imagensUsuario[item.imagem], item.nome)}
+                    />
+                );
+            });
+            return (
+                <View style={{ borderTopWidth: 1, borderTopColor: "#5b5b58", }}>
+                    <Text style={[styles.cargo, { color: "#DC4C46" }]}>Banimentos</Text>
+                    {membrosBanidos}
+                </View>
+            );
+        }
     }
 
     function abrirModalMembro(_id, imagem, nome) {
-        setGuardaIdMembro(_id);
-        setGuardaImagemMembro(imagem);
-        setGuardaNomeMembro(nome);
-        setModalMembroVisivel(true);
+        if (meuId == idAdm) {
+            setGuardaIdMembro(_id);
+            setGuardaImagemMembro(imagem);
+            setGuardaNomeMembro(nome);
+            setModalMembroVisivel(true);
+        }
     }
 
     function abrirModalMembroBanido(_id, imagem, nome) {
-        setGuardaIdMembro(_id);
-        setGuardaImagemMembro(imagem);
-        setGuardaNomeMembro(nome);
-        setModalMembroBanidoVisivel(true);
+        if (meuId == idAdm) {
+            setGuardaIdMembro(_id);
+            setGuardaImagemMembro(imagem);
+            setGuardaNomeMembro(nome);
+            setModalMembroBanidoVisivel(true);
+        }
     }
 
     function banir() {
@@ -282,7 +314,7 @@ const telaAmigo = (props) => {
                     <View style={styles.centeredView}>
                         <View style={styles.modalViewMembro}>
                             <View style={{ width: "100%", marginTop: "4%", marginBottom: "3%" }}>
-                                <Membro
+                                <MembroInclickavel
                                     imagem={guardaImagemMembro}
                                     nome={guardaNomeMembro}
                                 />
@@ -313,7 +345,7 @@ const telaAmigo = (props) => {
                     <View style={styles.centeredView}>
                         <View style={styles.modalViewMembro}>
                             <View style={{ width: "100%", marginTop: "4%", marginBottom: "3%" }}>
-                                <Membro
+                                <MembroInclickavel
                                     imagem={guardaImagemMembro}
                                     nome={guardaNomeMembro}
                                 />
@@ -343,11 +375,7 @@ const telaAmigo = (props) => {
                         renderItem={({ item }) =>
                             <View>
                                 {acharAdmin(item.id, item.imagem, item.nome)}
-                                <Membro
-                                    imagem={imagensUsuario[item.imagem]}
-                                    nome={item.nome}
-                                    onLongPress={() => abrirModalMembro(item.id, imagensUsuario[item.imagem], item.nome)}
-                                />
+                                {acharMembro(item.id, item.imagem, item.nome)}
                             </View>}
                         style={{ width: "100%" }}
                         ListFooterComponent={
@@ -620,6 +648,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-evenly",
     },
+    semBanidos: {
+        marginTop: "3%",
+        alignSelf: "center",
+        fontFamily: 'Roboto-Light',
+        fontSize: 20,
+        color: '#DC4C46',
+    }
 });
 
 export default telaAmigo;
