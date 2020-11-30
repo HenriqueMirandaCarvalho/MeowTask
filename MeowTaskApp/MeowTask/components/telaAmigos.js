@@ -5,6 +5,7 @@ import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Amigo } from './amigo.js';
 import { AmigoModal } from './amigosmodal';
+import { MembroInclickavel } from './membroinclickavel';
 import * as firebase from 'firebase';
 
 const telaAmigo = (props) => {
@@ -18,6 +19,11 @@ const telaAmigo = (props) => {
     imagensUsuario.push(require("./img/gato1.png"));
     imagensUsuario.push(require("./img/gato2.png"));
     imagensUsuario.push(require("./img/gato3.png"));
+
+    const [modalDesfazerAmizadeVisivel, setModalDesfazerAmizadeVisivel] = useState(false);
+    const [guardaImagemAmigo, setGuardaImagemAmigo] = useState(19);
+    const [guardaNomeAmigo, setGuardaNomeAmigo] = useState("Exemplo Nome");
+    const [guardaIdAmigo, setGuardaIdAmigo] = useState();
 
     function validaNumero(numero) {
         // code to remove non-numeric characters from text
@@ -139,6 +145,17 @@ const telaAmigo = (props) => {
             });
     }
 
+    function desfazerAmizade() {
+        alert("Desfazer amizade "+guardaIdAmigo);
+    }
+
+    function abrirModalDesfazerAmizade(_id, imagem, nome) {
+        setGuardaIdAmigo(_id);
+        setGuardaImagemAmigo(imagem);
+        setGuardaNomeAmigo(nome);
+        setModalDesfazerAmizadeVisivel(true);
+    }
+
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
         'Roboto-Regular': require('./font/Roboto-Regular.ttf'),
@@ -214,6 +231,33 @@ const telaAmigo = (props) => {
                         </View>
                     </View>
                 </Modal>
+                
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalDesfazerAmizadeVisivel}
+                    onRequestClose={() => {
+                        setModalDesfazerAmizadeVisivel(false);
+                    }}
+                >
+                    <TouchableWithoutFeedback onPress={() => { setModalDesfazerAmizadeVisivel(false); }}>
+                        <View style={styles.overlay} />
+                    </TouchableWithoutFeedback>
+
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalViewMembro}>
+                            <View style={{ width: "100%", marginTop: "4%", marginBottom: "3%" }}>
+                                <MembroInclickavel
+                                    imagem={guardaImagemAmigo}
+                                    nome={guardaNomeAmigo}
+                                />
+                            </View>
+                            <TouchableOpacity style={[styles.botaoAdicionarModal, { marginTop: "2%" }]} onPress={() => desfazerAmizade()}>
+                                <Text style={styles.textoBotaoAdicionarModal}>Desfazer Amizade</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
 
                 <View style={styles.cabecalho}>
                     <View style={styles.divSetinha}>
@@ -235,7 +279,7 @@ const telaAmigo = (props) => {
                             <Amigo
                                 imagem={imagensUsuario[item.imagem]}
                                 nome={item.nome}
-                                onPress={() => trocarTela(item.id)}
+                                onPress={() => abrirModalDesfazerAmizade(item.id, imagensUsuario[item.imagem], item.nome)}
                             />}
                         ListFooterComponent={
                             function rodapeLista() {
@@ -412,7 +456,38 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: '#5b5b58',
         fontSize: 25,
-    }
+    },
+    modalViewMembro: {
+        width: "80%",
+        height: null,
+        aspectRatio: 2.12,
+        backgroundColor: "#c4c4c4",
+        // borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    botaoAdicionarModal: {
+        marginTop: "3.5%",
+        borderRadius: 40,
+        width: "82%",
+        height: null,
+        aspectRatio: 6.12,
+        backgroundColor: "#DC4C46",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    textoBotaoAdicionarModal: {
+        fontFamily: 'Roboto-Light',
+        fontSize: 20,
+        color: 'white',
+    },
 });
 
 export default telaAmigo;
