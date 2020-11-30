@@ -186,7 +186,7 @@ const telaNotificacoes = (props) => {
                     <Text style={styles.textoModalConta}>Trocar E-mail</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.botaoDeslogar} onPress={() => sair()}>
-                    <Text style={styles.textoModalConta}>Deslogar</Text>
+                    <Text style={[styles.textoModalConta, {color: "white"}]}>Deslogar</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -469,24 +469,28 @@ const styles = StyleSheet.create({
     textoModalConta: {
         fontFamily: 'Roboto-Light',
         fontSize: 20,
+        color: "white",
     },
     botaoTrocarEmail: {
         width: "80%",
         height: 0.10 * largura,
-        backgroundColor: "#A4A4A4",
+        // backgroundColor: "#A4A4A4",
+        backgroundColor: "#838487",
         marginTop: "5%",
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
+        borderRadius: 5,
     },
     botaoDeslogar: {
         width: "80%",
         height: 0.10 * largura,
-        backgroundColor: "#A4A4A4",
+        backgroundColor: "#DC4C46",
         marginTop: "5%",
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
+        borderRadius: 5,
     },
     modalView2: {
         width: 0.80 * largura,
