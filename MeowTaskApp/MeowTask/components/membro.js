@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
 
 export const Membro = props => 
-    <TouchableOpacity delayLongPress={250} onLongPress={() => props.onLongPress()} style={styles.touch}>
+    <TouchableOpacity delayLongPress={250} onPress={() => props.onPress()} style={styles.touch}>
         <View style={styles.container}>
             <View style={styles.viewImagem}>
                 <Image source={props.imagem} style={styles.imagem}/>

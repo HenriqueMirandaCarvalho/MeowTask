@@ -43,27 +43,36 @@ const telaAmigo = (props) => {
                 .collection("Amigos")
                 .orderBy('data', 'desc')
                 .onSnapshot(snapshot => {
-                    const amigos = snapshot.docs.map(doc => {
-                        const dados = doc.data();
+                    let amigos = [];
+                    let idAmigos = []
+                    snapshot.docs.forEach(doc => {
+                        let dados = doc.data();
                         if (dados.confirmado) {
-                            const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid });
+                            let _id = dados.usuarios.find((dado) => { return dado != firebase.auth().currentUser.uid });
+                            idAmigos.push(_id);
+                        }
+                    });
+                    idAmigos.forEach((_id) => {
+                        firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
+                            let amigo = snap.data();
+                            amigo.id = _id;
                             let alreadyMembro = false;
                             membros.forEach((doc) => {
-                                if (doc.id == amigo.id)
+                                if (doc.id == _id)
                                     alreadyMembro = true;
                             });
                             banidos.forEach((doc) => {
-                                if (doc.id == amigo.id)
+                                if (doc.id == _id)
                                     alreadyMembro = true;
                             })
                             if (!alreadyMembro)
-                                return amigo;
-                        }
+                                amigos.push(amigo);
+                            if (idAmigos.length == amigos.length) {
+                                setAmigos(amigos);
+                                setRefresco(false);
+                            }
+                        });
                     });
-                    if (amigos[0] != undefined)
-                        setAmigos(amigos);
-                    else
-                        setAmigos([]);
                 });
         }
     }
@@ -92,10 +101,9 @@ const telaAmigo = (props) => {
                 <View>
                     <View style={styles.divAdmin}>
                         <Text style={styles.cargo}>Administrador</Text>
-                        <Membro
+                        <MembroInclickavel
                             imagem={imagensUsuario[imagem]}
                             nome={nome}
-                            onLongPress={() => { }}
                         />
                     </View>
                     <View style={styles.divMembroComum}>
@@ -108,13 +116,23 @@ const telaAmigo = (props) => {
 
     function acharMembro(id, imagem, nome) {
         if (id != idAdm) {
-            return (
-                <Membro
-                    imagem={imagensUsuario[imagem]}
-                    nome={nome}
-                    onLongPress={() => abrirModalMembro(id, imagensUsuario[imagem], nome)}
-                />
-            );
+            if (meuId == idAdm) {
+                return (
+                    <Membro
+                        imagem={imagensUsuario[imagem]}
+                        nome={nome}
+                        onPress={() => abrirModalMembro(id, imagensUsuario[imagem], nome)}
+                    />
+                );
+            }
+            else {
+                return (
+                    <MembroInclickavel
+                        imagem={imagensUsuario[imagem]}
+                        nome={nome}
+                    />
+                );
+            }
         }
     }
 
@@ -128,14 +146,25 @@ const telaAmigo = (props) => {
             )
         } else {
             const membrosBanidos = _banidos.map((item) => {
+                if (meuId == idAdm) {
                 return (
                     <Membro
                         imagem={imagensUsuario[item.imagem]}
                         nome={item.nome}
                         estiloExtra={{ color: '#DC4C46', }}
-                        onLongPress={() => abrirModalMembroBanido(item.id, imagensUsuario[item.imagem], item.nome)}
+                        onPress={() => abrirModalMembroBanido(item.id, imagensUsuario[item.imagem], item.nome)}
                     />
                 );
+                }
+                else {
+                    return (
+                        <MembroInclickavel
+                            imagem={imagensUsuario[item.imagem]}
+                            nome={item.nome}
+                            estiloExtra={{ color: '#DC4C46', }}
+                        />
+                    );
+                }
             });
             return (
                 <View style={{ borderTopWidth: 1, borderTopColor: "#5b5b58", }}>

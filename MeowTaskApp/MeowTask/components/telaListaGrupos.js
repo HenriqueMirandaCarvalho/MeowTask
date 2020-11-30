@@ -49,17 +49,31 @@ const telaListaGrupos = (props) => {
             .collection("Amigos")
             .orderBy('data', 'desc')
             .onSnapshot(snapshot => {
-                const amigos = snapshot.docs.map(doc => {
-                    const dados = doc.data();
+                let amigos = [];
+                let idAmigos = []
+                snapshot.docs.forEach(doc => {
+                    let dados = doc.data();
                     if (dados.confirmado) {
-                        const amigo = dados.usuarios.find((dado) => { return dado.id != firebase.auth().currentUser.uid });
-                        return amigo;
+                        let _id = dados.usuarios.find((dado) => { return dado != firebase.auth().currentUser.uid });
+                        idAmigos.push(_id);
                     }
+                });
+                idAmigos.forEach((_id) => {
+                    firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
+                        let amigo = snap.data();
+                        amigo.id = _id;
+                        amigos.push(amigo);
+                        if (idAmigos.length == amigos.length) {
+                            setAmigos(amigos);
+                            setRefresco(false);
+                        }
+                    });
                 });
                 if (amigos[0] != undefined)
                     setAmigos(amigos);
                 else
                     setAmigos([]);
+                setRefresco(false);
             });
     }
 
