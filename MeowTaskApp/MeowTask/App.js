@@ -16,6 +16,7 @@ import telaPomodoro from './components/telaPomodoro';
 import telaConfiguracoes from './components/telaConfiguracoes';
 import telaNotificacoes from './components/telaNotificacoes';
 import telaMembros from './components/telaMembros';
+import telaSplash from './components/telaSplash';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -37,114 +38,120 @@ if (!firebase.apps.length) {
 }
 
 const RootStack = createStackNavigator({
-		Inicio: {
-			screen: telaInicio,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Login: {
-			screen: telaLogin,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Cadastro: {
-			screen: telaCadastro,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Home: {
-			screen: telaHome,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		ListaGrupos: {
-			screen: telaListaGrupos,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Grupo: {
-			screen: telaGrupo,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		PostIts: {
-			screen: telaPostIts,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		ListaTarefas: {
-			screen: telaListaTarefas,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Tarefa: {
-			screen: telaTarefa,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Amigos: {
-			screen: telaAmigos,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Descricao: {
-			screen: telaDescricao,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Arquivos: {
-			screen: telaArquivos,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Postagens: {
-			screen: telaPostagens,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Lista: {
-			screen: telaLista,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Pomodoro: {
-			screen: telaPomodoro,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Configuracoes: {
-			screen: telaConfiguracoes,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Notificacoes: {
-			screen: telaNotificacoes,
-			navigationOptions: {
-				headerShown: false,
-			}
-		},
-		Membros: {
-			screen: telaMembros,
-			navigationOptions: {
-				headerShown: false,
-			}
+	Splash: {
+		screen: telaSplash,
+		navigationOptions: {
+			headerShown: false,
 		}
-}, {initialRouteName: 'Inicio',});
+	},
+	Inicio: {
+		screen: telaInicio,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Login: {
+		screen: telaLogin,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Cadastro: {
+		screen: telaCadastro,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Home: {
+		screen: telaHome,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	ListaGrupos: {
+		screen: telaListaGrupos,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Grupo: {
+		screen: telaGrupo,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	PostIts: {
+		screen: telaPostIts,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	ListaTarefas: {
+		screen: telaListaTarefas,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Tarefa: {
+		screen: telaTarefa,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Amigos: {
+		screen: telaAmigos,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Descricao: {
+		screen: telaDescricao,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Arquivos: {
+		screen: telaArquivos,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Postagens: {
+		screen: telaPostagens,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Lista: {
+		screen: telaLista,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Pomodoro: {
+		screen: telaPomodoro,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Configuracoes: {
+		screen: telaConfiguracoes,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Notificacoes: {
+		screen: telaNotificacoes,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Membros: {
+		screen: telaMembros,
+		navigationOptions: {
+			headerShown: false,
+		}
+	}
+}, { initialRouteName: 'Splash', });
 
 export default createAppContainer(RootStack);

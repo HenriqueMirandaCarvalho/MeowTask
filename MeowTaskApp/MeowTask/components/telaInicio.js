@@ -1,19 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar, TouchableOpacity } from "react-native";
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import icone from './img/icone.png';
 import * as firebase from 'firebase';
-import { NavigationActions, StackActions } from 'react-navigation';
 
 const telaInicio = (props) => {
+    const [logado, setLogado] = useState(false);
     function btnComecar() {
-        if (!firebase.auth().currentUser)
+        if (!logado)
             props.navigation.navigate('Login');
         else
-            props.navigation.navigate('Home', {
-                user: firebase.auth().currentUser
-            });
+            props.navigation.navigate('Home');
     }
     function btnLogar() {
         props.navigation.navigate('Login');
@@ -39,16 +37,6 @@ const telaInicio = (props) => {
         };
         firebase.initializeApp(firebaseConfig);
     }
-
-    /*if (firebase.auth().currentUser != null) {
-        props.navigation.navigate('Home');
-        const resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Inicio' })],
-            key: null,
-        });
-        props.navigation.dispatch(resetAction);
-    }*/
 
     if (!fontsLoaded) {
         return <AppLoading />;

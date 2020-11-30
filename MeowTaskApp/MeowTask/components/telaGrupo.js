@@ -55,9 +55,7 @@ const telaGrupo = (props) => {
             .collection("Grupos")
             .doc(idGrupo)
             .delete()
-            .then(snapshot => {
-                props.navigation.goBack();
-            });
+            .then(() => {toggleModalOpcoes(); props.navigation.goBack();});
     }
 
     function sair() {
@@ -73,7 +71,7 @@ const telaGrupo = (props) => {
                     .doc(idGrupo)
                     .update({
                         membros: novoMembros
-                    }).then(() => setModalMembroVisivel(false));
+                    }).then(() => {toggleModalOpcoes(); props.navigation.goBack();});
             });
     }
 
