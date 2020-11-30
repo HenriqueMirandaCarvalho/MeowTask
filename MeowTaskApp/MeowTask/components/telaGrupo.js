@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, TouchableNativeFeedback } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, TouchableNativeFeedback, Modal, TouchableWithoutFeedback } from "react-native";
 import { Ionicons, AntDesign, Entypo, Feather } from '@expo/vector-icons'; 
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import * as firebase from 'firebase';
+import { MembroInclickavel } from './membroinclickavel';
 
 const telaGrupo = (props) => {
     const idGrupo = props.navigation.state.params.idGrupo;
     const [nomeGrupo, setNomeGrupo] = useState("...");
     const [imagem, setImagem] = useState(0);
+
+    const [modalOpcoesVisivel, setModalOpcoesVisivel] = useState(false);
 
     const imagensGrupos = [];
     imagensGrupos.push(require("./img/turquesa10.png"));
@@ -40,6 +43,18 @@ const telaGrupo = (props) => {
         });
     }
 
+    function toggleModalOpcoes() {
+        setModalOpcoesVisivel(!modalOpcoesVisivel);
+    }
+
+    function deletarGrupo() {
+        alert("tá maluco mermão?");
+    }
+
+    function sair() {
+        alert("sair");
+    }
+
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
     });
@@ -60,15 +75,46 @@ const telaGrupo = (props) => {
     } else {
     return (
         <View style={styles.container}>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalOpcoesVisivel}
+                onRequestClose={() => {
+                    setModalOpcoesVisivel(false);
+                }}
+            >
+                <TouchableWithoutFeedback onPress={() => { setModalOpcoesVisivel(false); }}>
+                    <View style={styles.overlay} />
+                </TouchableWithoutFeedback>
+
+                <View style={styles.centeredView}>
+                    <View style={styles.modalViewMembro}>
+                        <View style={{ width: "100%", marginTop: "4%", marginBottom: "3%" }}>
+                            <MembroInclickavel
+                                imagem={imagensGrupos[imagem]}
+                                nome={nomeGrupo}
+                            />
+                        </View>
+                        <View style={styles.divBotoesModalOpcoes}>
+                            <TouchableOpacity style={[styles.botaoModalOpcoes, { marginTop: "2%" }]} onPress={() => deletarGrupo()}>
+                                <Text style={styles.textoBotaoModalOpcoes}>Deletar</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.botaoModalOpcoes, { marginTop: "2%" }]} onPress={() => sair()}>
+                                <Text style={styles.textoBotaoModalOpcoes}>Sair</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <View style={styles.cabecalho}>
                 <View style={styles.divSetinha}>
-                    <TouchableOpacity style={[styles.setinha, {padding: "2%", backgroundColor: "green"}]} onPress={() => props.navigation.goBack()}>
-                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58" style={{backgroundColor: "blue"}}/>
+                    <TouchableOpacity style={[styles.setinha, {padding: "2%"}]} onPress={() => props.navigation.goBack()}>
+                        <Ionicons name="md-arrow-back" size={40} color="#5b5b58"/>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.divEngrenagem}>
-                    <TouchableOpacity style={[styles.engrenagem, {padding: "2%", backgroundColor: "red"}]} onPress={() => props.navigation.goBack()}>
-                        <Feather name="settings" size={33} color="#5b5b58" style={{backgroundColor: "green"}}/>
+                    <TouchableOpacity style={[styles.engrenagem, {padding: "2%"}]} onPress={() => toggleModalOpcoes()}>
+                        <Feather name="settings" size={33} color="#5b5b58"/>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.divImagem}> 
@@ -176,7 +222,56 @@ const styles = StyleSheet.create({
     engrenagem: {
         marginRight: '5%',
         marginTop: '10%',
-    }
+    },
+    overlay: {
+        position: "absolute",
+        top: 0, // não faço ideia de como o top, right, bottom e left funcionam
+        right: 0, // mas eles fazem o view com absolute ocupar toda a tela
+        bottom: 0,
+        left: 0,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalViewMembro: {
+        width: "80%",
+        height: null,
+        aspectRatio: 2.12,
+        backgroundColor: "#c4c4c4",
+        // borderRadius: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    botaoModalOpcoes: {
+        marginTop: "3.5%",
+        borderRadius: 40,
+        width: "40%",
+        height: null,
+        aspectRatio: 3.5,
+        backgroundColor: "#53A156",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    textoBotaoModalOpcoes: {
+        fontFamily: 'Roboto-Light',
+        fontSize: 20,
+        color: '#000000',
+    },
+    divBotoesModalOpcoes: {
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+    },
 });
 
 export default telaGrupo;
