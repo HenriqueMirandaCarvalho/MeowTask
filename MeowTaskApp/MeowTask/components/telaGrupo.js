@@ -180,7 +180,7 @@ const telaGrupo = (props) => {
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback onPress={btnMembros}>
                     <View style={styles.botao}>
-                        <Image source={require('./img/Logos/LogoTarefas.png')} style={styles.imagemIcone} />
+                        <Image source={require('./img/Logos/LogoMembros.png')} style={styles.imagemIcone} />
                         <Text style={styles.textoBotao}>Membros</Text>
                     </View>
                 </TouchableNativeFeedback>
