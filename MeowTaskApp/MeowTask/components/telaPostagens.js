@@ -124,7 +124,6 @@ const telaPostagens = (props) => {
     }
 
     useEffect(() => {
-        irProFinal();
         setRefresco(true);
         const listener = firebase.firestore()
             .collection("Grupos")
