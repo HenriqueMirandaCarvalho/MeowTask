@@ -187,7 +187,8 @@ const telaAmigo = (props) => {
                         }
                     });
                 });
-            }).then(() => setRefresco(false));
+                setRefresco(false);
+            });
         return () => listener();
     }, []);
 
