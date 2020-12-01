@@ -185,6 +185,9 @@ const telaAmigo = (props) => {
                             setAmigos(amigos);
                             setRefresco(false);
                         }
+                        else {
+                            setRefresco(false);
+                        }
                     });
                 });
             });
