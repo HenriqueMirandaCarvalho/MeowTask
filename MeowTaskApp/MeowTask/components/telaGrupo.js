@@ -43,7 +43,8 @@ const telaGrupo = (props) => {
 
     function btnPostagens() {
         props.navigation.navigate("Postagens", {
-            idGrupo: idGrupo
+            idGrupo: idGrupo,
+            nomeGrupo: nomeGrupo,
         });
     }
 

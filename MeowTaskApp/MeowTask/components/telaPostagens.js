@@ -12,6 +12,7 @@ const telaPostagens = (props) => {
     const flatListRef = useRef(null);
 
     const idGrupo = props.navigation.state.params.idGrupo;
+    const nomeGrupo = props.navigation.state.params.nomeGrupo;
 
     const imagensUsuario = [];
     imagensUsuario.push(require("./img/turquesa10.png"));
@@ -76,6 +77,27 @@ const telaPostagens = (props) => {
                 .then(() => {
                     setGuardaNovoTexto("");
                     setRefresco(false);
+                    firebase.firestore()
+                    .collection("Grupos")
+                    .doc(idGrupo)
+                    .get()
+                    .then(snapshot => {
+                        let paraEnviar = snapshot.data().membros;
+                        paraEnviar = paraEnviar.filter((obj) => {return obj != firebase.auth().currentUser.uid;});
+                        paraEnviar.forEach((id) => {
+                            firebase.firestore()
+                                .collection("Codigos")
+                                .doc(id)
+                                .collection("Notificacoes")
+                                .add({
+                                    tipo: "postagem",
+                                    enviador: firebase.auth().currentUser.displayName,
+                                    mensagem: guardaNovoTexto.trim(),
+                                    nomeGrupo: nomeGrupo,
+                                    data: new Date().getTime(),
+                                });
+                        });
+                    });
                 });
         }
     }

@@ -46,7 +46,7 @@ export const Notificacao = (props) => {
                     <Image source={require('./img/Logos/Postagens.png')} style={styles.imagem}/>
                 </View>
                 <View style={styles.divTexto}>
-                    <Text style={styles.postador}>{props.enviador} postou uma mensagem no grupo {props.grupo}!</Text>
+                    <Text style={styles.postador}>{props.enviador} postou uma mensagem no grupo {props.nomeGrupo}!</Text>
                     <Text style={styles.texto}>{props.mensagem}</Text>
                 </View>
             </View>

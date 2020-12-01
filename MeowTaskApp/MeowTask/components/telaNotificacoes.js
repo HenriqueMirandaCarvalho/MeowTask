@@ -129,6 +129,8 @@ const telaNotificacoes = (props) => {
                                 <Notificacao
                                     tipo={item.tipo}
                                     nome={item.nome}
+                                    enviador={item.enviador}
+                                    mensagem={item.mensagem}
                                     nomeGrupo={item.nomeGrupo}
                                     aceitar={() => aceitar(item.id, item.idAmizade)}
                                     recusar={() => recusar(item.id, item.idAmizade, item.idAmigo)}
