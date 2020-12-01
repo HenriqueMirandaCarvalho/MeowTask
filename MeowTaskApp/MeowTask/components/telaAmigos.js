@@ -70,18 +70,14 @@ const telaAmigo = (props) => {
                     if (amigo.id != firebase.auth().currentUser.uid) {
                         firebase.firestore()
                             .collection("Amigos")
-                            .where("usuarios", "array-contains", {
-                                id: firebase.auth().currentUser.uid,
-                                nome: firebase.auth().currentUser.displayName,
-                                imagem: firebase.auth().currentUser.photoURL
-                            })
+                            .where("usuarios", "array-contains", firebase.auth().currentUser.uid)
                             .get().then((snap) => {
                                 let cont = true;
                                 let sender = false;
                                 let idAmg = "";
                                 if (!snap.empty) {
-                                    snap.forEach(duc => {
-                                        if (duc.data().usuarios[0].id == amigo.id || duc.data().usuarios[1].id == amigo.id) {
+                                    snap.docs.forEach(duc => {
+                                        if (duc.data().usuarios[0] == amigo.id || duc.data().usuarios[1] == amigo.id) {
                                             cont = false;
                                             if (duc.data().sender == firebase.auth().currentUser.uid) {
                                                 sender = true;
@@ -123,6 +119,11 @@ const telaAmigo = (props) => {
                                     Alert.alert("Aviso", "Você já enviou um convite para este usuário!");
                                     setRefresco(false);
                                 }
+                                else if (snap.docs[0].data().confirmado) {
+                                    toggleModal();
+                                    Alert.alert("Aviso", "Vocês já são amigos!");
+                                    setRefresco(false);
+                                }
                                 else {
                                     firebase.firestore()
                                         .collection("Amigos")
@@ -131,6 +132,7 @@ const telaAmigo = (props) => {
                                             confirmado: true
                                         })
                                         .then((data) => {
+                                            console.log(idAmg);
                                             toggleModal();
                                             setRefresco(false);
                                             firebase.firestore()
@@ -138,7 +140,8 @@ const telaAmigo = (props) => {
                                             .doc(firebase.auth().currentUser.uid)
                                             .collection("Notificacoes")
                                             .where("idAmizade", "==", idAmg)
-                                            .delete();
+                                            .get()
+                                            .then(snapshot => snapshot.docs[0].ref.delete());
                                         });
                                 }
                             });
@@ -191,7 +194,6 @@ const telaAmigo = (props) => {
                     }
                 });
                 idAmigos.forEach((obj) => {
-                    console.log(obj);
                     firebase.firestore().collection("Codigos").doc(obj.idAmigo).get().then((snap) => {
                         let amigo = snap.data();
                         amigo.id = obj.idAmigo;
