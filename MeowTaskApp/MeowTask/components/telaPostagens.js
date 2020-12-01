@@ -47,6 +47,14 @@ const telaPostagens = (props) => {
             return item;
         })
         setPostagens(NewData);
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .collection("Postagens")
+            .doc(_id)
+            .update({
+                texto: guardaTexto,
+            });
     }
 
     function deletarItem(_id) {
@@ -92,7 +100,7 @@ const telaPostagens = (props) => {
                                 .add({
                                     tipo: "postagem",
                                     enviador: firebase.auth().currentUser.displayName,
-                                    mensagem: guardaNovoTexto.trim(),
+                                    mensagem: guardaNovoTexto.trim().substring(0,30) + "...",
                                     nomeGrupo: nomeGrupo,
                                     data: new Date().getTime(),
                                 });
@@ -212,7 +220,7 @@ const telaPostagens = (props) => {
                                 avatarPostador={imagensUsuario[item.avatarPostador]}
                                 nomePostador={item.nomePostador}
                                 texto={item.texto}
-                                onLongPress={() => toggleModalEditar(item.id, item.texto)}
+                                onLongPress={() => { if (item.idPostador == firebase.auth().currentUser.uid) toggleModalEditar(item.id, item.texto)}}
                             />
                         }
                         ListEmptyComponent={() =>
