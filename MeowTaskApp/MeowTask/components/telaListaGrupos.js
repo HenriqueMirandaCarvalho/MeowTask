@@ -39,19 +39,35 @@ const telaListaGrupos = (props) => {
     }
 
     function adicionarPessoa(_id) {
-        let newAmigos = amigos;
-        newAmigos.forEach((item) => {
+        let newAmigos = [];
+        amigos.forEach((item) => {
             if (item.id == _id) {
                 item.selecionado = true;
+                newAmigos.push(item);
             }
         });
-        setAmigos(amigos);
+        setAmigos(newAmigos);
         let novo = pessoasAdicionar;
         novo.push(_id);
         setPessoasAdicionar(novo);
     }
 
+    function removerPessoa(_id) {
+        let newAmigos = [];
+        amigos.forEach((item) => {
+            if (item.id == _id) {
+                item.selecionado = false;
+                newAmigos.push(item);
+            }
+        });
+        setAmigos(newAmigos);
+        let novo = pessoasAdicionar;
+        novo = novo.filter((obj) => {return obj != _id;});
+        setPessoasAdicionar(novo);
+    }
+
     function toggleModalCriar() {
+        setPessoasAdicionar([firebase.auth().currentUser.uid]);
         setModalCriarVisivel(!modalCriarVisivel);
         firebase.firestore()
             .collection("Amigos")
@@ -300,7 +316,7 @@ const telaListaGrupos = (props) => {
                                         renderItem={({ item}) => {
                                             if (item.selecionado) {
                                                 return <AmigoSelecionado
-                                                            onPressIn={() => adicionarPessoa(item.id)}
+                                                            onPressIn={() => removerPessoa(item.id)}
                                                             imagem={item.imagem}
                                                             nome={item.nome}
                                                         />;

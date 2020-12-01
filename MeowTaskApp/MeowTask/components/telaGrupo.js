@@ -105,8 +105,10 @@ const telaGrupo = (props) => {
                 .collection("Grupos")
                 .doc(idGrupo)
                 .onSnapshot(snapshot => {
-                    setNomeGrupo(snapshot.data().nome);
-                    setImagem(snapshot.data().imagem);
+                    if (snapshot.data() != undefined) {
+                        setNomeGrupo(snapshot.data().nome);
+                        setImagem(snapshot.data().imagem);
+                    }
                 });
             return () => listener();
         }
@@ -114,16 +116,14 @@ const telaGrupo = (props) => {
     }, []);
 
     useEffect(() => {
-        try {
-            const listener = firebase.firestore()
-                .collection("Grupos")
-                .doc(idGrupo)
-                .onSnapshot(snapshot => {
+        const listener = firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .onSnapshot(snapshot => {
+                if (snapshot.data() != undefined)
                     setIdAdm(snapshot.data().dono);
-                });
-            return () => listener();
-        }
-        catch (e) { }
+            });
+        return () => listener();
     }, []);
 
     if (!fontsLoaded) {
