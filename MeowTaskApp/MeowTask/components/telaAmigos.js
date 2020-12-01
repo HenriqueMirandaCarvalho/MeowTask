@@ -149,7 +149,10 @@ const telaAmigo = (props) => {
         firebase.firestore()
             .collection("Amigos")
             .doc(guardaIdAmigo)
-            .delete();
+            .delete()
+            .then(() => {
+                setModalDesfazerAmizadeVisivel(false);
+            });
     }
 
     function abrirModalDesfazerAmizade(_id, imagem, nome) {
