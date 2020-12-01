@@ -90,6 +90,8 @@ const telaNotificacoes = (props) => {
                                     nomeGrupo={item.nomeGrupo}
                                     imagem={item.imagem}
                                     texto={item.texto}
+                                    aceitar={() => {}}
+                                    recusar={() => {}}
                                 />
                             </SwipeRow>
                         }
