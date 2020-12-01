@@ -85,6 +85,9 @@ const telaNotificacoes = (props) => {
                                 onSwipe={() => deletar(item.id)} 
                             >
                                 <Notificacao
+                                    tipo={item.tipo}
+                                    nome={item.nome}
+                                    nomeGrupo={item.nomeGrupo}
                                     imagem={item.imagem}
                                     texto={item.texto}
                                 />
