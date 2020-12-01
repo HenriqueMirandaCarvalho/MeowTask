@@ -110,10 +110,9 @@ const telaAmigo = (props) => {
                                                 .doc(amigo.id)
                                                 .collection("Notificacoes")
                                                 .add({
-                                                    tipo: "pedido-amizade",
-                                                    titulo: "Pedido de amizade",
-                                                    descricao: firebase.auth().currentUser.displayName + " quer ser seu amigo!",
-                                                    idAmizade: data.id,
+                                                    tipo: "amizade",
+                                                    nome: firebase.auth().currentUser.displayName,
+                                                    idGrupo: data.id,
                                                     data: new Date().getTime(),
                                                 });
                                         });
