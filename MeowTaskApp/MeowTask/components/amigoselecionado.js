@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
 
 const imagensUsuario = [];
@@ -8,9 +8,9 @@ imagensUsuario.push(require("./img/gato2.png"));
 imagensUsuario.push(require("./img/gato3.png"));
 
 
-export const AmigoModal = props => {
+export const AmigoSelecionado = (props) => {
     function selecionador() {
-        if (props.selecionado) {
+        if (true) {
             return {backgroundColor: "#DC4C46"}
         } else {
             return {backgroundColor: "#53A156"}
@@ -18,19 +18,17 @@ export const AmigoModal = props => {
     }
 
     return (
-    <View style={styles.container}>
-        <View style={styles.viewImagem}>
-            <Image source={imagensUsuario[props.imagem]} style={styles.imagem}>
-
-            </Image>
+        <View style={styles.container}>
+            <View style={styles.viewImagem}>
+                <Image source={imagensUsuario[props.imagem]} style={styles.imagem}/>
+            </View>
+            <View style={styles.viewTexto}>
+                <Text style={styles.nome}> {props.nome} </Text>
+                <TouchableOpacity onPressIn={() => props.onPressIn()} style={[selecionador(), styles.botao]}>
+                    <Text style={styles.textoBotao}>{true?"Remover":"Adicionar"}</Text>
+                </TouchableOpacity>
+            </View>
         </View>
-        <View style={styles.viewTexto}>
-            <Text style={styles.nome}> {props.nome} </Text>
-            <TouchableOpacity onPress={props.onPress()} style={[styles.botao, selecionador()]}>
-                <Text style={styles.textoBotao}>{props.selecionado?"Remover":"Adicionar"}</Text>
-            </TouchableOpacity>
-        </View>
-    </View>
     )
 }
 
@@ -44,7 +42,6 @@ let styles = StyleSheet.create({
     botao: {
         borderRadius: 150,
         width: "100%",
-        backgroundColor: "#53A156",
         alignItems: "center",
         paddingTop: "0.5%",
         paddingBottom: "0.5%",

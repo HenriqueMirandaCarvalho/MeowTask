@@ -4,7 +4,8 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Grupo } from './grupo.js';
-import { AmigoModal } from './amigosmodaltoggle';
+import { AmigoSelecionado } from './amigoselecionado';
+import { AmigoNaoSelecionado } from './amigonaoselecionado';
 import * as firebase from 'firebase';
 
 const telaListaGrupos = (props) => {
@@ -38,6 +39,10 @@ const telaListaGrupos = (props) => {
     }
 
     function adicionarPessoa(_id) {
+        console.debug("adicionarPessoa _id : "+_id);
+        console.debug("adicionarPessoa teste : "+(pessoasAdicionar.includes(_id)));
+        console.debug(pessoasAdicionar);
+
         let novo = pessoasAdicionar;
         novo.push(_id);
         setPessoasAdicionar(novo);
@@ -288,13 +293,21 @@ const telaListaGrupos = (props) => {
                                                 )
                                             }
                                         }
-                                        renderItem={({ item }) =>
-                                            <AmigoModal
-                                                imagem={item.imagem}
-                                                nome={item.nome}
-                                                selecionado={pessoasAdicionar.includes(item.id)}
-                                                onPress={() => adicionarPessoa(item.id)}
-                                            />}
+                                        renderItem={({ item}) => {
+                                            if (true) {
+                                                return <AmigoSelecionado
+                                                            onPressIn={() => adicionarPessoa(item.id)}
+                                                            imagem={item.imagem}
+                                                            nome={item.nome}
+                                                        />;
+                                            } else {
+                                                return <AmigoNaoSelecionado
+                                                            onPressIn={() => adicionarPessoa(item.id)}
+                                                            imagem={item.imagem}
+                                                            nome={item.nome}
+                                                        />;
+                                            }
+                                        }}
                                         ListEmptyComponent={() =>
                                             <Text style={styles.tituloListaAmigos}>Você não possuí amigos!</Text>
                                         }
