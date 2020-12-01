@@ -53,15 +53,15 @@ const telaNotificacoes = (props) => {
             .collection("Amigos")
             .doc(_idAmizade)
             .delete();
-            firebase.firestore()
-                .collection("Codigos")
-                .doc(_idAmigo)
-                .collection("Notificacoes")
-                .add({
-                    tipo: "recusa",
-                    nome: firebase.auth().currentUser.displayName,
-                    data: new Date().getTime(),
-                });
+        firebase.firestore()
+            .collection("Codigos")
+            .doc(_idAmigo)
+            .collection("Notificacoes")
+            .add({
+                tipo: "recusa",
+                nome: firebase.auth().currentUser.displayName,
+                data: new Date().getTime(),
+            });
     }
 
     const [notificacoes, setNotificacoes] = useState([]);

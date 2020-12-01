@@ -146,7 +146,10 @@ const telaAmigo = (props) => {
     }
 
     function desfazerAmizade() {
-        alert("Desfazer amizade "+guardaIdAmigo);
+        firebase.firestore()
+            .collection("Amigos")
+            .doc(guardaIdAmigo)
+            .delete();
     }
 
     function abrirModalDesfazerAmizade(_id, imagem, nome) {
@@ -174,13 +177,15 @@ const telaAmigo = (props) => {
                     let dados = doc.data();
                     if (dados.confirmado) {
                         let _id = dados.usuarios.find((dado) => { return dado != firebase.auth().currentUser.uid });
-                        idAmigos.push(_id);
+                        idAmigos.push({idAmigo: _id, id: doc.id});
                     }
                 });
-                idAmigos.forEach((_id) => {
-                    firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
+                idAmigos.forEach((obj) => {
+                    console.log(obj);
+                    firebase.firestore().collection("Codigos").doc(obj.idAmigo).get().then((snap) => {
                         let amigo = snap.data();
-                        amigo.id = _id;
+                        amigo.id = obj.idAmigo;
+                        amigo.idAmizade = obj.id;
                         amigos.push(amigo);
                         if (idAmigos.length == amigos.length) {
                             setAmigos(amigos);
@@ -280,7 +285,7 @@ const telaAmigo = (props) => {
                             <Amigo
                                 imagem={imagensUsuario[item.imagem]}
                                 nome={item.nome}
-                                onPress={() => abrirModalDesfazerAmizade(item.id, imagensUsuario[item.imagem], item.nome)}
+                                onPress={() => abrirModalDesfazerAmizade(item.idAmizade, imagensUsuario[item.imagem], item.nome)}
                             />}
                         ListFooterComponent={
                             function rodapeLista() {
