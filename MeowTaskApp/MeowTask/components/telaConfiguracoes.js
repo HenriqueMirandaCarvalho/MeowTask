@@ -75,9 +75,6 @@ const telaNotificacoes = (props) => {
             setNotificacoesTodas(true);
         } else {
             setNotificacoesTodas(false);
-            setNotificacoesTarefas(false);
-            setNotificacoesPostagens(false);
-            setNotificacoesAmigos(false);
         }
     }
     function switchNotificacoesTarefas() {
@@ -147,7 +144,7 @@ const telaNotificacoes = (props) => {
 
     async function salvarNotificacao() {
         setModalNotificacaoVisivel(false);
-        setData({ "amigos": notificacoesAmigos, "postagens": notificacoesPostagens, "tarefas": notificacoesTarefas });
+        setData({ "amigos": notificacoesAmigos, "postagens": notificacoesPostagens, "tarefas": notificacoesTarefas, "exibir": notificacoesTodas });
     }
 
     function sair() {
@@ -167,6 +164,7 @@ const telaNotificacoes = (props) => {
                 setNotificacoesAmigos(obj.amigos);
                 setNotificacoesPostagens(obj.postagens);
                 setNotificacoesTarefas(obj.tarefas);
+                setNotificacoesTodas(obj.exibir);
             }
         });
     }, []);
@@ -284,7 +282,7 @@ const telaNotificacoes = (props) => {
                         <View style={styles.modalView3}>
                             <Text style={styles.textoTituloModalNotificacoes}>Notificações</Text>
                             <View style={styles.opcaoNotificacao}>
-                                <Text style={styles.textoModalNotificacoes}>Todas as Notificações:</Text>
+                                <Text style={styles.textoModalNotificacoes}>Exibir Notificações:</Text>
                                 <Switch
                                     trackColor={{ false: "#adadad", true: "#4cca61" }}
                                     thumbColor={"#f4f3f4"}
@@ -301,6 +299,7 @@ const telaNotificacoes = (props) => {
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => switchNotificacoesTarefas()}
                                     value={notificacoesTarefas}
+                                    disabled={!notificacoesTodas}
                                 />
                             </View>
                             <View style={styles.opcaoNotificacao}>
@@ -311,6 +310,7 @@ const telaNotificacoes = (props) => {
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => switchNotificacoesPostagens()}
                                     value={notificacoesPostagens}
+                                    disabled={!notificacoesTodas}
                                 />
                             </View>
                             <View style={styles.opcaoNotificacao}>
@@ -321,6 +321,7 @@ const telaNotificacoes = (props) => {
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => switchNotificacoesAmigos()}
                                     value={notificacoesAmigos}
+                                    disabled={!notificacoesTodas}
                                 />
                             </View>
                             <View style={styles.divBotaoSalvarNotificacao}>
