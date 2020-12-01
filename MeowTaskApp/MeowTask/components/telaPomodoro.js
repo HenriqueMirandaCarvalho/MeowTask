@@ -275,7 +275,7 @@ const telaPomodoro = (props) => {
 
     function trocaGato(estado) {
         if (estado == "normal") {
-            setGato(require("./img/gatoestudando.png"));
+            setGato(require("./img/VoceConsegue.png"));
         } else if (estado == "descansando") {
             setGato(require("./img/GatoFazendoNada.png"));
         } else if (estado == "trabalhando") {
@@ -615,6 +615,9 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
         marginTop: "7%",
         marginBottom: "5%",
+        // borderRadius: 8,
+        // borderRadius: 7,
+        borderRadius: 5,
     },
     overlay: {
         position: "absolute",
