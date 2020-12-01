@@ -13,7 +13,19 @@ if (Platform.OS === 'android') {
     }
 }
 
+const getData = async () => {
+    try {
+        const jsonValue = await AsyncStorage.getItem('notificacoes');
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+    }
+}
+
 const telaNotificacoes = (props) => {
+    const [notificacoesTodas, setNotificacoesTodas] = useState(true);
+    const [notificacoesAmigos, setNotificacoesAmigos] = useState(true);
+    const [notificacoesPostagens, setNotificacoesPostagens] = useState(true);
+    const [notificacoesTarefas, setNotificacoesTarefas] = useState(true);
 
     function deletar(_id) {
         const NewData = notificacoes.filter(item => item.id !== _id);
@@ -73,6 +85,17 @@ const telaNotificacoes = (props) => {
     const [notificacoes, setNotificacoes] = useState([]);
 
     useEffect(() => {
+        getData().then((obj) => {
+            if (obj != null) {
+                setNotificacoesAmigos(obj.amigos);
+                setNotificacoesPostagens(obj.postagens);
+                setNotificacoesTarefas(obj.tarefas);
+                setNotificacoesTodas(obj.exibir);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
         setRefrescando(true);
         const listener = firebase.firestore()
             .collection("Codigos")
@@ -81,9 +104,32 @@ const telaNotificacoes = (props) => {
             .orderBy('data', 'desc')
             .onSnapshot(snapshot => {
                 const notificacoes = snapshot.docs.map(doc => {
-                    const notificacao = doc.data();
-                    notificacao.id = doc.id;
-                    return notificacao;
+                    if (!notificacoesTodas) {
+                        doc.ref.delete();
+                    }
+                    else if (doc.data().tipo == "amizade" && notificacoesAmigos) {
+                        const notificacao = doc.data();
+                        notificacao.id = doc.id;
+                        return notificacao;
+                    }
+                    else if (doc.data().tipo == "recusa" && notificacoesAmigos) {
+                        const notificacao = doc.data();
+                        notificacao.id = doc.id;
+                        return notificacao;
+                    }
+                    else if (doc.data().tipo == "postagem" && notificacoesPostagens) {
+                        const notificacao = doc.data();
+                        notificacao.id = doc.id;
+                        return notificacao;
+                    }
+                    else if (doc.data().tipo == "tarefa" && notificacoesTarefas) {
+                        const notificacao = doc.data();
+                        notificacao.id = doc.id;
+                        return notificacao;
+                    }
+                    else {
+                        doc.ref.delete();
+                    }
                 });
                 if (notificacoes[0] != undefined)
                     setNotificacoes(notificacoes);

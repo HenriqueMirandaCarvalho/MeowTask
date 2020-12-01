@@ -32,10 +32,10 @@ const telaNotificacoes = (props) => {
     const [modalContaEstaNaSegundaPagina, setModalContaEstaNaSegundaPagina] = useState(false);
 
     const [modalNotificacaoVisivel, setModalNotificacaoVisivel] = useState(false);
-    const [notificacoesTodas, setNotificacoesTodas] = useState(false);
-    const [notificacoesAmigos, setNotificacoesAmigos] = useState(false);
-    const [notificacoesPostagens, setNotificacoesPostagens] = useState(false);
-    const [notificacoesTarefas, setNotificacoesTarefas] = useState(false);
+    const [notificacoesTodas, setNotificacoesTodas] = useState(true);
+    const [notificacoesAmigos, setNotificacoesAmigos] = useState(true);
+    const [notificacoesPostagens, setNotificacoesPostagens] = useState(true);
+    const [notificacoesTarefas, setNotificacoesTarefas] = useState(true);
 
     const [username, setUsername] = useState(firebase.auth().currentUser.displayName);
     const [avatar, setAvatar] = useState(firebase.auth().currentUser.photoURL);
@@ -158,6 +158,7 @@ const telaNotificacoes = (props) => {
             props.navigation.dispatch(resetAction);
         });
     }
+    
     useEffect(() => {
         getData().then((obj) => {
             if (obj != null) {
