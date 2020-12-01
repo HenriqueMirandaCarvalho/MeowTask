@@ -73,9 +73,6 @@ const telaNotificacoes = (props) => {
     function switchNotificacoesTodas() {
         if (notificacoesTodas == false) {
             setNotificacoesTodas(true);
-            setNotificacoesTarefas(true);
-            setNotificacoesPostagens(true);
-            setNotificacoesAmigos(true);
         } else {
             setNotificacoesTodas(false);
             setNotificacoesTarefas(false);
@@ -84,26 +81,26 @@ const telaNotificacoes = (props) => {
         }
     }
     function switchNotificacoesTarefas() {
-        if (notificacoesTarefas == false) {
+        if (notificacoesTodas == false) {
+            setNotificacoesTodas(true);
             setNotificacoesTarefas(true);
         } else {
-            setNotificacoesTodas(false);
             setNotificacoesTarefas(!notificacoesTarefas);
         }
     }
     function switchNotificacoesPostagens() {
-        if (notificacoesPostagens == false) {
+        if (notificacoesTodas == false) {
+            setNotificacoesTodas(true);
             setNotificacoesPostagens(true);
         } else {
-            setNotificacoesTodas(false);
             setNotificacoesPostagens(!notificacoesPostagens);
         }
     }
     function switchNotificacoesAmigos() {
-        if (notificacoesAmigos == false) {
+        if (notificacoesTodas == false) {
+            setNotificacoesTodas(true);
             setNotificacoesAmigos(true);
         } else {
-            setNotificacoesTodas(false);
             setNotificacoesAmigos(!notificacoesAmigos);
         }
     }
