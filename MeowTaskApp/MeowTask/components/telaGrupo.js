@@ -24,7 +24,8 @@ const telaGrupo = (props) => {
 
     function btnTarefas() {
         props.navigation.navigate("ListaTarefas", {
-            idGrupo: idGrupo
+            idGrupo: idGrupo,
+            nomeGrupo: nomeGrupo,
         });
     }
 

@@ -11,6 +11,7 @@ const altura = Dimensions.get('window').height;
 
 const telaListaTarefas = (props) => {
     const idGrupo = props.navigation.state.params.idGrupo;
+    const nomeGrupo = props.navigation.state.params.nomeGrupo;
     const [tarefas, setTarefas] = useState([]);
 
     const logoTarefa = [require("./img/Logos/LogoPraCadaTarefa.png"), require("./img/Logos/CadaTarefaCertinho.png")];
@@ -62,7 +63,7 @@ const telaListaTarefas = (props) => {
                         .add({
                             tipo: "tarefa",
                             nome: nomeNovaTarefa,
-                            idGrupo: idGrupo,
+                            nomeGrupo: nomeGrupo,
                             data: new Date().getTime(),
                         });
                 });
