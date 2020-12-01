@@ -39,10 +39,13 @@ const telaListaGrupos = (props) => {
     }
 
     function adicionarPessoa(_id) {
-        console.debug("adicionarPessoa _id : "+_id);
-        console.debug("adicionarPessoa teste : "+(pessoasAdicionar.includes(_id)));
-        console.debug(pessoasAdicionar);
-
+        let newAmigos = amigos;
+        newAmigos.forEach((item) => {
+            if (item.id == _id) {
+                item.selecionado = true;
+            }
+        });
+        setAmigos(amigos);
         let novo = pessoasAdicionar;
         novo.push(_id);
         setPessoasAdicionar(novo);
@@ -67,6 +70,7 @@ const telaListaGrupos = (props) => {
                     firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
                         let amigo = snap.data();
                         amigo.id = _id;
+                        amigo.selecionado = false;
                         amigos.push(amigo);
                         if (idAmigos.length == amigos.length) {
                             setAmigos(amigos);
@@ -294,7 +298,7 @@ const telaListaGrupos = (props) => {
                                             }
                                         }
                                         renderItem={({ item}) => {
-                                            if (true) {
+                                            if (item.selecionado) {
                                                 return <AmigoSelecionado
                                                             onPressIn={() => adicionarPessoa(item.id)}
                                                             imagem={item.imagem}
