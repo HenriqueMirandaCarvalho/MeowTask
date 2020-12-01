@@ -47,6 +47,26 @@ const telaListaTarefas = (props) => {
                 setRefresco(false);
                 toggleModalCriar();
             });
+        firebase.firestore()
+            .collection("Grupos")
+            .doc(idGrupo)
+            .get()
+            .then(snapshot => {
+                let paraEnviar = snapshot.data().membros;
+                paraEnviar = paraEnviar.filter((obj) => {return obj != firebase.auth().currentUser.uid;});
+                paraEnviar.forEach((id) => {
+                    firebase.firestore()
+                        .collection("Codigos")
+                        .doc(id)
+                        .collection("Notificacoes")
+                        .add({
+                            tipo: "tarefa",
+                            nome: nomeNovaTarefa,
+                            idGrupo: idGrupo,
+                            data: new Date().getTime(),
+                        });
+                });
+            });
     }
 
     function toggleModalCriar() {

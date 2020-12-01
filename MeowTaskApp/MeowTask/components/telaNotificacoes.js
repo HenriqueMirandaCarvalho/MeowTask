@@ -28,6 +28,21 @@ const telaNotificacoes = (props) => {
         alert("olha o refresco!");
     }
 
+    function aceitar(_id, _idAmizade) {
+        firebase.firestore()
+            .collection("Codigos")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("Notificacoes")
+            .doc(_id)
+            .delete();
+        firebase.firestore()
+            .collection("Amigos")
+            .doc(_idAmizade)
+            .update({
+                confirmado: true
+            });
+    }
+
     const [notificacoes, setNotificacoes] = useState([]);
 
     useEffect(() => {
@@ -88,10 +103,8 @@ const telaNotificacoes = (props) => {
                                     tipo={item.tipo}
                                     nome={item.nome}
                                     nomeGrupo={item.nomeGrupo}
-                                    imagem={item.imagem}
-                                    texto={item.texto}
-                                    aceitar={() => {}}
-                                    recusar={() => {}}
+                                    aceitar={() => aceitar(item.id, item.idAmizade)}
+                                    recusar={() => recusar(item.id, item.idAmizade)}
                                 />
                             </SwipeRow>
                         }

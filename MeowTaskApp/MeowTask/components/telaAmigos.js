@@ -112,7 +112,7 @@ const telaAmigo = (props) => {
                                                 .add({
                                                     tipo: "amizade",
                                                     nome: firebase.auth().currentUser.displayName,
-                                                    idGrupo: data.id,
+                                                    idAmizade: data.id,
                                                     data: new Date().getTime(),
                                                 });
                                         });
