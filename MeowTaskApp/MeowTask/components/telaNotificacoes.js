@@ -19,6 +19,12 @@ const telaNotificacoes = (props) => {
         const NewData = notificacoes.filter(item => item.id !== _id);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         setNotificacoes(NewData);
+        firebase.firestore()
+            .collection("Codigos")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("Notificacoes")
+            .doc(_id)
+            .delete();
     }
 
     const [refrescando, setRefrescando] = useState(false);
