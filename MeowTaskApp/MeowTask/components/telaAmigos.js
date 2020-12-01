@@ -132,8 +132,13 @@ const telaAmigo = (props) => {
                                         })
                                         .then((data) => {
                                             toggleModal();
-                                            Alert.alert("Aviso", "Vocês são amigos agora!");
                                             setRefresco(false);
+                                            firebase.firestore()
+                                            .collection("Codigos")
+                                            .doc(firebase.auth().currentUser.uid)
+                                            .collection("Notificacoes")
+                                            .where("idAmizade", "==", idAmg)
+                                            .delete();
                                         });
                                 }
                             });
@@ -152,34 +157,8 @@ const telaAmigo = (props) => {
             .delete()
             .then(() => {
                 setModalDesfazerAmizadeVisivel(false);
-                firebase.firestore()
-                .collection("Amigos")
-                .orderBy('data', 'desc')
-                .onSnapshot(snapshot => {
-                    let amigos = [];
-                    let idAmigos = []
-                    snapshot.docs.forEach(doc => {
-                        let dados = doc.data();
-                        if (dados.confirmado) {
-                            let _id = dados.usuarios.find((dado) => { return dado != firebase.auth().currentUser.uid });
-                            idAmigos.push({idAmigo: _id, id: doc.id});
-                        }
-                    });
-                    idAmigos.forEach((obj) => {
-                        console.log(obj);
-                        firebase.firestore().collection("Codigos").doc(obj.idAmigo).get().then((snap) => {
-                            let amigo = snap.data();
-                            amigo.id = obj.idAmigo;
-                            amigo.idAmizade = obj.id;
-                            amigos.push(amigo);
-                            if (idAmigos.length == amigos.length) {
-                                setAmigos(amigos);
-                                setRefresco(false);
-                            }
-                        });
-                    });
-                    setRefresco(false);
-                });
+                let newAmigos = amigos.filter((obj) => {return obj.idAmizade != guardaIdAmigo});
+                setAmigos(newAmigos);
             });
     }
 
