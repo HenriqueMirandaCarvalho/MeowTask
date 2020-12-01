@@ -113,6 +113,7 @@ const telaAmigo = (props) => {
                                                     tipo: "amizade",
                                                     nome: firebase.auth().currentUser.displayName,
                                                     idAmizade: data.id,
+                                                    idAmigo: firebase.auth().currentUser.uid,
                                                     data: new Date().getTime(),
                                                 });
                                         });

@@ -9,21 +9,21 @@ import * as firebase from 'firebase';
 
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
-      UIManager.setLayoutAnimationEnabledExperimental(true);
+        UIManager.setLayoutAnimationEnabledExperimental(true);
     }
 }
 
 const telaNotificacoes = (props) => {
-    
+
     function deletar(_id) {
         const NewData = notificacoes.filter(item => item.id !== _id);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         setNotificacoes(NewData);
     }
-    
+
     const [refrescando, setRefrescando] = useState(false);
 
-    function refrescar(){
+    function refrescar() {
         setRefrescando(true);
         alert("olha o refresco!");
     }
@@ -41,6 +41,27 @@ const telaNotificacoes = (props) => {
             .update({
                 confirmado: true
             });
+    }
+    function recusar(_id, _idAmizade, _idAmigo) {
+        firebase.firestore()
+            .collection("Codigos")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("Notificacoes")
+            .doc(_id)
+            .delete();
+        firebase.firestore()
+            .collection("Amigos")
+            .doc(_idAmizade)
+            .delete();
+            firebase.firestore()
+                .collection("Codigos")
+                .doc(_idAmigo)
+                .collection("Notificacoes")
+                .add({
+                    tipo: "recusa",
+                    nome: firebase.auth().currentUser.displayName,
+                    data: new Date().getTime(),
+                });
     }
 
     const [notificacoes, setNotificacoes] = useState([]);
@@ -81,7 +102,7 @@ const telaNotificacoes = (props) => {
                 <View style={styles.cabecalho}>
                     <View style={styles.divSetinha}>
                         <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                            <Ionicons name="md-arrow-back" size={44} color="#5b5b58"/>
+                            <Ionicons name="md-arrow-back" size={44} color="#5b5b58" />
                         </TouchableOpacity>
                     </View>
                     <Text style={styles.titulo}>Notificações</Text>
@@ -89,29 +110,29 @@ const telaNotificacoes = (props) => {
                 <View style={styles.conteudo}>
                     <FlatList
                         data={notificacoes}
-                        keyExtractor={item=>item.id}
+                        keyExtractor={item => item.id}
                         refreshing={refrescando}
                         onRefresh={() => refrescar()}
-                        renderItem={({item})=>
+                        renderItem={({ item }) =>
                             <SwipeRow
                                 key={item.key}
                                 item={item}
                                 swipeThreshold={-150}
-                                onSwipe={() => deletar(item.id)} 
+                                onSwipe={() => deletar(item.id)}
                             >
                                 <Notificacao
                                     tipo={item.tipo}
                                     nome={item.nome}
                                     nomeGrupo={item.nomeGrupo}
                                     aceitar={() => aceitar(item.id, item.idAmizade)}
-                                    recusar={() => recusar(item.id, item.idAmizade)}
+                                    recusar={() => recusar(item.id, item.idAmizade, item.idAmigo)}
                                 />
                             </SwipeRow>
                         }
-                        style={{width: "101%"}}
+                        style={{ width: "101%" }}
                     />
                 </View>
-                <StatusBar translucent backgroundColor={'#eae6da'}/>
+                <StatusBar translucent backgroundColor={'#eae6da'} />
             </View>
         );
     }
