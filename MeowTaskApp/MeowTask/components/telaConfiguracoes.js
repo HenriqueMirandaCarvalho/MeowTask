@@ -342,7 +342,7 @@ const telaNotificacoes = (props) => {
                 <View style={styles.conteudoConfig1}>
                     <View style={styles.botoesConfig}>
                         <TouchableOpacity onPress={() => toggleModalConta()}>
-                            <Image source={require('./img/turquesa10.png')} style={styles.icones} />
+                            <Image source={require('./img/Logos/LogoConta.png')} style={styles.icones} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => toggleModalConta()} style={styles.divTextoBotoesConfig}>
                             <Text style={styles.textoBotoesConfig}>Conta</Text>
@@ -352,7 +352,7 @@ const telaNotificacoes = (props) => {
                 <View style={styles.conteudoConfig1}>
                     <View style={styles.botoesConfig}>
                         <TouchableOpacity onPress={() => toggleModalNotificacao()}>
-                            <Image source={require('./img/turquesa10.png')} style={styles.icones} />
+                            <Image source={require('./img/Logos/Notificacoes.png')} style={styles.icones} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => toggleModalNotificacao()} style={styles.divTextoBotoesConfig}>
                             <Text style={styles.textoBotoesConfig}>Notificações</Text>
@@ -362,7 +362,7 @@ const telaNotificacoes = (props) => {
                 <View style={styles.conteudoConfig2}>
                     <View style={styles.botoesConfig}>
                         <TouchableOpacity onPress={() => btnVisual()}>
-                            <Image source={require('./img/turquesa10.png')} style={styles.icones} />
+                            <Image source={require('./img/Logos/LogoPrivacidadeeTermos.png')} style={styles.icones} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => btnVisual()} style={styles.divTextoBotoesConfig}>
                             <Text style={styles.textoBotoesConfig}>Privacidade e Termos</Text>
@@ -370,7 +370,7 @@ const telaNotificacoes = (props) => {
                     </View>
                     <View style={styles.botoesConfig}>
                         <TouchableOpacity onPress={() => btnVisual()}>
-                            <Image source={require('./img/turquesa10.png')} style={styles.icones} />
+                            <Image source={require('./img/Logos/About.png')} style={styles.icones} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => btnVisual()} style={styles.divTextoBotoesConfig}>
                             <Text style={styles.textoBotoesConfig}>Sobre o Meow Task</Text>
@@ -435,9 +435,8 @@ const styles = StyleSheet.create({
     },
     icones: {
         height: null,
-        width: 0.13 * largura,
+        width: 0.14 * largura,
         aspectRatio: 1,
-        borderRadius: 100,
     },
     conteudoConfig1: {
         height: "12%",

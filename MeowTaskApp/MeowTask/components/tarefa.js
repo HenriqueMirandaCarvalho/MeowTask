@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
 
 export const Tarefa = props => 
     <View style={styles.container}>
-        <TouchableOpacity onPress={() => props.onPress()} onLongPress={() => props.onLongPress()} style={styles.botao}>
+        <TouchableOpacity delayLongPress={250} onPress={() => props.onPress()} onLongPress={() => props.onLongPress()} style={styles.botao}>
             <View style={styles.viewImagem}>
                 <Image source={props.imagem} style={styles.imagem}/>
             </View>

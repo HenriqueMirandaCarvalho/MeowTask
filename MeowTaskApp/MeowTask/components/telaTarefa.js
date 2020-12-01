@@ -86,14 +86,14 @@ const telaTarefa = (props) => {
                     <Text style={styles.textoBotao}>Arquivos</Text>
                 </View>
             </TouchableNativeFeedback>
-            <View style={styles.divUltimoBotao}>
+            {/* <View style={styles.divUltimoBotao}>
                 <TouchableNativeFeedback onPress={btnConcluir}>
                     <View style={styles.ultimoBotao}>
                         <Image source={require('./img/Logos/CadaTarefaCertinho.png')} style={styles.imagemBotao}></Image>
                         <Text style={styles.textoBotao}>Concluir</Text>
                     </View>
                 </TouchableNativeFeedback>
-            </View>
+            </View> */}
         </View>
     );  
     }  

@@ -4,7 +4,7 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Grupo } from './grupo.js';
-import { AmigoModal } from './amigosmodal';
+import { AmigoModal } from './amigosmodaltoggle';
 import * as firebase from 'firebase';
 
 const telaListaGrupos = (props) => {
@@ -292,6 +292,7 @@ const telaListaGrupos = (props) => {
                                             <AmigoModal
                                                 imagem={item.imagem}
                                                 nome={item.nome}
+                                                selecionado={pessoasAdicionar.includes(item.id)}
                                                 onPress={() => adicionarPessoa(item.id)}
                                             />}
                                         ListEmptyComponent={() =>

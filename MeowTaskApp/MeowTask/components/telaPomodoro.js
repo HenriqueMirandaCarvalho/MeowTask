@@ -277,9 +277,9 @@ const telaPomodoro = (props) => {
         if (estado == "normal") {
             setGato(require("./img/gatoestudando.png"));
         } else if (estado == "descansando") {
-            setGato(require("./img/menta.png"));
+            setGato(require("./img/GatoFazendoNada.png"));
         } else if (estado == "trabalhando") {
-            setGato(require("./img/turquesa10.png"));
+            setGato(require("./img/GatoFazendoAlgo.png"));
         }
     }
 
@@ -514,7 +514,7 @@ const telaPomodoro = (props) => {
                     {/* <View style={{marginTop: "5%", borderRadius: 60, width: "90%", aspectRatio: 1, backgroundColor: "black", justifyContent: "center", alignItems: "center"}}>
                         <View style={{borderRadius: 43, width: "83%", backgroundColor: "lime", aspectRatio: 1}}></View>
                     </View> */}
-                    <Image source={gato} style={styles.imagem} />
+                    <Image fadeDuration={0} source={gato} style={styles.imagem} />
                     <Text style={styles.textoContador}>{textoContagem}</Text>
                 </Animated.View>
                 <TouchableNativeFeedback onPress={() => toggleRelogio()} style={styles.botao}>

@@ -233,12 +233,12 @@ const telaHome = (props) => {
                         </View>
                     </View>
                 </View>
-                <View style={styles.rodape}>
+                {/* <View style={styles.rodape}>
                     <TouchableOpacity onPress={() => trocarTela(1)}>
                         <AntDesign name="pluscircleo" size={110} color="#5b5b58" />
                     </TouchableOpacity>
                     <Text style={styles.textoRodape}>lorem ipsum dolor sit amet</Text>
-                </View>
+                </View> */}
                 <StatusBar translucent backgroundColor={'#eae6da'} />
             </View>
         );
