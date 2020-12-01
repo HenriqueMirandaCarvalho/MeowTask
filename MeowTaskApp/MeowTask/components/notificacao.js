@@ -19,7 +19,7 @@ export const Notificacao = (props) => {
                 <Image source={require('./img/LogoGrupo.png')} style={styles.imagem}/>
             </View>
             <View style={styles.divTexto}>
-                <Text style={styles.texto}>{props.nomeAmigo} - código {props.codigoAmigo} solicitou uma amizade!</Text>
+                <Text style={styles.texto}>{props.nome} solicitou uma amizade!</Text>
                 <View style={styles.divBotoes}>
                     <TouchableOpacity style={styles.botaoAceitar}>
                         <Text style={styles.textoBotaoSalvar}>Aceitar</Text>
