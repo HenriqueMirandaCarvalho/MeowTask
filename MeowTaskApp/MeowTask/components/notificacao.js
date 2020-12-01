@@ -1,5 +1,7 @@
 import React from 'react';
-import {View, StyleSheet, Image, Text, TouchableWithoutFeedback, TouchableOpacity} from "react-native";
+import {View, StyleSheet, Image, Text, TouchableWithoutFeedback, TouchableOpacity, Dimensions} from "react-native";
+
+const largura = Dimensions.get('window').width;
 
 export const Notificacao = (props) => {
     const recusa = 
@@ -13,7 +15,7 @@ export const Notificacao = (props) => {
         </View>
     const tarefa =
         <TouchableWithoutFeedback onPress={() => {}}>
-            <View style={styles.conteudo}>
+            <View style={styles.conteudoAmizade}>
                 <View style={styles.divImagem}>
                     <Image source={require('./img/Logos/LogoTarefas.png')} style={styles.imagem}/>
                 </View>
@@ -41,12 +43,12 @@ export const Notificacao = (props) => {
         </View>
     const postagem =
         <TouchableWithoutFeedback onPress={() => {}}>
-            <View style={styles.conteudo}>
+            <View style={styles.conteudoPostagem}>
                 <View style={styles.divImagem}>
                     <Image source={require('./img/Logos/Postagens.png')} style={styles.imagem}/>
                 </View>
                 <View style={styles.divTexto}>
-                    <Text style={styles.postador}>{props.enviador} postou uma mensagem no grupo {props.nomeGrupo}!</Text>
+                    <Text style={styles.postador}>{props.enviador} postou uma mensagem no grupo {props.nomeGrupo}:</Text>
                     <Text style={styles.texto}>{props.mensagem}</Text>
                 </View>
             </View>
@@ -76,7 +78,22 @@ let styles = StyleSheet.create({
         flexDirection: "row",
         width: "101%",
         alignItems: "center",
-        borderBottomWidth: 1,
+        borderTopWidth: 0.5,
+        borderBottomWidth: 0.5,
+        borderRightWidth: 1,
+        borderLeftWidth: 1,
+        borderColor: "#5b5b5b",
+    },
+    conteudoPostagem: {
+        paddingLeft: "3%",
+        paddingRight: "3%",
+        paddingBottom: "1%",
+        paddingTop: "0.5%",
+        flexDirection: "row",
+        width: "101%",
+        alignItems: "center",
+        borderTopWidth: 0.5,
+        borderBottomWidth: 0.5,
         borderRightWidth: 1,
         borderLeftWidth: 1,
         borderColor: "#5b5b5b",
@@ -87,7 +104,7 @@ let styles = StyleSheet.create({
         aspectRatio: 1,
     },
     postador: {
-        width: "85%",
+        width: "90%",
         marginBottom: "1%",
         fontFamily: "Roboto-Light",
         fontSize: 18,
@@ -95,7 +112,7 @@ let styles = StyleSheet.create({
         marginLeft: "3%",
     },
     texto: {
-        width: "85%",
+        width: "90%",
         marginBottom: "1%",
         fontFamily: "Roboto-Light",
         fontSize: 18,
