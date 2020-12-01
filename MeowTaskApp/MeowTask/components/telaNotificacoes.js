@@ -93,7 +93,7 @@ const telaNotificacoes = (props) => {
                                 />
                             </SwipeRow>
                         }
-                        style={{width: "100%"}}
+                        style={{width: "101%"}}
                     />
                 </View>
                 <StatusBar translucent backgroundColor={'#eae6da'}/>
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         width: "100%",
         flex: 1,
         alignItems: "center",
-        paddingTop: "5%",
+        // paddingTop: "5%",
         // backgroundColor: "royalblue",
     },
 });

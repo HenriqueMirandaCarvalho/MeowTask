@@ -14,18 +14,18 @@ export const Notificacao = (props) => {
             </View>
         </TouchableWithoutFeedback>
     const amizade =
-        <View style={styles.conteudo}>
+        <View style={styles.conteudoAmizade}>
             <View style={styles.divImagem}>
                 <Image source={require('./img/LogoGrupo.png')} style={styles.imagem}/>
             </View>
             <View style={styles.divTexto}>
                 <Text style={styles.texto}>{props.nome} solicitou uma amizade!</Text>
                 <View style={styles.divBotoes}>
-                    <TouchableOpacity style={styles.botaoAceitar}>
-                        <Text style={styles.textoBotaoSalvar}>Aceitar</Text>
+                    <TouchableOpacity onPress={() => props.recusar()} style={[styles.botaoAceitar, {backgroundColor: "#DC4C46"}]}>
+                        <Text style={styles.textoBotaoAceitar}>Recusar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.botaoAceitar}>
-                        <Text style={styles.textoBotaoSalvar}>Aceitar</Text>
+                    <TouchableOpacity onPress={() => props.aceitar()} style={styles.botaoAceitar}>
+                        <Text style={styles.textoBotaoAceitar}>Aceitar</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -57,6 +57,19 @@ let styles = StyleSheet.create({
         width: "100%",
         alignItems: "center",
     },
+    conteudoAmizade: {
+        paddingLeft: "3%",
+        paddingRight: "3%",
+        paddingBottom: "1%",
+        paddingTop: "0.5%",
+        flexDirection: "row",
+        width: "101%",
+        alignItems: "center",
+        borderBottomWidth: 1,
+        borderRightWidth: 1,
+        borderLeftWidth: 1,
+        borderColor: "#5b5b5b",
+    },
     imagem: {
         width: "100%",
         height: null,
@@ -86,13 +99,15 @@ let styles = StyleSheet.create({
         justifyContent: "center",
     },
     divBotoes: {
+        paddingLeft: "2%",
+        paddingRight: "2%",
         flexDirection: "row",
         width: "100%",
-        justifyContent: "space-evenly",
+        justifyContent: "space-between",
     },
     botaoAceitar: {
-        width: "40%",
-        aspectRatio: 3.2,
+        width: "45%",
+        aspectRatio: 4.2,
         backgroundColor: "#53A156",
         justifyContent: "center",
         alignItems: "center",
@@ -101,5 +116,6 @@ let styles = StyleSheet.create({
     textoBotaoAceitar: {
         fontFamily: 'Roboto-Light',
         fontSize: 20,
+        color: "white",
     },
 });
