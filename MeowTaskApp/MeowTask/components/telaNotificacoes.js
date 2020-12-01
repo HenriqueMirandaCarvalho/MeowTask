@@ -124,7 +124,7 @@ const telaNotificacoes = (props) => {
                                 key={item.key}
                                 item={item}
                                 swipeThreshold={-150}
-                                onSwipe={() => deletar(item.id)}
+                                onSwipe={() => {deletar(item.id); if (item.tipo == "amizade") recusar(item.id, item.idAmizade, item.idAmigo); }}
                             >
                                 <Notificacao
                                     tipo={item.tipo}
