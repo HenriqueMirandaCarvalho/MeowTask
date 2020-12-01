@@ -2,6 +2,15 @@ import React from 'react';
 import {View, StyleSheet, Image, Text, TouchableWithoutFeedback, TouchableOpacity} from "react-native";
 
 export const Notificacao = (props) => {
+    const recusa = 
+        <View style={styles.conteudoAmizade}>
+            <View style={styles.divImagem}>
+                <Image source={require('./img/LogoGrupo.png')} style={styles.imagem}/>
+            </View>
+            <View style={styles.divTexto}>
+                <Text style={styles.texto}>{props.nome} recusou o pedido de amizade.</Text>
+            </View>
+        </View>
     const tarefa =
         <TouchableWithoutFeedback onPress={() => {}}>
             <View style={styles.conteudo}>
@@ -46,8 +55,10 @@ export const Notificacao = (props) => {
         return tarefa;
     } else if (props.tipo == "amizade") {
         return amizade;
-    } else {
+    } else if (props.tipo == "postagem") {
         return postagem;
+    } else {
+        return recusa;
     }
 }
 
