@@ -7,6 +7,7 @@ import { Membro } from './membro.js';
 import { MembroInclickavel } from './membroinclickavel.js';
 import { AmigoModal } from './amigosmodal';
 import * as firebase from 'firebase';
+import { ScrollView } from "react-native-gesture-handler";
 
 const telaAmigo = (props) => {
     const idGrupo = props.navigation.state.params.idGrupo;
@@ -455,6 +456,7 @@ const telaAmigo = (props) => {
                     </View>
                 </View>
                 <View style={styles.conteudo}>
+                    <ScrollView>
                     <FlatList
                         data={membros}
                         keyExtractor={item => item.id}
@@ -463,6 +465,16 @@ const telaAmigo = (props) => {
                         renderItem={({ item }) =>
                             <View>
                                 {acharAdmin(item.id, item.imagem, item.nome)}
+                            </View>}
+                        style={{ width: "100%" }}
+                    />
+                    <FlatList
+                        data={membros}
+                        keyExtractor={item => item.id}
+                        // refreshing={refresco}
+                        // onRefresh={() => { }}
+                        renderItem={({ item }) =>
+                            <View>
                                 {acharMembro(item.id, item.imagem, item.nome)}
                             </View>}
                         style={{ width: "100%" }}
@@ -485,6 +497,7 @@ const telaAmigo = (props) => {
                             <Text style={{ alignSelf: "center", fontFamily: "Roboto-Light", fontSize: 20, marginTop: "6%" }}>Nenhum membro!</Text>
                         }
                     />
+                    </ScrollView>
                 </View>
                 <View style={styles.rodape}>
                     <TouchableNativeFeedback onPress={() => toggleModalAdicionar()}>
