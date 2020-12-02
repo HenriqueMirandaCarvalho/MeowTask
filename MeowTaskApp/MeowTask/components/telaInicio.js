@@ -16,9 +16,6 @@ const telaInicio = (props) => {
     function btnLogar() {
         props.navigation.navigate('Login');
     }
-    function btnContinuar() {
-        props.navigation.navigate('Home');
-    }
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -54,11 +51,7 @@ const telaInicio = (props) => {
                         <Text style={styles.texto}>Fazer Login</Text>
                     </View>
                 </TouchableNativeFeedback>
-                <TouchableOpacity onPress={btnContinuar}>
-                    <View>
-                        <Text style={styles.texto2}>Continuar sem uma conta</Text>
-                    </View>
-                </TouchableOpacity>
+                <View style={{marginBottom: "8%"}}></View>
                 <StatusBar translucent backgroundColor={'#eae6da'} />
             </View>
         );
