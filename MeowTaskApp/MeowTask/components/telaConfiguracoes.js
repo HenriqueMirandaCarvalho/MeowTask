@@ -39,7 +39,7 @@ const telaNotificacoes = (props) => {
 
     const [username, setUsername] = useState(firebase.auth().currentUser.displayName);
     const [avatar, setAvatar] = useState(firebase.auth().currentUser.photoURL);
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState(firebase.auth().currentUser.email);
     const [senha, setSenha] = useState("");
 
     const avatares = [require('./img/gato1.png'), require('./img/gato2.png'), require('./img/gato3.png')];
