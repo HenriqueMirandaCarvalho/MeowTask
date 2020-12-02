@@ -19,7 +19,7 @@ const telaCadastro = (props) => {
                             photoURL: "1"
                         });
                         userData.user.sendEmailVerification();
-                        let novoCodigo = "0ehzno";
+                        let novoCodigo = Math.random().toString(36).slice(-6);
                         firebase.firestore()
                             .collection("Codigos")
                             .where("codigo", "==", novoCodigo)
