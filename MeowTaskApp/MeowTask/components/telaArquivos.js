@@ -79,7 +79,6 @@ const telaArquivos = (props) => {
             if (result.type != "cancel") {
                 urlParaBlob(result.uri).then((obj) => {
                     firebase.storage().ref().child(idTarefa + "/" + result.name).put(obj).then(() => {
-                        setRefrescando(false);
                         firebase.storage()
                             .ref()
                             .child(idTarefa)
