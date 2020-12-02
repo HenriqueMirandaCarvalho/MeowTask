@@ -25,7 +25,7 @@ const telaTermos = (props) => {
                         </TouchableNativeFeedback>
                     </View>
                     <View style={styles.divCabecalho}>
-                        <Text style={styles.titulo}>Termos</Text>
+                        <Text style={styles.titulo}>Sobre</Text>
                     </View>
                 </View>
                 <View style={styles.conteudo}>
