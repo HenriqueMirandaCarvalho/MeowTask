@@ -94,7 +94,7 @@ const telaAmigo = (props) => {
                                         .add({
                                             confirmado: false,
                                             sender: firebase.auth().currentUser.uid,
-                                            data: nfirebase.database.ServerValue.TIMESTAMP,
+                                            data: firebase.firestore.Timestamp.now(),
                                             usuarios: [firebase.auth().currentUser.uid, amigo.id]
                                         })
                                         .then((data) => {
@@ -110,7 +110,7 @@ const telaAmigo = (props) => {
                                                     nome: firebase.auth().currentUser.displayName,
                                                     idAmizade: data.id,
                                                     idAmigo: firebase.auth().currentUser.uid,
-                                                    data: firebase.database.ServerValue.TIMESTAMP,
+                                                    data: firebase.firestore.Timestamp.now(),
                                                 });
                                         });
                                 }

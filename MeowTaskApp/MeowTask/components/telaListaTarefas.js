@@ -41,7 +41,7 @@ const telaListaTarefas = (props) => {
             .doc(idGrupo)
             .collection("Tarefas")
             .add({
-                data: firebase.database.ServerValue.TIMESTAMP,
+                data: firebase.firestore.Timestamp.now(),
                 descricao: "Insira uma descrição aqui.",
                 lista: [],
                 nome: nomeNovaTarefa
@@ -65,7 +65,7 @@ const telaListaTarefas = (props) => {
                             tipo: "tarefa",
                             nome: nomeNovaTarefa,
                             nomeGrupo: nomeGrupo,
-                            data: firebase.database.ServerValue.TIMESTAMP,
+                            data: firebase.firestore.Timestamp.now()
                         });
                 });
             });

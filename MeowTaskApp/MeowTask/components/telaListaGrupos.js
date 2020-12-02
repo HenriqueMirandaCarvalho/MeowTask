@@ -113,7 +113,7 @@ const telaListaGrupos = (props) => {
                     imagem: inputImagem,
                     dono: firebase.auth().currentUser.uid,
                     membros: pessoasAdicionar,
-                    data: firebase.database.ServerValue.TIMESTAMP,
+                    data: firebase.firestore.Timestamp.now(),
                     banidos: []
                 })
                 .then((data) => {
