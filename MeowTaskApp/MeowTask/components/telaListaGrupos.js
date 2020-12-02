@@ -113,7 +113,8 @@ const telaListaGrupos = (props) => {
                     imagem: inputImagem,
                     dono: firebase.auth().currentUser.uid,
                     membros: pessoasAdicionar,
-                    data: new Date().getTime()
+                    data: new Date().getTime(),
+                    banidos: []
                 })
                 .then((data) => {
                     toggleModalCriar();

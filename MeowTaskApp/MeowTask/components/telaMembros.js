@@ -39,6 +39,7 @@ const telaAmigo = (props) => {
 
     function toggleModalAdicionar() {
         if (meuId == idAdm) {
+            setAmigos([]);
             setModalAdicionarVisivel(!modalAdicionarVisivel);
             firebase.firestore()
                 .collection("Amigos")
