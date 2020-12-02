@@ -60,27 +60,12 @@ const telaAmigo = (props) => {
                             let amigo = snap.data();
                             amigo.id = _id;
                             let alreadyMembro = false;
-                            membros.forEach((doc) => {
-                                if (doc.id == _id) {
-                                    alreadyMembro = true;
-                                    tamanho = tamanho - 1;
-                                }
-                            });
-                            banidos.forEach((doc) => {
-                                if (doc.id == _id) {
-                                    alreadyMembro = true;
-                                    tamanho = tamanho - 1;
-                                }
-                            })
+                            alreadyMembro = membros.some(item => item.id === _id);
+                            alreadyMembro = banidos.some(item => item.id === _id);
                             if (!alreadyMembro) {
                                 novoAmigos.push(amigo);
-                                console.log(novoAmigos);
                             }
-                            if (idAmigos.length == novoAmigos.length) {
-                                setAmigos([...novoAmigos]);
-                                console.log(amigos);
-                                setRefresco(false);
-                            }
+                            setAmigos([...novoAmigos]);
                         });
                     });
                 });
