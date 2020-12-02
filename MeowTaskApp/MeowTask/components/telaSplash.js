@@ -25,6 +25,7 @@ const telaSplash = (props) => {
             if (state.isConnected) {
                 firebase.auth().onAuthStateChanged((user) => {
                     if (user) {
+                        props.navigation.navigate("Home");
                         const resetAction = StackActions.reset({
                             index: 0,
                             actions: [
@@ -34,6 +35,7 @@ const telaSplash = (props) => {
                         props.navigation.dispatch(resetAction);
                     }
                     else {
+                        props.navigation.navigate("Inicio");
                         const resetAction = StackActions.reset({
                             index: 0,
                             actions: [
