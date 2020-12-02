@@ -91,8 +91,6 @@ const telaPomodoro = (props) => {
                 } else { // se acabarem os minutos desse intervalo
 
                     if (_iterador == (intervalos.length -1)) { // se a contagem TODA acabar e não tiver mais nenhum pomodoro
-                        alert("sem tempo");
-
                         setRunning(false); // quando running e pausado são false ao mesmo tempo
                         setPausado(false); // significa que a contagem não começou ou já acabou
 
