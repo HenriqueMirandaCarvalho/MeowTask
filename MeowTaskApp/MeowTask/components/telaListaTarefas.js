@@ -156,7 +156,7 @@ const telaListaTarefas = (props) => {
                             textContentType="username"
                             textAlign="center"
                             placeholder="Nome"
-                            onChangeText={(nomeNovaTarefa) => setNomeNovaTarefa(nomeNovaTarefa.trim())}
+                            onChangeText={(nomeNovaTarefa) => setNomeNovaTarefa(nomeNovaTarefa.trim().replace(/(\r\n|\n|\r)/gm, " "))}
                             maxLength={30}
                             autoCorrect={false}
                             returnKeyType="done"

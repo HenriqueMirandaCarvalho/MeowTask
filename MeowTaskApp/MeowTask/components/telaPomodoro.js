@@ -33,7 +33,7 @@ const telaPomodoro = (props) => {
 
     const [textoBotao, setTextoBotao] = useState("Iniciar");
 
-    const [minutos, setMinutos] = useState(0);
+    const [minutos, setMinutos] = useState(15);
     const [segundos, setSegundos] = useState(0);
     const [running, setRunning] = useState(false);
     const [pausado, setPausado] = useState(false);
@@ -60,17 +60,17 @@ const telaPomodoro = (props) => {
     const [intervalos, setIntervalos] = useState([
         {
             id: "0",
-            duracao: 2,
+            duracao: 15,
             sossego: false,
         },
         {
             id: "1",
-            duracao: 1,
+            duracao: 5,
             sossego: true,
         },
         {
             id: "2",
-            duracao: 2,
+            duracao: 15,
             sossego: false,
         },
     ]);
@@ -295,7 +295,8 @@ const telaPomodoro = (props) => {
 
     function validaTrabalho(numero) {
         // code to remove non-numeric characters from text
-        let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        // let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        let removido = numero.replace(/\D/g,'');
         if (removido){
             if (removido < 1) {
                 setGuardaDuracaoTrabalho('');
@@ -310,7 +311,8 @@ const telaPomodoro = (props) => {
     
     function validaDescanso(numero) {
         // code to remove non-numeric characters from text
-        let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        // let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        let removido = numero.replace(/\D/g,'');
         if (removido){
             if (removido < 1) {
                 setGuardaDuracaoDescanso('');
@@ -325,7 +327,8 @@ const telaPomodoro = (props) => {
 
     function validaPomodoros(numero) {
         // code to remove non-numeric characters from text
-        let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        // let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        let removido = numero.replace(/\D/g,'');
         if (removido){
             if (removido < 1) {
                 setGuardaQuantidadePomodoros('');

@@ -27,8 +27,6 @@ let styles = StyleSheet.create({
     divNome: {
         height: "50%",
         justifyContent: "center",
-        paddingTop: "0.5%",
-        paddingBottom: "0.5%",
     },
     botao: {
         flexDirection: "row",
@@ -38,13 +36,13 @@ let styles = StyleSheet.create({
         aspectRatio: 1,
         width: null,
         height: "100%",
-        // borderRadius: 100,
     },
     viewImagem: {
         width: "22%",
     },
     viewTexto: {
         width: "78%",
+        paddingBottom: "1%",
         justifyContent: "center",
     },
     nome: {
