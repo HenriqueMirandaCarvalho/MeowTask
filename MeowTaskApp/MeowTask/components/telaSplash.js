@@ -46,16 +46,16 @@ const telaSplash = (props) => {
                 Alert.alert("You are offline!");
             }
         });
+    }
 
-        let [fontsLoaded] = useFonts({
-            'Roboto-Light': require('./font/Roboto-Light.ttf'),
-        });
+    let [fontsLoaded] = useFonts({
+        'Roboto-Light': require('./font/Roboto-Light.ttf'),
+    });
 
-        if (!fontsLoaded) {
-            return <AppLoading />;
-        } else {
-            return <View></View>
-        }
+    if (!fontsLoaded) {
+        return <AppLoading />;
+    } else {
+        return <View></View>
     }
 }
 export default telaSplash;
