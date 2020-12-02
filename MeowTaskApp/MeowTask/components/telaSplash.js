@@ -1,11 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { View, NetInfo, Alert, Platform } from "react-native";
+import { View, Alert, Platform } from "react-native";
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import * as firebase from 'firebase';
 import { NavigationActions, StackActions } from 'react-navigation';
+const NetInfo = require('@react-native-community/netinfo');
 
 const telaSplash = (props) => {
+    const handleConexao = state => {
+        if (state.isConnected) {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    const resetAction = StackActions.reset({
+                        index: 0,
+                        actions: [
+                            NavigationActions.navigate({ routeName: 'Home' }),
+                        ],
+                    });
+                    props.navigation.dispatch(resetAction);
+                }
+                else {
+                    const resetAction = StackActions.reset({
+                        index: 0,
+                        actions: [
+                            NavigationActions.navigate({ routeName: 'Inicio' }),
+                        ],
+                    });
+                    props.navigation.dispatch(resetAction);
+                }
+            });
+        } else {
+            Alert.alert("You are offline!");
+        }
+    }
     if (!firebase.apps.length) {
         var firebaseConfig = {
             apiKey: "AIzaSyApt9TUJkguD9IDJ2LmU4ReiqF06hPLH4o",
@@ -20,32 +47,7 @@ const telaSplash = (props) => {
         firebase.initializeApp(firebaseConfig);
     }
     if (Platform.OS === "android") {
-        NetInfo.isConnected.fetch().then(isConnected => {
-            if (isConnected) {
-                firebase.auth().onAuthStateChanged((user) => {
-                    if (user) {
-                        const resetAction = StackActions.reset({
-                            index: 0,
-                            actions: [
-                                NavigationActions.navigate({ routeName: 'Home' }),
-                            ],
-                        });
-                        props.navigation.dispatch(resetAction);
-                    }
-                    else {
-                        const resetAction = StackActions.reset({
-                            index: 0,
-                            actions: [
-                                NavigationActions.navigate({ routeName: 'Inicio' }),
-                            ],
-                        });
-                        props.navigation.dispatch(resetAction);
-                    }
-                });
-            } else {
-                Alert.alert("You are offline!");
-            }
-        });
+        NetInfo.addEventListener(handleConexao);
     }
 
     let [fontsLoaded] = useFonts({

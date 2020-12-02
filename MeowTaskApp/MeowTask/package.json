@@ -12,6 +12,7 @@
     "@firebase/firestore": "^2.0.4",
     "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/masked-view": "0.1.10",
+    "@react-native-community/netinfo": "^5.9.9",
     "expo": "~39.0.2",
     "expo-constants": "^9.2.0",
     "expo-document-picker": "^8.4.1",
