@@ -49,7 +49,7 @@ const telaPomodoro = (props) => {
     const [guardaDuracaoDescanso, setGuardaDuracaoDescanso] = useState(duracaoDescanso);
     const [guardaQuantidadePomodoros, setGuardaQuantidadePomodoros] = useState(quantidadePomodoros);
 
-    const [gato, setGato] = useState(require("./img/gatoestudando.png"));
+    const [gato, setGato] = useState(require("./img/VoceConsegue.png"));
     
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
