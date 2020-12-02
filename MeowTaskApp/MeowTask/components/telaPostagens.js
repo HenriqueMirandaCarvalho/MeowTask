@@ -80,7 +80,7 @@ const telaPostagens = (props) => {
                     nomePostador: firebase.auth().currentUser.displayName,
                     avatarPostador: firebase.auth().currentUser.photoURL,
                     texto: guardaNovoTexto.trim(),
-                    data: firebase.database.ServerValue.TIMESTAMP
+                    data: Date.now()
                 })
                 .then(() => {
                     setGuardaNovoTexto("");
