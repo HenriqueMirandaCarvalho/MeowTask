@@ -53,6 +53,7 @@ const telaAmigo = (props) => {
                             idAmigos.push(_id);
                         }
                     });
+                    console.log(idAmigos);
                     idAmigos.forEach((_id) => {
                         firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
                             let amigo = snap.data();
@@ -66,6 +67,8 @@ const telaAmigo = (props) => {
                                 if (doc.id == _id)
                                     alreadyMembro = true;
                             })
+                            console.log("id: " + _id.toString());
+                            console.log("Alr M: " + alreadyMembro.toString());
                             if (!alreadyMembro)
                                 amigos.push(amigo);
                             if (idAmigos.length == amigos.length) {

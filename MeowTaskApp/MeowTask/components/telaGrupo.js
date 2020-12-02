@@ -58,7 +58,9 @@ const telaGrupo = (props) => {
         firebase.firestore()
             .collection("Grupos")
             .doc(idGrupo)
-            .delete();
+            .onSnapshot((snap) => {
+                snap.ref.delete();
+            });
     }
 
     function sair() {
