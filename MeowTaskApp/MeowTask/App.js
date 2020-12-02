@@ -17,6 +17,7 @@ import telaConfiguracoes from './components/telaConfiguracoes';
 import telaNotificacoes from './components/telaNotificacoes';
 import telaMembros from './components/telaMembros';
 import telaSplash from './components/telaSplash';
+import telaTermos from './components/telaTermos';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -148,6 +149,12 @@ const RootStack = createStackNavigator({
 	},
 	Membros: {
 		screen: telaMembros,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	Termos: {
+		screen: telaTermos,
 		navigationOptions: {
 			headerShown: false,
 		}
