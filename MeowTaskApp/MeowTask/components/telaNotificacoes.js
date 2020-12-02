@@ -6,6 +6,7 @@ import { useFonts } from 'expo-font';
 import { Notificacao } from './notificacao.js';
 import SwipeRow from './swipe.js';
 import * as firebase from 'firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -18,6 +19,7 @@ const getData = async () => {
         const jsonValue = await AsyncStorage.getItem('notificacoes');
         return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (e) {
+        return null;
     }
 }
 
@@ -85,14 +87,6 @@ const telaNotificacoes = (props) => {
     const [notificacoes, setNotificacoes] = useState([]);
 
     useEffect(() => {
-        getData().then((obj) => {
-            if (obj != null) {
-                setNotificacoesAmigos(obj.amigos);
-                setNotificacoesPostagens(obj.postagens);
-                setNotificacoesTarefas(obj.tarefas);
-                setNotificacoesTodas(obj.exibir);
-            }
-        });
     }, []);
 
     useEffect(() => {
@@ -103,39 +97,56 @@ const telaNotificacoes = (props) => {
             .collection("Notificacoes")
             .orderBy('data', 'desc')
             .onSnapshot(snapshot => {
-                const notificacoes = snapshot.docs.map(doc => {
-                    if (!notificacoesTodas && doc.data().tipo != "amizade") {
-                        doc.ref.delete();
+                getData().then((obj) => {
+                    console.log(obj);
+                    if (obj != null) {
+                        const notificacoes = snapshot.docs.map(doc => {
+                            if (!obj.exibir && doc.data().tipo != "amizade") {
+                                doc.ref.delete();
+                            }
+                            else if (doc.data().tipo == "amizade" && obj.amigos && obj.exibir) {
+                                const notificacao = doc.data();
+                                notificacao.id = doc.id;
+                                return notificacao;
+                            }
+                            else if (doc.data().tipo == "recusa" && obj.amigos && obj.exibir) {
+                                const notificacao = doc.data();
+                                notificacao.id = doc.id;
+                                return notificacao;
+                            }
+                            else if (doc.data().tipo == "postagem" && obj.postagens && obj.exibir) {
+                                const notificacao = doc.data();
+                                notificacao.id = doc.id;
+                                return notificacao;
+                            }
+                            else if (doc.data().tipo == "tarefa" && obj.tarefas && obj.exibir) {
+                                const notificacao = doc.data();
+                                notificacao.id = doc.id;
+                                return notificacao;
+                            }
+                            else if (doc.data().tipo != "amizade") {
+                                doc.ref.delete();
+                            }
+                        });
+                        if (notificacoes[0] != undefined)
+                            setNotificacoes(notificacoes);
+                        else
+                            setNotificacoes([]);
+                        setRefrescando(false);
                     }
-                    else if (doc.data().tipo == "amizade" && notificacoesAmigos) {
-                        const notificacao = doc.data();
-                        notificacao.id = doc.id;
-                        return notificacao;
-                    }
-                    else if (doc.data().tipo == "recusa" && notificacoesAmigos) {
-                        const notificacao = doc.data();
-                        notificacao.id = doc.id;
-                        return notificacao;
-                    }
-                    else if (doc.data().tipo == "postagem" && notificacoesPostagens) {
-                        const notificacao = doc.data();
-                        notificacao.id = doc.id;
-                        return notificacao;
-                    }
-                    else if (doc.data().tipo == "tarefa" && notificacoesTarefas) {
-                        const notificacao = doc.data();
-                        notificacao.id = doc.id;
-                        return notificacao;
-                    }
-                    else if (doc.data().tipo != "amizade") {
-                        doc.ref.delete();
+                    else {
+                        const notificacoes = snapshot.docs.map(doc => {
+                            const notificacao = doc.data();
+                            notificacao.id = doc.id;
+                            return notificacao;
+                        });
+                        if (notificacoes[0] != undefined)
+                            setNotificacoes(notificacoes);
+                        else
+                            setNotificacoes([]);
+                        setRefrescando(false);
                     }
                 });
-                if (notificacoes[0] != undefined)
-                    setNotificacoes(notificacoes);
-                else
-                    setNotificacoes([]);
-                setRefrescando(false);
             });
         return () => listener();
     }, []);
@@ -170,7 +181,7 @@ const telaNotificacoes = (props) => {
                                 key={item.key}
                                 item={item}
                                 swipeThreshold={-150}
-                                onSwipe={() => {deletar(item.id); if (item.tipo == "amizade") recusar(item.id, item.idAmizade, item.idAmigo); }}
+                                onSwipe={() => { deletar(item.id); if (item.tipo == "amizade") recusar(item.id, item.idAmizade, item.idAmigo); }}
                             >
                                 <Notificacao
                                     tipo={item.tipo}
