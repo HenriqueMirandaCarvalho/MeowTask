@@ -60,8 +60,8 @@ const telaAmigo = (props) => {
                             let amigo = snap.data();
                             amigo.id = _id;
                             let alreadyMembro = false;
-                            alreadyMembro = membros.some(item => item.id === _id);
-                            alreadyMembro = banidos.some(item => item.id === _id);
+                            alreadyMembro = membros.some(item => item.id === _id) ? true : alreadyMembro;
+                            alreadyMembro = banidos.some(item => item.id === _id) ? true : alreadyMembro;
                             if (!alreadyMembro) {
                                 novoAmigos.push(amigo);
                             }
