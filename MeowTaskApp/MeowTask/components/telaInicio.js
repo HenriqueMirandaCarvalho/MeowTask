@@ -6,12 +6,8 @@ import icone from './img/icone.png';
 import * as firebase from 'firebase';
 
 const telaInicio = (props) => {
-    const [logado, setLogado] = useState(false);
     function btnComecar() {
-        if (!logado)
-            props.navigation.navigate('Login');
-        else
-            props.navigation.navigate('Home');
+        props.navigation.navigate('Login');
     }
     function btnLogar() {
         props.navigation.navigate('Login');
