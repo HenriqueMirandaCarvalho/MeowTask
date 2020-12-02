@@ -43,8 +43,8 @@ const telaListaGrupos = (props) => {
         amigos.forEach((item) => {
             if (item.id == _id) {
                 item.selecionado = true;
-                newAmigos.push(item);
             }
+            newAmigos.push(item);
         });
         setAmigos(newAmigos);
         let novo = pessoasAdicionar;
@@ -57,8 +57,8 @@ const telaListaGrupos = (props) => {
         amigos.forEach((item) => {
             if (item.id == _id) {
                 item.selecionado = false;
-                newAmigos.push(item);
             }
+            newAmigos.push(item);
         });
         setAmigos(newAmigos);
         let novo = pessoasAdicionar;
