@@ -367,18 +367,18 @@ const telaNotificacoes = (props) => {
                 </View>
                 <View style={styles.conteudoConfig2}>
                     <View style={styles.botoesConfig}>
-                        <TouchableOpacity onPress={() => btnVisual()}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate("Termos")}>
                             <Image source={require('./img/Logos/LogoPrivacidadeeTermos.png')} style={styles.icones} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => btnVisual()} style={styles.divTextoBotoesConfig}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate("Termos")} style={styles.divTextoBotoesConfig}>
                             <Text style={styles.textoBotoesConfig}>Privacidade e Termos</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.botoesConfig}>
-                        <TouchableOpacity onPress={() => btnVisual()}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate("Sobre")}>
                             <Image source={require('./img/Logos/About.png')} style={styles.icones} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => btnVisual()} style={styles.divTextoBotoesConfig}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate("Sobre")} style={styles.divTextoBotoesConfig}>
                             <Text style={styles.textoBotoesConfig}>Sobre o Meow Task</Text>
                         </TouchableOpacity>
                     </View>
