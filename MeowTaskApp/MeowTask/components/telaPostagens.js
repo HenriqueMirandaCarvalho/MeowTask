@@ -80,7 +80,7 @@ const telaPostagens = (props) => {
                     nomePostador: firebase.auth().currentUser.displayName,
                     avatarPostador: firebase.auth().currentUser.photoURL,
                     texto: guardaNovoTexto.trim(),
-                    data: new Date().getTime()
+                    data: firebase.database.ServerValue.TIMESTAMP
                 })
                 .then(() => {
                     setGuardaNovoTexto("");
@@ -102,7 +102,7 @@ const telaPostagens = (props) => {
                                     enviador: firebase.auth().currentUser.displayName,
                                     mensagem: guardaNovoTexto.trim().substring(0,30) + "...",
                                     nomeGrupo: nomeGrupo,
-                                    data: new Date().getTime(),
+                                    data: firebase.database.ServerValue.TIMESTAMP,
                                 });
                         });
                     });

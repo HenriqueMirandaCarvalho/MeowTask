@@ -35,7 +35,7 @@ const telaPostIts = (props) => {
             .doc(_id)
             .set({
                 descricao: guardaTexto,
-                data: new Date().getTime()
+                data: firebase.database.ServerValue.TIMESTAMP
             }).then(() => { setRefresco(false); });
     }
 
@@ -58,7 +58,7 @@ const telaPostIts = (props) => {
             .collection("PostIts")
             .add({
                 descricao: "",
-                data: new Date().getTime()
+                data: firebase.database.ServerValue.TIMESTAMP
             }).then(() => { setRefresco(false); });
     }
 

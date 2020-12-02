@@ -80,7 +80,7 @@ const telaNotificacoes = (props) => {
             .add({
                 tipo: "recusa",
                 nome: firebase.auth().currentUser.displayName,
-                data: new Date().getTime(),
+                data: firebase.database.ServerValue.TIMESTAMP
             });
     }
 

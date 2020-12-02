@@ -96,7 +96,7 @@ const telaLista = (props) => {
         setRefresco(true);
         itens.push(
             {
-                id: new Date().getTime(),
+                id: firebase.database.ServerValue.TIMESTAMP,
                 check: false,
                 texto: guardaNovoTexto,
             }
