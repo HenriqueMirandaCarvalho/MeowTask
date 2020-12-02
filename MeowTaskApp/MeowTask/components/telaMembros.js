@@ -44,7 +44,7 @@ const telaAmigo = (props) => {
                 .collection("Amigos")
                 .orderBy('data', 'desc')
                 .onSnapshot(snapshot => {
-                    let amigos = [];
+                    let novoAmigos = [];
                     let idAmigos = []
                     snapshot.docs.forEach(doc => {
                         let dados = doc.data();
@@ -53,26 +53,31 @@ const telaAmigo = (props) => {
                             idAmigos.push(_id);
                         }
                     });
-                    console.log(idAmigos);
+                    let tamanho = idAmigos.length;
                     idAmigos.forEach((_id) => {
                         firebase.firestore().collection("Codigos").doc(_id).get().then((snap) => {
                             let amigo = snap.data();
                             amigo.id = _id;
                             let alreadyMembro = false;
                             membros.forEach((doc) => {
-                                if (doc.id == _id)
+                                if (doc.id == _id) {
                                     alreadyMembro = true;
+                                    tamanho = tamanho - 1;
+                                }
                             });
                             banidos.forEach((doc) => {
-                                if (doc.id == _id)
+                                if (doc.id == _id) {
                                     alreadyMembro = true;
+                                    tamanho = tamanho - 1;
+                                }
                             })
-                            console.log("id: " + _id.toString());
-                            console.log("Alr M: " + alreadyMembro.toString());
-                            if (!alreadyMembro)
-                                amigos.push(amigo);
-                            if (idAmigos.length == amigos.length) {
-                                setAmigos(amigos);
+                            if (!alreadyMembro) {
+                                novoAmigos.push(amigo);
+                                console.log(novoAmigos);
+                            }
+                            if (idAmigos.length == novoAmigos.length) {
+                                setAmigos([...novoAmigos]);
+                                console.log(amigos);
                                 setRefresco(false);
                             }
                         });
@@ -266,7 +271,6 @@ const telaAmigo = (props) => {
                                             membroB.id = _id;
                                             newBanidos.push(membroB);
                                             if (snapshot.data().banidos.length == newBanidos.length) {
-                                                console.log(newBanidos);
                                                 setBanidos(newBanidos);
                                                 setRefresco(false);
                                             }
@@ -319,7 +323,6 @@ const telaAmigo = (props) => {
                             membroB.id = _id;
                             newBanidos.push(membroB);
                             if (snapshot.data().banidos.length == newBanidos.length) {
-                                console.log(newBanidos);
                                 setBanidos(newBanidos);
                             }
                         });
