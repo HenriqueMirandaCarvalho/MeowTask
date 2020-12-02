@@ -127,7 +127,7 @@ const telaNotificacoes = (props) => {
                         notificacao.id = doc.id;
                         return notificacao;
                     }
-                    else {
+                    else if (doc.data().tipo != "amizade") {
                         doc.ref.delete();
                     }
                 });
