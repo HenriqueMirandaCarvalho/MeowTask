@@ -158,6 +158,10 @@ const telaNotificacoes = (props) => {
             props.navigation.dispatch(resetAction);
         });
     }
+
+    function estaDesativado(_value, ) { // troca a cor dos switches dependendo do estado
+
+    }
     
     useEffect(() => {
         getData().then((obj) => {
@@ -272,10 +276,10 @@ const telaNotificacoes = (props) => {
                     transparent={true}
                     visible={modalNotificacaoVisivel}
                     onRequestClose={() => {
-                        toggleModalNotificacao();
+                        salvarNotificacao()
                     }}
                 >
-                    <TouchableWithoutFeedback onPress={() => toggleModalNotificacao()}>
+                    <TouchableWithoutFeedback onPress={() => salvarNotificacao()}>
                         <View style={styles.overlay} />
                     </TouchableWithoutFeedback>
 
@@ -293,10 +297,10 @@ const telaNotificacoes = (props) => {
                                 />
                             </View>
                             <View style={styles.opcaoNotificacao}>
-                                <Text style={styles.textoModalNotificacoes}>Novas tarefas:</Text>
+                                <Text style={[styles.textoModalNotificacoes, {color: notificacoesTodas?"black":"rgba(0, 0, 0, 0.2)"}]}>Novas tarefas:</Text>
                                 <Switch
-                                    trackColor={{ false: "#adadad", true: "#4cca61" }}
-                                    thumbColor={"#f4f3f4"}
+                                    trackColor={{ false: notificacoesTodas?"#adadad":"rgba(173, 173, 173, 0.4)", true: notificacoesTodas?"#4cca61":"rgba(76, 202, 97, 0.4)" }}
+                                    thumbColor={notificacoesTodas?"#f4f3f4":"rgba(244, 243, 244, 0.4)"}
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => switchNotificacoesTarefas()}
                                     value={notificacoesTarefas}
@@ -304,10 +308,10 @@ const telaNotificacoes = (props) => {
                                 />
                             </View>
                             <View style={styles.opcaoNotificacao}>
-                                <Text style={styles.textoModalNotificacoes}>Postagens:</Text>
+                                <Text style={[styles.textoModalNotificacoes, {color: notificacoesTodas?"black":"rgba(0, 0, 0, 0.2)"}]}>Postagens:</Text>
                                 <Switch
-                                    trackColor={{ false: "#adadad", true: "#4cca61" }}
-                                    thumbColor={"#f4f3f4"}
+                                    trackColor={{ false: notificacoesTodas?"#adadad":"rgba(173, 173, 173, 0.4)", true: notificacoesTodas?"#4cca61":"rgba(76, 202, 97, 0.4)" }}
+                                    thumbColor={notificacoesTodas?"#f4f3f4":"rgba(244, 243, 244, 0.4)"}
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => switchNotificacoesPostagens()}
                                     value={notificacoesPostagens}
@@ -315,10 +319,10 @@ const telaNotificacoes = (props) => {
                                 />
                             </View>
                             <View style={styles.opcaoNotificacao}>
-                                <Text style={styles.textoModalNotificacoes}>Pedidos de amizade:</Text>
+                                <Text style={[styles.textoModalNotificacoes, {color: notificacoesTodas?"black":"rgba(0, 0, 0, 0.2)"}]}>Pedidos de amizade:</Text>
                                 <Switch
-                                    trackColor={{ false: "#adadad", true: "#4cca61" }}
-                                    thumbColor={"#f4f3f4"}
+                                    trackColor={{ false: notificacoesTodas?"#adadad":"rgba(173, 173, 173, 0.4)", true: notificacoesTodas?"#4cca61":"rgba(76, 202, 97, 0.4)" }}
+                                    thumbColor={notificacoesTodas?"#f4f3f4":"rgba(244, 243, 244, 0.4)"}
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => switchNotificacoesAmigos()}
                                     value={notificacoesAmigos}
