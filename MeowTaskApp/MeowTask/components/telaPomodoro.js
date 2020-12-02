@@ -212,7 +212,7 @@ const telaPomodoro = (props) => {
         if (intervalos[id].sossego) {
             return ({
                 width: (intervalos[id].duracao*unidadeTamanho),
-                backgroundColor: "#70bf42",
+                backgroundColor: "#f9c43e", // cor do descanso
                 justifyContent: "center",
                 alignItems: "center",
                 overflow: "hidden",
@@ -220,7 +220,7 @@ const telaPomodoro = (props) => {
         } else {
             return ({
                 width: (intervalos[id].duracao*unidadeTamanho),
-                backgroundColor: "#ed5e58",
+                backgroundColor: "#db4e31", // cor do trabalho
                 justifyContent: "center",
                 alignItems: "center",
                 overflow: "hidden",
@@ -299,12 +299,14 @@ const telaPomodoro = (props) => {
         // code to remove non-numeric characters from text
         let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
         if (removido){
-            setGuardaDuracaoTrabalho(Number.parseInt(removido));
             if (removido < 1) {
                 setGuardaDuracaoTrabalho('');
+            } else if (removido > 30) {
+            } else {
+                setGuardaDuracaoTrabalho(Number.parseInt(removido));
             }
         } else {
-            setGuardaDuracaoTrabalho('');
+            setGuardaDuracaoTrabalho(removido);
         }
     }
     
@@ -312,9 +314,11 @@ const telaPomodoro = (props) => {
         // code to remove non-numeric characters from text
         let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
         if (removido){
-            setGuardaDuracaoDescanso(Number.parseInt(removido));
             if (removido < 1) {
                 setGuardaDuracaoDescanso('');
+            } else if (removido > 30) {
+            } else {
+                setGuardaDuracaoDescanso(Number.parseInt(removido));
             }
         } else {
             setGuardaDuracaoDescanso(removido);
@@ -327,7 +331,7 @@ const telaPomodoro = (props) => {
         if (removido){
             if (removido < 1) {
                 setGuardaQuantidadePomodoros('');
-            } else if (removido > 10) {
+            } else if (removido > 8) {
             } else {
                 setGuardaQuantidadePomodoros(Number.parseInt(removido));
             }
@@ -446,7 +450,7 @@ const telaPomodoro = (props) => {
                                         onChangeText={(numero) => validaTrabalho(numero)}
                                         value={guardaDuracaoTrabalho.toString()}
                                     />
-                                    <TouchableOpacity onPress={() => {if(guardaDuracaoTrabalho<99){setGuardaDuracaoTrabalho(Number.parseInt(guardaDuracaoTrabalho+1))}}} style={styles.quadradoMaisOuMenos}>
+                                    <TouchableOpacity onPress={() => {if(guardaDuracaoTrabalho<30){setGuardaDuracaoTrabalho(Number.parseInt(guardaDuracaoTrabalho+1))}}} style={styles.quadradoMaisOuMenos}>
                                         <AntDesign name="caretright" size={24} color="black" />
                                     </TouchableOpacity>
                                 </View>
@@ -468,7 +472,7 @@ const telaPomodoro = (props) => {
                                         onChangeText={(numero) => validaDescanso(numero)}
                                         value={guardaDuracaoDescanso.toString()}
                                     />
-                                    <TouchableOpacity onPress={() => {if(guardaDuracaoDescanso<99){setGuardaDuracaoDescanso(Number.parseInt(guardaDuracaoDescanso+1))}}} style={styles.quadradoMaisOuMenos}>
+                                    <TouchableOpacity onPress={() => {if(guardaDuracaoDescanso<30){setGuardaDuracaoDescanso(Number.parseInt(guardaDuracaoDescanso+1))}}} style={styles.quadradoMaisOuMenos}>
                                         <AntDesign name="caretright" size={24} color="black" />
                                     </TouchableOpacity>
                                 </View>
@@ -490,7 +494,7 @@ const telaPomodoro = (props) => {
                                         onChangeText={(numero) => validaPomodoros(numero)}
                                         value={guardaQuantidadePomodoros.toString()}
                                     />
-                                    <TouchableOpacity onPress={() => {if(guardaQuantidadePomodoros<10){setGuardaQuantidadePomodoros(Number.parseInt(guardaQuantidadePomodoros+1))}}} style={styles.quadradoMaisOuMenos}>
+                                    <TouchableOpacity onPress={() => {if(guardaQuantidadePomodoros<8){setGuardaQuantidadePomodoros(Number.parseInt(guardaQuantidadePomodoros+1))}}} style={styles.quadradoMaisOuMenos}>
                                         <AntDesign name="caretright" size={24} color="black" />
                                     </TouchableOpacity>
                                 </View>
@@ -589,7 +593,7 @@ const styles = StyleSheet.create({
     },
     textoFlatlist: {
         fontFamily: 'Roboto-Light',
-        fontSize: 12,
+        fontSize: 15,
         maxHeight: "70%"
     },
     caminhoIndicador: {

@@ -240,7 +240,7 @@ const telaPostagens = (props) => {
                         onChangeText={(texto) => setGuardaNovoTexto(texto)}
                     />
                     <TouchableOpacity onPress={() => postar()}>
-                        <AntDesign name="smileo" size={40} color="white" />
+                        <Ionicons name="md-send" size={40} color="#444444" />
                     </TouchableOpacity>
                 </View>
             </View>
