@@ -132,7 +132,6 @@ const telaAmigo = (props) => {
                                             confirmado: true
                                         })
                                         .then((data) => {
-                                            console.log(idAmg);
                                             toggleModal();
                                             setRefresco(false);
                                             firebase.firestore()
@@ -188,7 +187,7 @@ const telaAmigo = (props) => {
                 let idAmigos = []
                 snapshot.docs.forEach(doc => {
                     let dados = doc.data();
-                    if (dados.confirmado) {
+                    if (dados.confirmado && dados.usuarios.includes(firebase.auth().currentUser.uid)) {
                         let _id = dados.usuarios.find((dado) => { return dado != firebase.auth().currentUser.uid });
                         idAmigos.push({idAmigo: _id, id: doc.id});
                     }
