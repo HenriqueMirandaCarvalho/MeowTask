@@ -6,7 +6,7 @@ export const Arquivo = props =>
         <TouchableWithoutFeedback onLongPress={() => props.onLongPress()} style={styles.ultimoBotao}>
             <View style={styles.ultimoBotao}>
                 <View style={styles.parteSuperior}>
-                    <Image source={require('./img/menta.png')} style={styles.imagem} />
+                    <Image source={require('./img/Logos/Arquivos.png')} style={styles.imagem} />
                     <Text style={styles.texto}>{props.texto}</Text>
                 </View>
                 <View style={styles.parteInferior}>
@@ -41,7 +41,7 @@ let styles = StyleSheet.create({
     },
     texto: {
         width: "80%",
-        marginBottom: "1%",
+        paddingTop: "2%",
         fontFamily: "Roboto-Light",
         fontSize: 20,
         alignSelf: "flex-start",
