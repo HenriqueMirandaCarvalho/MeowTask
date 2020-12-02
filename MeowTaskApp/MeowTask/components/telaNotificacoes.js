@@ -87,9 +87,6 @@ const telaNotificacoes = (props) => {
     const [notificacoes, setNotificacoes] = useState([]);
 
     useEffect(() => {
-    }, []);
-
-    useEffect(() => {
         setRefrescando(true);
         const listener = firebase.firestore()
             .collection("Codigos")
