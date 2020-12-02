@@ -103,6 +103,7 @@ const telaListaGrupos = (props) => {
     }
 
     function criarGrupo() {
+        setInputNomeGrupo("");
         setLoading(true);
         if (inputNomeGrupo.length >= 5 && inputNomeGrupo.length <= 20) {
             firebase.firestore()
