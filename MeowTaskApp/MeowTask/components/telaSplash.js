@@ -46,7 +46,14 @@ const telaSplash = (props) => {
                     }
                 });
             } else {
-                Alert.alert("You are offline!");
+                props.navigation.navigate("SemConexao");
+                const resetAction = StackActions.reset({
+                    index: 0,
+                    actions: [
+                        NavigationActions.navigate({ routeName: 'SemConexao' }),
+                    ],
+                });
+                props.navigation.dispatch(resetAction);
             }
         });
     }
