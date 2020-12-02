@@ -1,11 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, StatusBar, Modal, ScrollView, ActivityIndicator } from "react-native";
-import { Ionicons, Feather } from '@expo/vector-icons';
+import { View, Text, StyleSheet } from "react-native";
+import { Feather } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import * as firebase from 'firebase';
 
-const telaTermos = (props) => {
+const telaSemConexao = (props) => {
 
     let [fontsLoaded] = useFonts({
         'Roboto-Light': require('./font/Roboto-Light.ttf'),
@@ -31,7 +30,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#eae6da',
         justifyContent: "center",
         alignItems: "center",
-        // marginTop: StatusBar.currentHeight || 0,
     },
     texto: {
         fontFamily: 'Roboto-Light',
@@ -41,4 +39,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default telaTermos;
+export default telaSemConexao;

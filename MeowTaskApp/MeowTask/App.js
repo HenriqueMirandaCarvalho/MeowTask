@@ -19,6 +19,7 @@ import telaMembros from './components/telaMembros';
 import telaSplash from './components/telaSplash';
 import telaTermos from './components/telaTermos';
 import telaSobre from './components/telaSobre';
+import telaSemConexao from './components/telaSemConexao';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -162,6 +163,12 @@ const RootStack = createStackNavigator({
 	},
 	Sobre: {
 		screen: telaSobre,
+		navigationOptions: {
+			headerShown: false,
+		}
+	},
+	SemConexao: {
+		screen: telaSemConexao,
 		navigationOptions: {
 			headerShown: false,
 		}
