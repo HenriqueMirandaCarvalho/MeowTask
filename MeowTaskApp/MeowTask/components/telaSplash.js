@@ -57,5 +57,5 @@ const telaSplash = (props) => {
             return <View></View>
         }
     }
-
-    export default telaSplash;
+}
+export default telaSplash;
