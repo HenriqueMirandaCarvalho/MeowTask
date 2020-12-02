@@ -172,7 +172,7 @@ const telaLista = (props) => {
                             textAlign="center"
                             defaultValue={guardaTexto}
                             maxLength={30}
-                            onChangeText={(texto) => setGuardaTexto(texto)}
+                            onChangeText={(texto) => setGuardaTexto(texto.replace(/(\r\n|\n|\r)/gm, " "))}
                         />
 
                         <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => {editarItem(guardaId), setModalEditarVisivel(false)}}>
@@ -210,7 +210,7 @@ const telaLista = (props) => {
                             returnKeyType="done"
                             textAlign="center"
                             maxLength={30}
-                            onChangeText={(texto) => setGuardaNovoTexto(texto)}
+                            onChangeText={(texto) => setGuardaNovoTexto(texto.replace(/(\r\n|\n|\r)/gm, " "))}
                         />
 
                         <TouchableOpacity style={styles.botaoSalvarModalEditar} onPress={() => {criarItem(), setModalCriarVisivel(false)}}>

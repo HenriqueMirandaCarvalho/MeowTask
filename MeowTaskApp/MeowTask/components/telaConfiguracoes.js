@@ -189,7 +189,7 @@ const telaNotificacoes = (props) => {
                     textContentType="username"
                     textAlign="center"
                     defaultValue={username}
-                    onChangeText={(username) => setUsername(username.trim())}
+                    onChangeText={(username) => setUsername(username.trim().replace(/(\r\n|\n|\r)/gm, " "))}
                     maxLength={30}
                     autoCorrect={false}
                     returnKeyType="done"

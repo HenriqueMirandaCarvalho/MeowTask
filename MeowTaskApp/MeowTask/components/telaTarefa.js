@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         marginTop: "5%",
         marginBottom: "10%",
+        textAlign: "center",
     },
     botao: {
         backgroundColor: "#C4C4C4",

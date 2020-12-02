@@ -299,7 +299,8 @@ const telaListaGrupos = (props) => {
                                 textAlign="center"
                                 placeholder="Insira o nome do grupo"
                                 placeholderTextColor="#a4a4a4"
-                                onChangeText={(nome) => setInputNomeGrupo(nome)}
+                                maxLength={20}
+                                onChangeText={(nome) => setInputNomeGrupo(nome.replace(/(\r\n|\n|\r)/gm, " "))}
                             />
 
                             <View style={styles.divListaAmigos}>

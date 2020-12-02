@@ -295,7 +295,8 @@ const telaPomodoro = (props) => {
 
     function validaTrabalho(numero) {
         // code to remove non-numeric characters from text
-        let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        // let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        let removido = numero.replace(/\D/g,'');
         if (removido){
             if (removido < 1) {
                 setGuardaDuracaoTrabalho('');
@@ -310,7 +311,8 @@ const telaPomodoro = (props) => {
     
     function validaDescanso(numero) {
         // code to remove non-numeric characters from text
-        let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        // let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        let removido = numero.replace(/\D/g,'');
         if (removido){
             if (removido < 1) {
                 setGuardaDuracaoDescanso('');
@@ -325,7 +327,8 @@ const telaPomodoro = (props) => {
 
     function validaPomodoros(numero) {
         // code to remove non-numeric characters from text
-        let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        // let removido = numero.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
+        let removido = numero.replace(/\D/g,'');
         if (removido){
             if (removido < 1) {
                 setGuardaQuantidadePomodoros('');
