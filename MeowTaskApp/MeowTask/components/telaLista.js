@@ -92,6 +92,7 @@ const telaLista = (props) => {
     }
 
     function criarItem() {
+        setGuardaNovoTexto("");
         setRefresco(true);
         itens.push(
             {

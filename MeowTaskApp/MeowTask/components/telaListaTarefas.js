@@ -34,6 +34,7 @@ const telaListaTarefas = (props) => {
     }
 
     function criarTarefa() {
+        setNomeNovaTarefa("");
         setRefresco(true);
         firebase.firestore()
             .collection("Grupos")

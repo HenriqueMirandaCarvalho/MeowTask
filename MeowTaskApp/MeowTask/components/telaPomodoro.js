@@ -340,15 +340,15 @@ const telaPomodoro = (props) => {
 
     function verSeEstaVazio() {
         console.debug("a"+guardaDuracaoTrabalho);
-        if (guardaDuracaoTrabalho.length == 0) {
+        if (guardaDuracaoTrabalho.length == 0 || guardaDuracaoTrabalho == "0") {
             setGuardaDuracaoTrabalho(1);
             return false;
         }
-        if (guardaDuracaoDescanso.length == 0) {
+        if (guardaDuracaoDescanso.length == 0 || guardaDuracaoDescanso == "0") {
             setGuardaDuracaoDescanso(1);
             return false;
         }
-        if (guardaQuantidadePomodoros.length == 0) {
+        if (guardaQuantidadePomodoros.length == 0 || guardaQuantidadePomodoros == "0") {
             setGuardaQuantidadePomodoros(1);
             return false;
         }
