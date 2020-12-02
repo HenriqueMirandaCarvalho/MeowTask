@@ -104,7 +104,7 @@ const telaNotificacoes = (props) => {
             .orderBy('data', 'desc')
             .onSnapshot(snapshot => {
                 const notificacoes = snapshot.docs.map(doc => {
-                    if (!notificacoesTodas) {
+                    if (!notificacoesTodas && doc.data().tipo != "amizade") {
                         doc.ref.delete();
                     }
                     else if (doc.data().tipo == "amizade" && notificacoesAmigos) {
