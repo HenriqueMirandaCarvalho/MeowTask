@@ -45,9 +45,9 @@ const telaArquivos = (props) => {
             "Aviso",
             "Você está prestes a deletar este arquivo, tem certeza que deseja continuar?",
             [{
-            text: "Não",
-            onPress: () => {},
-            style: "cancel"
+                text: "Não",
+                onPress: () => { },
+                style: "cancel"
             },
             {
                 text: "Sim",
@@ -57,7 +57,8 @@ const telaArquivos = (props) => {
 
     function deletarArquivo(_id) {
         setRefrescando(true);
-        _id.delete().then(() => {firebase.storage()
+        _id.delete().then(() => {
+            firebase.storage()
             .ref()
             .child(idTarefa)
             .listAll()
@@ -78,7 +79,19 @@ const telaArquivos = (props) => {
             if (result.type != "cancel") {
                 urlParaBlob(result.uri).then((obj) => {
                     firebase.storage().ref().child(idTarefa + "/" + result.name).put(obj).then(() => {
-                        setRefrescando(true);
+                        setRefrescando(false);
+                        firebase.storage()
+                            .ref()
+                            .child(idTarefa)
+                            .listAll()
+                            .then((res) => {
+                                let arquivos = [];
+                                res.items.forEach((item) => {
+                                    arquivos.push({ nome: item.name, ref: item, baixando: false });
+                                });
+                                setArquivos(arquivos)
+                                setRefrescando(false);
+                            });
                     });
                 });
             }
@@ -113,7 +126,7 @@ const telaArquivos = (props) => {
         if (typeof listener === "function") {
             return () => listener();
         }
-        return () => {};
+        return () => { };
     }, []);
 
     let [fontsLoaded] = useFonts({
