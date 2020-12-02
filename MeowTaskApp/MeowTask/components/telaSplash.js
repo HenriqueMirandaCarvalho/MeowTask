@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableNativeFeedback, StatusBar, TouchableOpacity } from "react-native";
+import { View, NetInfo, Alert, Platform } from "react-native";
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import * as firebase from 'firebase';
@@ -19,37 +19,43 @@ const telaSplash = (props) => {
         };
         firebase.initializeApp(firebaseConfig);
     }
+    if (Platform.OS === "android") {
+        NetInfo.isConnected.fetch().then(isConnected => {
+            if (isConnected) {
+                firebase.auth().onAuthStateChanged((user) => {
+                    if (user) {
+                        const resetAction = StackActions.reset({
+                            index: 0,
+                            actions: [
+                                NavigationActions.navigate({ routeName: 'Home' }),
+                            ],
+                        });
+                        props.navigation.dispatch(resetAction);
+                    }
+                    else {
+                        const resetAction = StackActions.reset({
+                            index: 0,
+                            actions: [
+                                NavigationActions.navigate({ routeName: 'Inicio' }),
+                            ],
+                        });
+                        props.navigation.dispatch(resetAction);
+                    }
+                });
+            } else {
+                Alert.alert("You are offline!");
+            }
+        });
 
-    firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            const resetAction = StackActions.reset({
-                index: 0,
-                actions: [
-                    NavigationActions.navigate({ routeName: 'Home' }),
-                ],
-            });
-            props.navigation.dispatch(resetAction);
+        let [fontsLoaded] = useFonts({
+            'Roboto-Light': require('./font/Roboto-Light.ttf'),
+        });
+
+        if (!fontsLoaded) {
+            return <AppLoading />;
+        } else {
+            return <View></View>
         }
-        else {
-            const resetAction = StackActions.reset({
-                index: 0,
-                actions: [
-                    NavigationActions.navigate({ routeName: 'Inicio' }),
-                ],
-            });
-            props.navigation.dispatch(resetAction);
-        }
-    });
-
-    let [fontsLoaded] = useFonts({
-        'Roboto-Light': require('./font/Roboto-Light.ttf'),
-    });
-
-    if (!fontsLoaded) {
-        return <AppLoading />;
-    } else {
-        return <View></View>
     }
-}
 
-export default telaSplash;
+    export default telaSplash;
